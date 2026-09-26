@@ -35,7 +35,7 @@ export default async function PortalPage() {
           <div className={styles.profileName}>
             <small>Akun pengguna</small>
             <strong>{session.displayName}</strong>
-            <span>Identitas pengembangan · sesi terverifikasi</span>
+            <span>Identitas Google · sesi terverifikasi</span>
           </div>
         </div>
         <div className={styles.profileStats}>
@@ -69,9 +69,9 @@ export default async function PortalPage() {
         <div className={styles.dashboardColumn}>
           <Panel title="Frekuensi Penggunaan" description="Distribusi aplikasi yang pernah diakses.">
             <div className={styles.donut}><div className={styles.donutLabel}><strong>0%</strong><span>0 akses client</span></div></div>
-            <div className={styles.usageItem}><span>Belum ada client production terhubung</span><Status>Menunggu IdP</Status></div>
+            <div className={styles.usageItem}><span>Belum ada client layanan terhubung</span><Status tone="success">Google OAuth aktif</Status></div>
           </Panel>
-          <div className={styles.callout}><ShieldCheck size={20} aria-hidden="true" /><p><strong>Token sesi ditandatangani.</strong><br />Integrasi OAuth/OIDC production belum diaktifkan.</p></div>
+          <div className={styles.callout}><ShieldCheck size={20} aria-hidden="true" /><p><strong>Autentikasi Google aktif.</strong><br />Sesi masuk diproses melalui Supabase OAuth dan dilindungi token aplikasi.</p></div>
         </div>
       </div>
 

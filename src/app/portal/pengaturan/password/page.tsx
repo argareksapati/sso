@@ -8,14 +8,14 @@ export const metadata: Metadata = { title: "Kata Sandi Saya" };
 export default function PasswordPage() {
   return (
     <AccountPage settings title="Kata Sandi Saya" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun.">
-      <AccountHero eyebrow="Keamanan akun" title="Ubah Kata Sandi" description="Perbarui kata sandi melalui identity provider resmi setelah koneksi production tersedia." icon={LockKeyhole} stat={<><span>Proteksi sistem</span><strong>Token HMAC</strong></>} />
+      <AccountHero eyebrow="Keamanan akun" title="Kata Sandi Akun" description="Kata sandi akun Google dikelola langsung oleh Google sebagai identity provider resmi." icon={LockKeyhole} stat={<><span>Proteksi sistem</span><strong>Google OAuth</strong></>} />
       <div className={styles.grid2}>
-        <Panel title="Perbarui Kata Sandi" description="Kontrol kredensial belum diaktifkan pada portal pengembangan.">
+        <Panel title="Perbarui Kata Sandi" description="Portal SSO tidak menyimpan atau mengubah kata sandi akun Google Anda.">
           <div className={styles.stack}>
             <div className={styles.field}><label htmlFor="currentPassword">Kata Sandi Saat Ini</label><input id="currentPassword" type="password" placeholder="Dikelola oleh IdP" autoComplete="current-password" disabled /></div>
-            <div className={styles.field}><label htmlFor="newPassword">Kata Sandi Baru</label><input id="newPassword" type="password" placeholder="Menunggu integrasi IdP" autoComplete="new-password" disabled /></div>
-            <div className={styles.field}><label htmlFor="confirmPassword">Konfirmasi Kata Sandi Baru</label><input id="confirmPassword" type="password" placeholder="Menunggu integrasi IdP" autoComplete="new-password" disabled /></div>
-            <div className={styles.callout}><ShieldCheck size={19} aria-hidden="true" /><p>Kata sandi production tidak disimpan atau diubah oleh portal Next.js ini.</p></div>
+            <div className={styles.field}><label htmlFor="newPassword">Kata Sandi Baru</label><input id="newPassword" type="password" placeholder="Dikelola oleh Google" autoComplete="new-password" disabled /></div>
+            <div className={styles.field}><label htmlFor="confirmPassword">Konfirmasi Kata Sandi Baru</label><input id="confirmPassword" type="password" placeholder="Dikelola oleh Google" autoComplete="new-password" disabled /></div>
+            <div className={styles.callout}><ShieldCheck size={19} aria-hidden="true" /><p>Gunakan pengaturan keamanan Akun Google untuk mengganti atau memulihkan kata sandi.</p></div>
             <div className={styles.actions}><button className={styles.buttonSecondary} type="button" disabled>Batalkan</button><button className={styles.button} type="button" disabled><KeyRound size={17} aria-hidden="true" /> Simpan Kata Sandi</button></div>
           </div>
         </Panel>
