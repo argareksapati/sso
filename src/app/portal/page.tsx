@@ -1,118 +1,84 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppWindow, ArrowRight, CircleCheck, Clock3, ShieldCheck } from "lucide-react";
+import { Activity, AppWindow, ArrowRight, Bell, KeyRound, MonitorSmartphone, ShieldCheck, UserRound } from "lucide-react";
 
 import { AccountPage, Panel, Status, accountStyles as styles } from "@/components/account/account-ui";
 import { ServiceIdentity } from "@/components/services/service-identity";
 import { getSession } from "@/lib/auth/session";
-import { listExistingSsoCatalog, listIntegrationCandidates } from "@/lib/services/repository";
+import { listExistingSsoCatalog } from "@/lib/services/repository";
 
-export const metadata: Metadata = { title: "Beranda akun" };
+export const metadata: Metadata = { title: "Profil Saya" };
 
-function firstName(displayName: string) {
-  return displayName.trim().split(/\s+/)[0] || displayName;
+function initials(displayName: string) {
+  return displayName.split(/\s+/).slice(0, 2).map((word) => word[0]).join("").toUpperCase();
 }
+const actions = [
+  { href: "/portal/pengaturan/profil", title: "Kelola Profil", text: "Lihat data dasar dan informasi identitas akun.", icon: UserRound },
+  { href: "/portal/pengaturan/password", title: "Kata Sandi", text: "Tinjau status integrasi pengelolaan kredensial.", icon: KeyRound },
+  { href: "/portal/pengaturan/aktivitas", title: "Log Aktivitas", text: "Pantau histori autentikasi yang tersedia.", icon: Activity },
+  { href: "/portal/pengaturan/sesi", title: "Sesi Perangkat", text: "Lihat dan akhiri sesi aktif pada browser ini.", icon: MonitorSmartphone },
+  { href: "/portal/pengaturan/aplikasi", title: "Koneksi Aplikasi", text: "Kelola otorisasi client SSO yang tercatat.", icon: AppWindow },
+  { href: "/portal/pengaturan/notifikasi", title: "Notifikasi", text: "Tinjau rancangan preferensi pemberitahuan.", icon: Bell },
+] as const;
 
 export default async function PortalPage() {
   const session = await getSession();
-  const [existingCatalog, services] = await Promise.all([
-    listExistingSsoCatalog(),
-    listIntegrationCandidates(),
-  ]);
+  const catalog = await listExistingSsoCatalog();
   if (!session) return null;
+  const example = catalog[0];
 
   return (
-    <AccountPage
-      eyebrow="Beranda akun"
-      title={`Selamat datang, ${firstName(session.displayName)}`}
-      description="Kelola profil, keamanan akun, dan aplikasi layanan Kota Bandung dari satu tempat."
-      action={<Link className={styles.button} href="/portal/layanan">Lihat semua layanan <ArrowRight size={17} aria-hidden="true" /></Link>}
-    >
-      <div className={styles.grid3}>
-        <div className={styles.metric}>
-          <span className={styles.metricIcon}><AppWindow size={20} aria-hidden="true" /></span>
-          <strong>{existingCatalog.length}</strong>
-          <span>Layanan pada referensi katalog SSO eksisting</span>
-        </div>
-        <div className={styles.metric}>
-          <span className={styles.metricIcon}><ShieldCheck size={20} aria-hidden="true" /></span>
-          <strong>Aktif</strong>
-          <span>Status sesi akun pada perangkat ini</span>
-        </div>
-        <div className={styles.metric}>
-          <span className={styles.metricIcon}><Clock3 size={20} aria-hidden="true" /></span>
-          <strong>1</strong>
-          <span>Sesi terverifikasi yang dapat dilihat saat ini</span>
-        </div>
-      </div>
-
-      <div className={styles.grid2}>
-        <Panel title="Profil saya" description="Ringkasan identitas dari sesi autentikasi aktif.">
-          <div className={styles.stack}>
-            <div>
-              <p className={styles.label}>Nama tampilan</p>
-              <strong>{session.displayName}</strong>
-            </div>
-            <div>
-              <p className={styles.label}>Status akun</p>
-              <Status tone="success"><CircleCheck size={13} aria-hidden="true" /> Terautentikasi</Status>
-            </div>
-            <div>
-              <p className={styles.label}>Sumber profil</p>
-              <p style={{ margin: "4px 0 0", color: "var(--ink-muted)", fontSize: ".86rem" }}>
-                Informasi lengkap akan mengikuti master identity setelah IdP final tersambung.
-              </p>
-            </div>
-            <div className={styles.actions}>
-              <Link className={styles.buttonSecondary} href="/portal/pengaturan/profil">Buka profil</Link>
-            </div>
+    <AccountPage title="Profil Saya" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun.">
+      <section className={`${styles.hero} ${styles.profileHero}`}>
+        <div className={styles.profileIdentity}>
+          <span className={styles.profileAvatar} aria-hidden="true">{initials(session.displayName)}</span>
+          <div className={styles.profileName}>
+            <small>Akun pengguna</small>
+            <strong>{session.displayName}</strong>
+            <span>Identitas pengembangan · sesi terverifikasi</span>
           </div>
-        </Panel>
+        </div>
+        <div className={styles.profileStats}>
+          <div><small>Login terakhir</small><strong>Sesi ini</strong></div>
+          <div><small>Layanan</small><strong>0 aktif</strong></div>
+          <div><small>Aktivitas</small><strong>1 catatan</strong></div>
+        </div>
+      </section>
 
-        <Panel title="Keamanan akun" description="Periksa sesi dan aktivitas akses akun Anda.">
-          <ul className={styles.list}>
-            <li className={styles.listItem}>
-              <div><h3>Sesi perangkat</h3><p>Satu sesi aktif terdeteksi pada portal ini.</p></div>
-              <Link href="/portal/pengaturan/sesi">Lihat</Link>
-            </li>
-            <li className={styles.listItem}>
-              <div><h3>Log aktivitas</h3><p>Periksa waktu penerbitan sesi terakhir.</p></div>
-              <Link href="/portal/pengaturan/aktivitas">Lihat</Link>
-            </li>
-            <li className={styles.listItem}>
-              <div><h3>Kata sandi</h3><p>Dikelola oleh identity provider yang akan dipilih.</p></div>
-              <Link href="/portal/pengaturan/password">Detail</Link>
-            </li>
-          </ul>
-        </Panel>
+      <div className={styles.dashboardGrid}>
+        <div className={styles.dashboardColumn}>
+          <Panel title="Aksi Cepat" description="Buka pengaturan akun tanpa navigasi manual.">
+            <div className={styles.quickGrid}>
+              {actions.map(({ href, title, text, icon: Icon }) => (
+                <Link className={styles.quickAction} href={href} key={href}>
+                  <Icon size={20} aria-hidden="true" /><ArrowRight size={17} aria-hidden="true" />
+                  <strong>{title}</strong><span>{text}</span>
+                </Link>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel title="Terakhir Login" description="Histori Single Sign On paling baru pada lingkungan ini.">
+            <div className={styles.loginItem}>
+              <ServiceIdentity name={example.name} detail="Referensi katalog · belum menjadi client aktif" logoPath={example.logoPath} />
+              <Status tone="info">Sesi ini</Status>
+            </div>
+          </Panel>
+        </div>
+
+        <div className={styles.dashboardColumn}>
+          <Panel title="Frekuensi Penggunaan" description="Distribusi aplikasi yang pernah diakses.">
+            <div className={styles.donut}><div className={styles.donutLabel}><strong>0%</strong><span>0 akses client</span></div></div>
+            <div className={styles.usageItem}><span>Belum ada client production terhubung</span><Status>Menunggu IdP</Status></div>
+          </Panel>
+          <div className={styles.callout}><ShieldCheck size={20} aria-hidden="true" /><p><strong>Token sesi ditandatangani.</strong><br />Integrasi OAuth/OIDC production belum diaktifkan.</p></div>
+        </div>
       </div>
 
-      <Panel title="Referensi aplikasi layanan" description="Cuplikan katalog publik SSO lama; belum ada client production yang diaktifkan pada implementasi baru.">
-        <ul className={styles.list}>
-          {existingCatalog.slice(0, 6).map((service) => (
-            <li className={styles.listItem} key={service.id}>
-              <ServiceIdentity name={service.name} detail={service.owner} logoPath={service.logoPath} />
-              <Status tone="neutral">Referensi lama</Status>
-            </li>
-          ))}
-        </ul>
-        <div className={styles.actions}>
-          <Link className={styles.buttonSecondary} href="/portal/layanan">Lihat {existingCatalog.length} referensi dan {services.length} kandidat</Link>
-        </div>
-      </Panel>
-
-      <Panel title="Kandidat integrasi baru" description="Daftar prioritas awal yang masih memerlukan discovery teknis dan persetujuan owner.">
-        <ul className={styles.list}>
-          {services.slice(0, 3).map((service) => (
-            <li className={styles.listItem} key={service.id}>
-              <ServiceIdentity name={service.name} detail={service.description} logoPath={service.logoPath} />
-              <Status tone={service.integrationState === "DISCOVERY" ? "info" : "warning"}>
-                {service.integrationState === "DISCOVERY" ? "Discovery" : "Review eksternal"}
-              </Status>
-            </li>
-          ))}
-        </ul>
-      </Panel>
+      <section className={styles.cta}>
+        <div><span className={styles.eyebrow}>Langkah berikutnya</span><h2>Lengkapi sumber profil dan kebijakan akun</h2><p>Data kependudukan, email, serta autentikasi tambahan akan mengikuti keputusan master identity.</p></div>
+        <div className={styles.actions}><Link className={styles.buttonSecondary} href="/portal/pengaturan/profil">Kelola Profil</Link><Link className={styles.button} href="/portal/pengaturan/password">Kata Sandi</Link></div>
+      </section>
     </AccountPage>
   );
 }

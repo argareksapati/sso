@@ -1,35 +1,35 @@
 import type { Metadata } from "next";
-import { BellOff, Info } from "lucide-react";
+import { Bell, Info, Mail, MessageSquare, SlidersHorizontal } from "lucide-react";
 
-import { AccountPage, Panel, accountStyles as styles } from "@/components/account/account-ui";
+import { AccountHero, AccountPage, Panel, accountStyles as styles } from "@/components/account/account-ui";
 
-export const metadata: Metadata = { title: "Notifikasi" };
+export const metadata: Metadata = { title: "Preferensi Notifikasi" };
 
 const notifications = [
-  ["Aktivitas keamanan", "Pemberitahuan saat ada proses masuk atau perubahan keamanan penting."],
-  ["Sesi perangkat baru", "Pemberitahuan saat akun digunakan pada perangkat yang belum dikenali."],
-  ["Perubahan profil", "Konfirmasi ketika data profil akun berhasil diperbarui."],
-  ["Informasi layanan", "Informasi perubahan status pada aplikasi layanan yang terhubung."],
+  ["Email login alerts", "Peringatan email saat login baru terdeteksi."],
+  ["Email security alerts", "Notifikasi reset password dan perubahan sensitif."],
+  ["WhatsApp login alerts", "Peringatan login baru melalui WhatsApp."],
+  ["In-app notifications", "Notifikasi langsung di dalam aplikasi."],
+  ["Weekly digest", "Ringkasan aktivitas mingguan."],
 ] as const;
 
 export default function NotificationsPage() {
   return (
-    <AccountPage title="Notifikasi" description="Atur jenis pemberitahuan keamanan dan layanan yang ingin Anda terima.">
-      <Panel title="Preferensi notifikasi" description="Channel pengiriman dan penyimpanan preferensi masih menunggu integrasi IdP.">
-        <div className={styles.stack}>
-          <div className={styles.callout}><Info size={19} aria-hidden="true" /><p>Kontrol ditampilkan sebagai rancangan final, tetapi belum aktif agar portal tidak mengklaim mengirim email, SMS, atau WhatsApp.</p></div>
-          <div>
-            {notifications.map(([title, description]) => (
-              <div className={styles.switchRow} key={title}>
-                <div><h3>{title}</h3><p>{description}</p></div>
-                <button className={styles.switch} type="button" role="switch" aria-checked="false" aria-label={title} disabled />
-              </div>
-            ))}
-          </div>
-          <div className={styles.actions}>
-            <button className={styles.button} type="button" disabled><BellOff size={17} aria-hidden="true" /> Simpan preferensi</button>
-          </div>
+    <AccountPage settings title="Preferensi Notifikasi" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun.">
+      <AccountHero eyebrow="Komunikasi & peringatan" title="Preferensi Notifikasi" description="Atur saluran penerimaan notifikasi setelah provider komunikasi disetujui." icon={Bell} stat={<><span>Saluran aktif</span><strong>0 saluran</strong></>} />
+      <Panel title="Ringkasan Saluran" description="Saluran berikut masih berupa rancangan integrasi.">
+        <div className={styles.channelGrid}>
+          <div className={styles.channel}><Mail size={20} aria-hidden="true" /><small>Email</small><span>Menunggu provider</span></div>
+          <div className={styles.channel}><MessageSquare size={20} aria-hidden="true" /><small>WhatsApp</small><span>Menunggu provider</span></div>
+          <div className={styles.channel}><Bell size={20} aria-hidden="true" /><small>In-app</small><span>Menunggu penyimpanan preferensi</span></div>
         </div>
+      </Panel>
+      <Panel title="Channels" description="Atur channel notifikasi sesuai kebutuhan setelah integrasi tersedia." icon={SlidersHorizontal}>
+        <div>
+          {notifications.map(([title, description]) => <div className={styles.switchRow} key={title}><div><h3>{title}</h3><p>{description}</p></div><button className={styles.switch} type="button" role="switch" aria-checked="false" aria-label={title} disabled /></div>)}
+        </div>
+        <div className={styles.callout} style={{ marginTop: 18 }}><Info size={18} aria-hidden="true" /><p>Kontrol dinonaktifkan agar portal tidak mengklaim telah mengirim notifikasi sebelum provider tersedia.</p></div>
+        <div className={styles.actions}><button className={styles.button} type="button" disabled>Simpan Preferensi</button></div>
       </Panel>
     </AccountPage>
   );

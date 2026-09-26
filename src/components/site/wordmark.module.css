@@ -1,10 +1,16 @@
-.wordmark {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 1px;
-  color: var(--ink-strong);
-  text-decoration: none;
+.wordmark { display: inline-flex; align-items: center; gap: 18px; color: var(--ink-strong); text-decoration: none; }
+.logoTile { height: 58px; display: inline-flex; align-items: center; gap: 8px; border-radius: 15px; padding: 5px 14px 5px 8px; color: #17658f; background: #fff; box-shadow: 0 8px 24px rgba(4, 31, 87, .12); font-size: 1rem; letter-spacing: .04em; }
+.logoTile img { width: 42px; height: 42px; object-fit: contain; }
+.copy { display: grid; gap: 2px; }
+.title { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 780; letter-spacing: -.03em; white-space: nowrap; }
+.title small { border: 1px solid currentColor; border-radius: 999px; padding: 3px 9px; font-size: .66rem; letter-spacing: .03em; opacity: .8; }
+.subtitle { font-size: .83rem; opacity: .8; white-space: nowrap; }
+.wordmark[data-inverse="true"] { color: #fff; }
+@media (max-width: 700px) {
+  .logoTile { height: 48px; padding-right: 10px; }
+  .logoTile img { width: 34px; height: 34px; }
+  .logoTile strong { display: none; }
+  .wordmark { gap: 10px; }
+  .title { font-size: 1rem; }
+  .title small, .subtitle { display: none; }
 }
-
-.primary { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
-.secondary { color: var(--ink-muted); font-size: 0.78rem; }

@@ -6,7 +6,7 @@ const password = "local-test-password-only";
 
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/login");
-  await page.getByLabel("Identitas akun").fill(identifier);
+  await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi").fill(password);
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
@@ -14,9 +14,9 @@ async function login(page: import("@playwright/test").Page) {
 
 test("login mock, portal, dan logout", async ({ page }) => {
   await login(page);
-  await expect(page.getByRole("heading", { name: "Selamat datang, Pengguna" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Aplikasi layanan" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "SIPETRUK" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Profil Saya", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Aksi Cepat" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Frekuensi Penggunaan" })).toBeVisible();
   await page.getByRole("button", { name: "Keluar" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
@@ -24,12 +24,12 @@ test("login mock, portal, dan logout", async ({ page }) => {
 test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) => {
   const routes = [
     ["/portal/layanan", "Pilih layanan yang Anda perlukan"],
-    ["/portal/pengaturan/profil", "Profil saya"],
-    ["/portal/pengaturan/password", "Kata sandi"],
-    ["/portal/pengaturan/sesi", "Sesi perangkat"],
-    ["/portal/pengaturan/aplikasi", "Aplikasi terkoneksi"],
-    ["/portal/pengaturan/notifikasi", "Notifikasi"],
-    ["/portal/pengaturan/aktivitas", "Log aktivitas"],
+    ["/portal/pengaturan/profil", "Profil Saya"],
+    ["/portal/pengaturan/password", "Kata Sandi Saya"],
+    ["/portal/pengaturan/sesi", "Sesi Perangkat"],
+    ["/portal/pengaturan/aplikasi", "Aplikasi Terkoneksi"],
+    ["/portal/pengaturan/notifikasi", "Preferensi Notifikasi"],
+    ["/portal/pengaturan/aktivitas", "Log Aktivitas"],
   ] as const;
 
   await page.goto(routes[0][0]);
@@ -70,7 +70,7 @@ test("pencarian layanan memfilter inventaris", async ({ page }) => {
 
 test("login gagal memakai pesan generik", async ({ page }) => {
   await page.goto("/login");
-  await page.getByLabel("Identitas akun").fill("akun.tidak.ada@example.test");
+  await page.getByLabel("Alamat email").fill("akun.tidak.ada@example.test");
   await page.getByLabel("Kata sandi").fill("wrong-password");
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(
@@ -81,7 +81,7 @@ test("login gagal memakai pesan generik", async ({ page }) => {
 
 test("return URL eksternal ditolak", async ({ page }) => {
   await page.goto("/login?returnTo=https://evil.example/path");
-  await page.getByLabel("Identitas akun").fill(identifier);
+  await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi").fill(password);
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
@@ -97,8 +97,8 @@ test("recovery tidak mengungkap keberadaan akun", async ({ page }) => {
 
 test("login dapat dioperasikan dengan keyboard dan lolos axe", async ({ page }) => {
   await page.goto("/login");
-  await expect(page.getByLabel("Identitas akun")).toBeFocused();
-  await page.getByLabel("Identitas akun").fill(identifier);
+  await expect(page.getByLabel("Alamat email")).toBeFocused();
+  await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi").fill(password);
 
   const results = await new AxeBuilder({ page }).analyze();

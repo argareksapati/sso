@@ -1,18 +1,11 @@
-.field { display: grid; gap: 7px; }
+.field { display: grid; gap: 8px; }
 .labelRow { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-.labelRow label { color: var(--ink-strong); font-size: 0.925rem; font-weight: 700; }
-.labelRow a, .labelRow button { font-size: 0.875rem; }
-.field input {
-  width: 100%;
-  min-height: 48px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-control);
-  padding: 10px 12px;
-  color: var(--ink-strong);
-  background: var(--surface-raised);
-}
-.field input:hover { border-color: #738291; }
+.labelRow label { color: var(--ink); font-size: .9rem; font-weight: 750; }
+.labelRow a, .labelRow button { font-size: .82rem; font-weight: 700; }
+.field input { width: 100%; min-height: 54px; border: 1px solid var(--border-strong); border-radius: 13px; padding: 11px 14px; color: var(--ink-strong); background: var(--surface-raised); }
+.field input::placeholder { color: #a0aec2; }
+.field input:hover { border-color: #7f9ac0; }
 .field input[aria-invalid="true"] { border-color: var(--danger); }
-.hint, .error { margin: 0; font-size: 0.82rem; }
+.hint, .error { margin: 0; font-size: .82rem; }
 .hint { color: var(--ink-muted); }
 .error { color: var(--danger); }

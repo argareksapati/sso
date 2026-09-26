@@ -1,30 +1,56 @@
+import type { LucideIcon } from "lucide-react";
+
+import { SettingsNavigation } from "./settings-navigation";
 import styles from "./account-ui.module.css";
 
-export function AccountPage({ eyebrow = "Pengaturan akun", title, description, action, children }: {
+export function AccountPage({ eyebrow, title, description, action, settings = false, children }: {
   eyebrow?: string;
   title: string;
   description: string;
   action?: React.ReactNode;
+  settings?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <div>
-          <p className={styles.eyebrow}>{eyebrow}</p>
+          {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
           <h1>{title}</h1>
           <p>{description}</p>
         </div>
         {action && <div className={styles.headerAction}>{action}</div>}
       </header>
-      {children}
+      {settings ? <div className={styles.settingsLayout}><SettingsNavigation /><div className={styles.settingsContent}>{children}</div></div> : children}
     </div>
   );
 }
 
-export function Panel({ title, description, children, className = "" }: {
+export function AccountHero({ eyebrow, title, description, icon: Icon, stat, children }: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+  icon?: LucideIcon;
+  stat?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  return (
+    <section className={styles.hero}>
+      <div className={styles.heroCopy}>
+        <span className={styles.heroEyebrow}>{Icon && <Icon size={17} aria-hidden="true" />}{eyebrow}</span>
+        <h2>{title}</h2>
+        {description && <p>{description}</p>}
+        {children}
+      </div>
+      {stat && <div className={styles.heroStat}>{stat}</div>}
+    </section>
+  );
+}
+
+export function Panel({ title, description, icon: Icon, children, className = "" }: {
   title?: string;
   description?: string;
+  icon?: LucideIcon;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -32,7 +58,7 @@ export function Panel({ title, description, children, className = "" }: {
     <section className={`${styles.panel} ${className}`}>
       {(title || description) && (
         <header className={styles.panelHeader}>
-          {title && <h2>{title}</h2>}
+          {title && <h2>{Icon && <Icon size={21} aria-hidden="true" />}{title}</h2>}
           {description && <p>{description}</p>}
         </header>
       )}
