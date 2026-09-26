@@ -1,0 +1,5 @@
+.alert { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; padding: 12px 14px; border: 1px solid; border-radius: var(--radius-control); font-size: 0.9rem; }
+.alert svg { margin-top: 2px; }
+.info { color: #174d6c; border-color: #9dc5da; background: #eff8fc; }
+.error { color: #7d1f1f; border-color: #e0a5a5; background: var(--danger-soft); }
+.success { color: #14563e; border-color: #9ccdb9; background: var(--success-soft); }

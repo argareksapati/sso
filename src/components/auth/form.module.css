@@ -1,0 +1,11 @@
+.content { width: 100%; max-width: 440px; margin: 0 auto; display: grid; gap: 24px; }
+.heading { display: grid; gap: 7px; }
+.heading h1, .heading h2 { margin: 0; font-size: clamp(1.85rem, 4vw, 2.35rem); line-height: 1.15; letter-spacing: -0.025em; }
+.heading p { margin: 0; color: var(--ink-muted); }
+.heading .kicker { color: var(--action-strong); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.form { display: grid; gap: 20px; }
+.recoveryLink { min-height: 30px; display: flex; justify-content: flex-end; align-items: center; font-size: 0.9rem; }
+.textButton { min-height: 36px; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; color: var(--action); background: transparent; cursor: pointer; }
+.textButton:hover { color: var(--action-strong); text-decoration: underline; text-underline-offset: 3px; }
+.support { margin: 0; padding-top: 20px; border-top: 1px solid var(--border); color: var(--ink-muted); font-size: 0.875rem; }
+.back { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }

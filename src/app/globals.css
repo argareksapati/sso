@@ -1,0 +1,74 @@
+/* TODO: replace temporary visual tokens with approved Bandung brand tokens. */
+:root {
+  --ink-strong: #17212b;
+  --ink: #2f3b46;
+  --ink-muted: #5c6874;
+  --surface-page: #f4f6f8;
+  --surface-raised: #ffffff;
+  --surface-subtle: #edf1f4;
+  --border: #cfd7df;
+  --border-strong: #9ca9b5;
+  --action: #175a8a;
+  --action-strong: #104567;
+  --action-soft: #e5f0f7;
+  --danger: #a62a2a;
+  --danger-soft: #fff0f0;
+  --success: #176b4d;
+  --success-soft: #eaf7f1;
+  --focus: #f0b429;
+  --radius-control: 4px;
+  --radius-group: 8px;
+  --container: 1180px;
+  --font-sans: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--surface-page); color: var(--ink-strong); }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input { font: inherit; }
+
+button,
+a { -webkit-tap-highlight-color: transparent; }
+
+a { color: var(--action); text-underline-offset: 3px; }
+a:hover { color: var(--action-strong); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+::selection { background: #c8e3f2; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
