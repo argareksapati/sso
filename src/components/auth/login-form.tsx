@@ -23,6 +23,14 @@ type CaptchaChallenge = {
 
 const initialCaptcha: CaptchaChallenge = { left: 8, right: 4 };
 
+const oauthMessages: Record<string, string> = {
+  unavailable: "Login Google hanya tersedia saat Supabase Auth digunakan.",
+  not_configured: "Login Google belum diaktifkan pada project Supabase.",
+  start_failed: "Login Google belum dapat dimulai. Coba kembali beberapa saat lagi.",
+  cancelled: "Proses login Google dibatalkan atau tidak disetujui.",
+  callback_failed: "Login Google tidak dapat diselesaikan. Silakan coba kembali.",
+};
+
 function GoogleMark() {
   return (
     <svg className={styles.googleMark} viewBox="0 0 24 24" aria-hidden="true">
@@ -43,7 +51,7 @@ function randomCaptcha(): CaptchaChallenge {
   };
 }
 
-export function LoginForm({ returnTo }: { returnTo?: string }) {
+export function LoginForm({ returnTo, oauthError }: { returnTo?: string; oauthError?: string }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -51,6 +59,7 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
   const [captcha, setCaptcha] = useState(initialCaptcha);
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaError, setCaptchaError] = useState<string>();
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -64,6 +73,13 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
     });
     setCaptchaAnswer("");
     setCaptchaError(undefined);
+  }
+
+  function signInWithGoogle() {
+    setGoogleLoading(true);
+    const params = new URLSearchParams({ remember: String(remember) });
+    if (returnTo) params.set("returnTo", returnTo);
+    window.location.assign(new URL(`/api/auth/google?${params.toString()}`, window.location.origin));
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -109,16 +125,15 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
       <button
         className={styles.google}
         type="button"
-        disabled
-        aria-describedby="google-status"
-        title="Menunggu konfigurasi Google Identity"
+        onClick={signInWithGoogle}
+        disabled={googleLoading}
       >
         <GoogleMark />
-        <span>Masuk dengan Gmail</span>
+        <span>{googleLoading ? "Mengalihkan ke Google…" : "Masuk dengan Gmail"}</span>
       </button>
-      <p className="sr-only" id="google-status">Login Google belum dikonfigurasi.</p>
 
       <div className={styles.divider}><span>atau masuk dengan email</span></div>
+      {oauthError && <Alert tone="error">{oauthMessages[oauthError] || oauthMessages.callback_failed}</Alert>}
       {error && <Alert tone="error">{error}</Alert>}
 
       <form className={styles.form} onSubmit={submit} noValidate>

@@ -3,6 +3,8 @@ import "server-only";
 export type AuditEventType =
   | "LOGIN_SUCCESS"
   | "LOGIN_FAILURE"
+  | "LOGIN_GOOGLE_SUCCESS"
+  | "LOGIN_GOOGLE_FAILURE"
   | "LOGIN_RATE_LIMITED"
   | "LOGOUT"
   | "RECOVERY_REQUESTED";

@@ -34,6 +34,14 @@ key. Portal memetakan user ID, nama tampilan, dan role dari `app_metadata.roles`
 lalu menerbitkan session portal bertanda tangan. Role dari `user_metadata` tidak
 dipercaya sebagai sumber otorisasi. Token Supabase tidak disimpan oleh portal.
 
+Login Google menggunakan provider Google milik Supabase Auth dengan Authorization
+Code + PKCE. Route awal menyimpan verifier dan tujuan lokal dalam cookie sementara.
+Callback menukar authorization code, memetakan identitas Supabase, menerbitkan
+session portal, lalu menghapus cookie dan token Supabase sementara. Provider Google
+harus diaktifkan di Supabase menggunakan OAuth Client ID dan Client Secret dari
+Google Auth Platform. Callback development adalah
+`http://localhost:3000/api/auth/callback/google`.
+
 ## Recovery
 
 UI selalu mengembalikan pesan generik. Adapter final menentukan channel, assurance, token lifetime, rate limit, dan proses reset. Implementasi awal tidak mengirim pesan nyata.

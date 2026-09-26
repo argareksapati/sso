@@ -106,6 +106,13 @@ test("recovery tidak mengungkap keberadaan akun", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Periksa petunjuk pemulihan" })).toBeVisible();
 });
 
+test("login Google memberi status yang jelas saat provider belum tersedia", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByRole("button", { name: "Masuk dengan Gmail" }).click();
+  await expect(page).toHaveURL(/\/login\?oauthError=unavailable$/);
+  await expect(page.getByRole("alert")).toContainText("Login Google hanya tersedia saat Supabase Auth digunakan");
+});
+
 test("login dapat dioperasikan dengan keyboard dan lolos axe", async ({ page }) => {
   await page.goto("/login");
   await expect(page.getByLabel("Alamat email")).toBeFocused();

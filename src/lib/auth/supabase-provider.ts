@@ -3,23 +3,13 @@ import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { AuthIdentity, AuthProvider, LoginCredentials } from "./contracts";
+import { getAppOrigin, getSupabasePublicConfig } from "./supabase-config";
 import { mapSupabaseIdentity } from "./supabase-identity";
-
-function requireConfig(
-  name: "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  legacyName: "SUPABASE_URL" | "SUPABASE_PUBLISHABLE_KEY",
-) {
-  const value = process.env[name]?.trim() || process.env[legacyName]?.trim();
-  if (!value) throw new Error(`${name} belum dikonfigurasi.`);
-  return value;
-}
 
 function recoveryRedirect() {
   const configured = process.env.SUPABASE_PASSWORD_RESET_REDIRECT?.trim();
   if (configured) return configured;
-  const origin = process.env.APP_ORIGIN?.trim();
-  if (!origin) throw new Error("APP_ORIGIN belum dikonfigurasi.");
-  return new URL("/reset-kata-sandi", origin).toString();
+  return new URL("/reset-kata-sandi", getAppOrigin()).toString();
 }
 
 export class SupabaseAuthProvider implements AuthProvider {
@@ -27,9 +17,10 @@ export class SupabaseAuthProvider implements AuthProvider {
   private readonly client: SupabaseClient;
 
   constructor() {
+    const config = getSupabasePublicConfig();
     this.client = createClient(
-      requireConfig("NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_URL"),
-      requireConfig("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEY"),
+      config.url,
+      config.publishableKey,
       {
         auth: {
           autoRefreshToken: false,
