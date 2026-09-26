@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { AppWindow, Link2Off } from "lucide-react";
 
 import { AccountPage, Panel, Status, accountStyles as styles } from "@/components/account/account-ui";
-import { listIntegrationCandidates } from "@/lib/services/repository";
+import { ServiceIdentity } from "@/components/services/service-identity";
+import { listExistingSsoCatalog, listIntegrationCandidates } from "@/lib/services/repository";
 
 export const metadata: Metadata = { title: "Aplikasi terkoneksi" };
 
 export default async function ConnectedAppsPage() {
-  const services = await listIntegrationCandidates();
+  const [existingCatalog, services] = await Promise.all([
+    listExistingSsoCatalog(),
+    listIntegrationCandidates(),
+  ]);
   return (
     <AccountPage title="Aplikasi terkoneksi" description="Tinjau aplikasi yang memperoleh akses melalui akun SSO Anda.">
       <div className={styles.grid2}>
@@ -31,11 +35,21 @@ export default async function ConnectedAppsPage() {
           </div>
         </div>
       </Panel>
+      <Panel title="Referensi katalog lama" description="Nama dan logo berikut dicatat dari halaman publik SSO eksisting. Daftar ini tidak menunjukkan consent atau akses akun Anda.">
+        <ul className={styles.list}>
+          {existingCatalog.map((service) => (
+            <li className={styles.listItem} key={service.id}>
+              <ServiceIdentity name={service.name} detail={service.owner} logoPath={service.logoPath} />
+              <Status tone="neutral">Referensi lama</Status>
+            </li>
+          ))}
+        </ul>
+      </Panel>
       <Panel title="Kandidat integrasi" description="Daftar ini adalah inventaris teknis dan belum berarti aplikasi memiliki akses ke profil Anda.">
         <ul className={styles.list}>
           {services.map((service) => (
             <li className={styles.listItem} key={service.id}>
-              <div><h3>{service.name}</h3><p>{service.owner}</p></div>
+              <ServiceIdentity name={service.name} detail={service.owner} logoPath={service.logoPath} />
               <Status tone={service.integrationState === "DISCOVERY" ? "info" : "warning"}>
                 {service.integrationState === "DISCOVERY" ? "Discovery" : "Review eksternal"}
               </Status>

@@ -18,6 +18,30 @@ Dokumen ini hanya mencatat informasi yang tampak dari respons publik. Belum ada 
 - Area profil yang terlihat dari manifest route mencakup profil, kata sandi, aktivitas, session, aplikasi terhubung, dan notifikasi.
 - Area admin yang terlihat mencakup client OAuth, pengguna, pengajuan, verifikasi, session, audit log, settings, dan system health.
 
+## Katalog publik yang teramati
+
+Halaman publik yang terindeks pada tanggal observasi menampilkan 14 nama layanan:
+
+1. Bandung Citizen Journalism;
+2. DPMPTSP Bandung;
+3. SALAMAN;
+4. New Bimma;
+5. Bandung Smart Map Plus;
+6. Bandung Opendata;
+7. Arimbi Bandung;
+8. Bandung Kita;
+9. Bandung Sadayana;
+10. AI Asisten Bandung;
+11. Gercep Asik;
+12. BSM Pro;
+13. Perizinan Bandung; dan
+14. Management PEMDI.
+
+Nama pada daftar ini adalah bukti keberadaan entri katalog pada SSO lama. Daftar
+tersebut tidak membuktikan bahwa client masih aktif, protokolnya aman, atau dapat
+langsung dipindahkan ke implementasi baru. Detail registry client tetap harus
+diminta dari PIC tanpa menyertakan client secret.
+
 ## Hal yang belum diketahui
 
 - Versi framework, package, konfigurasi Laravel Passport, dan patch level.

@@ -4,7 +4,16 @@ export type ServiceEntry = {
   description: string;
   category: string;
   owner: string;
+  logoPath?: string;
   integrationState: "DISCOVERY" | "EXTERNAL_REVIEW";
+};
+
+export type ExistingCatalogEntry = {
+  id: string;
+  name: string;
+  owner: string;
+  logoPath?: string;
+  sourceUrl?: string;
 };
 
 const integrationCandidates = [
@@ -46,6 +55,7 @@ const integrationCandidates = [
     description: "Layanan perizinan dan antrean DPMPTSP; integrasi mobile membutuhkan app-link dan PKCE.",
     category: "Perizinan",
     owner: "DPMPTSP Kota Bandung",
+    logoPath: "/services/dpmptsp.png",
     integrationState: "DISCOVERY",
   },
   {
@@ -58,6 +68,68 @@ const integrationCandidates = [
   },
 ] as const satisfies readonly ServiceEntry[];
 
+const existingSsoCatalog = [
+  { id: "bandung-citizen-journalism", name: "Bandung Citizen Journalism", owner: "Pemilik client perlu diverifikasi" },
+  {
+    id: "dpmptsp-bandung",
+    name: "DPMPTSP Bandung",
+    owner: "DPMPTSP Kota Bandung",
+    logoPath: "/services/dpmptsp.png",
+    sourceUrl: "https://dpmptsp.bandung.go.id/",
+  },
+  {
+    id: "salaman",
+    name: "SALAMAN",
+    owner: "Disdukcapil Kota Bandung",
+    logoPath: "/services/salaman.jpg",
+    sourceUrl: "https://www.bandung.go.id/",
+  },
+  { id: "new-bimma", name: "New Bimma", owner: "Pemilik client perlu diverifikasi" },
+  { id: "bandung-smart-map-plus", name: "Bandung Smart Map Plus", owner: "Pemilik client perlu diverifikasi" },
+  {
+    id: "bandung-opendata",
+    name: "Bandung Opendata",
+    owner: "Pemerintah Kota Bandung",
+    logoPath: "/services/bandung-opendata.png",
+    sourceUrl: "https://opendata.bandung.go.id/",
+  },
+  {
+    id: "arimbi-bandung",
+    name: "Arimbi Bandung",
+    owner: "Pemerintah Kota Bandung",
+    logoPath: "/services/arimbi.jpg",
+    sourceUrl: "https://diskominfo.bandung.go.id/",
+  },
+  { id: "bandung-kita", name: "Bandung Kita", owner: "Pemilik client perlu diverifikasi" },
+  {
+    id: "bandung-sadayana",
+    name: "Bandung Sadayana",
+    owner: "Pemerintah Kota Bandung",
+    logoPath: "/services/sso-bandung.png",
+  },
+  {
+    id: "ai-asisten-bandung",
+    name: "AI Asisten Bandung",
+    owner: "Pemerintah Kota Bandung",
+    logoPath: "/services/teh-ai.png",
+    sourceUrl: "https://sso.bandung.go.id/",
+  },
+  { id: "gercep-asik", name: "Gercep Asik", owner: "Pemilik client perlu diverifikasi" },
+  {
+    id: "bsm-pro",
+    name: "BSM Pro",
+    owner: "Pemerintah Kota Bandung",
+    logoPath: "/services/bsm-pro.svg",
+    sourceUrl: "https://bsm.bandung.go.id/",
+  },
+  { id: "perizinan-bandung", name: "Perizinan Bandung", owner: "Pemilik client perlu diverifikasi" },
+  { id: "management-pemdi", name: "Management PEMDI", owner: "Pemilik client perlu diverifikasi" },
+] as const satisfies readonly ExistingCatalogEntry[];
+
 export async function listIntegrationCandidates(): Promise<ServiceEntry[]> {
   return integrationCandidates.map((service) => ({ ...service }));
+}
+
+export async function listExistingSsoCatalog(): Promise<ExistingCatalogEntry[]> {
+  return existingSsoCatalog.map((service) => ({ ...service }));
 }

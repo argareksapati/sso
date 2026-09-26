@@ -3,8 +3,9 @@ import Link from "next/link";
 import { AppWindow, ArrowRight, CircleCheck, Clock3, ShieldCheck } from "lucide-react";
 
 import { AccountPage, Panel, Status, accountStyles as styles } from "@/components/account/account-ui";
+import { ServiceIdentity } from "@/components/services/service-identity";
 import { getSession } from "@/lib/auth/session";
-import { listIntegrationCandidates } from "@/lib/services/repository";
+import { listExistingSsoCatalog, listIntegrationCandidates } from "@/lib/services/repository";
 
 export const metadata: Metadata = { title: "Beranda akun" };
 
@@ -14,7 +15,10 @@ function firstName(displayName: string) {
 
 export default async function PortalPage() {
   const session = await getSession();
-  const services = await listIntegrationCandidates();
+  const [existingCatalog, services] = await Promise.all([
+    listExistingSsoCatalog(),
+    listIntegrationCandidates(),
+  ]);
   if (!session) return null;
 
   return (
@@ -27,8 +31,8 @@ export default async function PortalPage() {
       <div className={styles.grid3}>
         <div className={styles.metric}>
           <span className={styles.metricIcon}><AppWindow size={20} aria-hidden="true" /></span>
-          <strong>{services.length}</strong>
-          <span>Kandidat aplikasi dalam inventaris integrasi</span>
+          <strong>{existingCatalog.length}</strong>
+          <span>Layanan pada referensi katalog SSO eksisting</span>
         </div>
         <div className={styles.metric}>
           <span className={styles.metricIcon}><ShieldCheck size={20} aria-hidden="true" /></span>
@@ -83,15 +87,25 @@ export default async function PortalPage() {
         </Panel>
       </div>
 
-      <Panel title="Aplikasi layanan" description="Daftar awal dari inventaris integrasi; belum ada client production yang diaktifkan.">
+      <Panel title="Referensi aplikasi layanan" description="Cuplikan katalog publik SSO lama; belum ada client production yang diaktifkan pada implementasi baru.">
+        <ul className={styles.list}>
+          {existingCatalog.slice(0, 6).map((service) => (
+            <li className={styles.listItem} key={service.id}>
+              <ServiceIdentity name={service.name} detail={service.owner} logoPath={service.logoPath} />
+              <Status tone="neutral">Referensi lama</Status>
+            </li>
+          ))}
+        </ul>
+        <div className={styles.actions}>
+          <Link className={styles.buttonSecondary} href="/portal/layanan">Lihat {existingCatalog.length} referensi dan {services.length} kandidat</Link>
+        </div>
+      </Panel>
+
+      <Panel title="Kandidat integrasi baru" description="Daftar prioritas awal yang masih memerlukan discovery teknis dan persetujuan owner.">
         <ul className={styles.list}>
           {services.slice(0, 3).map((service) => (
             <li className={styles.listItem} key={service.id}>
-              <div>
-                <h3>{service.name}</h3>
-                <p>{service.description}</p>
-                <div className={styles.meta}><span>{service.category}</span><span>{service.owner}</span></div>
-              </div>
+              <ServiceIdentity name={service.name} detail={service.description} logoPath={service.logoPath} />
               <Status tone={service.integrationState === "DISCOVERY" ? "info" : "warning"}>
                 {service.integrationState === "DISCOVERY" ? "Discovery" : "Review eksternal"}
               </Status>
