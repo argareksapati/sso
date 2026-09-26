@@ -20,38 +20,7 @@ copy .env.example .env.local
 npm run dev
 ```
 
-Isi nilai local berikut dengan data sintetis yang tidak digunakan di production:
 
-```env
-AUTH_PROVIDER=mock
-AUTH_MOCK_IDENTIFIER=<identifier-sintetis>
-AUTH_MOCK_PASSWORD=<password-local>
-AUTH_MOCK_DISPLAY_NAME=Pengguna Uji
-AUTH_SESSION_SECRET=<random-minimal-32-karakter>
-APP_ORIGIN=http://localhost:3000
-```
-
-Mock provider secara eksplisit ditolak bila `NODE_ENV=production`.
-
-### Mengaktifkan Supabase Auth
-
-Aktifkan Email provider di dashboard Supabase, tambahkan redirect URL yang sesuai,
-lalu isi konfigurasi berikut. Gunakan publishable/anon key, bukan
-`service_role` key.
-
-```env
-AUTH_PROVIDER=supabase
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-atau-anon-key>
-SUPABASE_PASSWORD_RESET_REDIRECT=http://localhost:3000/reset-kata-sandi
-AUTH_SESSION_SECRET=<random-minimal-32-karakter>
-APP_ORIGIN=http://localhost:3000
-```
-
-Adapter hanya menukar email dan kata sandi dengan Supabase Auth di server. Access
-token dan refresh token Supabase tidak disimpan di cookie portal. Google OAuth dan
-authorization server untuk aplikasi mitra memerlukan konfigurasi callback serta
-alur OIDC terpisah.
 
 ## Pemeriksaan
 
@@ -104,25 +73,3 @@ Portal adalah relying party. OIDC Authorization Code + PKCE akan dihubungkan set
 - [Migration plan](docs/migration-plan.md)
 - [Security notes](docs/security-notes.md)
 - [Inventaris kandidat integrasi](docs/integration-inventory.md)
-
-## Environment variables
-
-| Nama | Kegunaan | Status |
-|---|---|---|
-| `AUTH_PROVIDER` | `mock` untuk local/test atau `supabase` untuk Supabase Auth | Required |
-| `AUTH_MOCK_IDENTIFIER` | Identitas sintetis local/test | Local/test |
-| `AUTH_MOCK_PASSWORD` | Password sintetis local/test | Local/test |
-| `AUTH_MOCK_DISPLAY_NAME` | Nama tampilan sintetis | Local/test |
-| `AUTH_SESSION_SECRET` | Penandatangan session aplikasi | Required, secret manager di staging/production |
-| `APP_ORIGIN` | Origin yang diizinkan untuk request auth | Required |
-| `NEXT_PUBLIC_SUPABASE_URL` | Project URL Supabase; mengikuti konfigurasi MBI | Saat provider Supabase aktif |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; mengikuti konfigurasi MBI dan tidak boleh diganti secret/service role | Saat provider Supabase aktif |
-| `SUPABASE_PASSWORD_RESET_REDIRECT` | Redirect pemulihan yang didaftarkan di Supabase | Saat provider Supabase aktif |
-| `OIDC_ISSUER` | Issuer IdP | TBD |
-| `OIDC_CLIENT_ID` | Client portal | TBD |
-| `OIDC_CLIENT_SECRET` | Secret confidential client bila diperlukan | TBD |
-| `OIDC_REDIRECT_URI` | Callback yang didaftarkan | TBD |
-
-## Known TBDs
-
-Lihat [rencana implementasi](docs/implementation-plan.md#keputusan-yang-masih-tbd). Keputusan paling penting sebelum integrasi nyata adalah IdP final, source of truth identitas, migrasi akun lama, aplikasi pilot, kebijakan session/MFA/recovery, dan infrastruktur staging.
