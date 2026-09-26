@@ -1,14 +1,74 @@
 import Image from "next/image";
-import { ArrowRight, Network, ShieldCheck, UserRoundCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Landmark,
+  MapPinned,
+  Megaphone,
+  Network,
+  ShieldCheck,
+  UserRoundCheck,
+  type LucideIcon,
+} from "lucide-react";
 
 import styles from "./auth-frame.module.css";
 
-const services: ReadonlyArray<{ name: string; detail: string; logo?: string }> = [
-  { name: "Sadayana", detail: "Portal Layanan Publik Kota Bandung", logo: "/services/sso-bandung.png" },
-  { name: "Salaman", detail: "Sistem Layanan Administrasi Kependudukan", logo: "/services/salaman.jpg" },
-  { name: "New Bimma", detail: "Aplikasi Bimbingan & Manajemen" },
-  { name: "AI Asisten Bandung", detail: "Layanan Kecerdasan Buatan Pemkot", logo: "/services/teh-ai.png" },
+type Service = {
+  id: string;
+  name: string;
+  detail: string;
+  logo?: string;
+  icon?: LucideIcon;
+  iconTone?: "blue" | "red" | "teal";
+};
+
+const services: ReadonlyArray<Service> = [
+  { id: "sadayana", name: "Sadayana", detail: "Portal Layanan Publik Kota Bandung", logo: "/services/sadayana.png" },
+  { id: "salaman", name: "Salaman", detail: "Sistem Layanan Administrasi Kependudukan", logo: "/services/salaman-logo.png" },
+  { id: "new-bimma", name: "New Bimma", detail: "Aplikasi Bimbingan & Manajemen", logo: "/services/new-bimma.png" },
+  { id: "ai-asisten", name: "AI Asisten Bandung", detail: "Layanan Kecerdasan Buatan Pemkot", logo: "/services/teh-ai-logo.png" },
+  { id: "management-pemdi", name: "Management Pemdi", detail: "Manajemen Pembangunan Daerah", icon: Landmark, iconTone: "blue" },
+  { id: "arimbi", name: "Arimbi", detail: "Aplikasi Real-Time Informasi Pangan", logo: "/services/arimbi-logo.png" },
+  { id: "open-data", name: "Open Data Kota Bandung", detail: "Portal Satu Data & Data Terbuka", logo: "/services/bandung-opendata-logo.png" },
+  { id: "dpmptsp-investasi", name: "DPMPTSP Kota Bandung", detail: "Layanan Perizinan & Investasi Kota Bandung", logo: "/services/dpmptsp-logo.png" },
+  { id: "gercep-asik", name: "Gercep Asik", detail: "Sistem Penanganan Aduan Cepat", logo: "/services/gercep.png" },
+  { id: "bcj", name: "BCJ", detail: "Bandung Citizen Journalism", logo: "/services/bcj.png" },
+  { id: "bandung-kita", name: "Bandung Kita", detail: "Media & Informasi Komunitas", icon: Megaphone, iconTone: "red" },
+  { id: "smart-map-plus", name: "Bandung Smart Map Plus", detail: "Peta Geospasial Interaktif", icon: MapPinned, iconTone: "teal" },
+  { id: "dpmptsp", name: "DPMPTSP Kota Bandung", detail: "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu", logo: "/services/dpmptsp-logo.png" },
+  { id: "bsm-pro", name: "BSM PRO", detail: "Bandung Smart Maps Professional", logo: "/services/bsm-pro-logo.png" },
 ];
+
+function ServiceSet({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <div
+      className={`${styles.serviceSet} ${duplicate ? styles.duplicateSet : ""}`}
+      role={duplicate ? undefined : "list"}
+      aria-hidden={duplicate || undefined}
+    >
+      {services.map((service) => {
+        const ServiceIcon = service.icon;
+        const iconTone = service.iconTone === "red"
+          ? styles.serviceLogoRed
+          : service.iconTone === "teal"
+            ? styles.serviceLogoTeal
+            : styles.serviceLogoBlue;
+
+        return (
+          <div className={styles.service} role={duplicate ? undefined : "listitem"} key={`${duplicate ? "duplicate" : "primary"}-${service.id}`}>
+            <span className={`${styles.serviceLogo} ${ServiceIcon ? iconTone : ""}`}>
+              {service.logo
+                ? <Image src={service.logo} alt="" width={48} height={48} sizes="48px" loading="eager" />
+                : ServiceIcon && <ServiceIcon size={23} aria-hidden="true" />}
+            </span>
+            <span className={styles.serviceCopy}><strong>{service.name}</strong><small>{service.detail}</small></span>
+            <span className={styles.catalogBadge}>Referensi katalog</span>
+            <ArrowRight size={20} aria-hidden="true" />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export function AuthFrame({ children, compact = false }: { children: React.ReactNode; compact?: boolean }) {
   return (
@@ -22,17 +82,16 @@ export function AuthFrame({ children, compact = false }: { children: React.React
             <strong>Layanan terintegrasi</strong>
             <span>14 layanan</span>
           </div>
-          <div className={styles.serviceList}>
-            {services.map((service) => (
-              <div className={styles.service} key={service.name}>
-                <span className={styles.serviceLogo}>
-                  {service.logo ? <Image src={service.logo} alt="" width={44} height={44} /> : <Network size={22} aria-hidden="true" />}
-                </span>
-                <span className={styles.serviceCopy}><strong>{service.name}</strong><small>{service.detail}</small></span>
-                <span className={styles.catalogBadge}>Referensi katalog</span>
-                <ArrowRight size={20} aria-hidden="true" />
-              </div>
-            ))}
+          <div
+            className={styles.serviceViewport}
+            role="region"
+            aria-label="Daftar 14 layanan terintegrasi yang bergerak otomatis. Arahkan pointer atau fokuskan daftar untuk menjeda."
+            tabIndex={0}
+          >
+            <div className={styles.serviceTrack}>
+              <ServiceSet />
+              <ServiceSet duplicate />
+            </div>
           </div>
 
           <div className={styles.features}>

@@ -105,6 +105,33 @@ test("login dapat dioperasikan dengan keyboard dan lolos axe", async ({ page }) 
   expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
 });
 
+test("katalog login memuat seluruh logo dan marquee dapat dijeda", async ({ page }) => {
+  await page.goto("/login", { waitUntil: "networkidle" });
+  const catalog = page.getByRole("region", { name: /Daftar 14 layanan terintegrasi/ });
+  await expect(catalog.getByRole("listitem")).toHaveCount(14);
+
+  const logos = catalog.locator("img");
+  await expect(logos).toHaveCount(22);
+  await expect.poll(
+    () => logos.evaluateAll((images) => images.every((image) => {
+      const logo = image as HTMLImageElement;
+      return logo.complete && logo.naturalWidth > 0;
+    })),
+  ).toBe(true);
+
+  const track = catalog.locator(":scope > div").first();
+  const before = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(500);
+  const after = await track.evaluate((element) => getComputedStyle(element).transform);
+  expect(after).not.toBe(before);
+
+  await catalog.hover();
+  await page.waitForTimeout(100);
+  const pausedAt = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(500);
+  expect(await track.evaluate((element) => getComputedStyle(element).transform)).toBe(pausedAt);
+});
+
 for (const width of [360, 390, 768, 1024, 1280, 1440]) {
   test(`login tidak overflow pada lebar ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width < 600 ? 800 : 900 });
@@ -115,13 +142,20 @@ for (const width of [360, 390, 768, 1024, 1280, 1440]) {
 }
 
 test("visual login mobile dan desktop", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/login");
+  await page.goto("/login", { waitUntil: "networkidle" });
+  await page.locator("img").evaluateAll((images) => Promise.all(
+    images.map((image) => (image as HTMLImageElement).decode()),
+  ));
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await expect(page).toHaveScreenshot("login-mobile.png", { fullPage: true });
 
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/login");
+  await page.goto("/login", { waitUntil: "networkidle" });
+  await page.locator("img").evaluateAll((images) => Promise.all(
+    images.map((image) => (image as HTMLImageElement).decode()),
+  ));
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await expect(page).toHaveScreenshot("login-desktop.png", { fullPage: true });
 });

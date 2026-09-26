@@ -6,10 +6,28 @@
 .lead { max-width: 780px; margin: 20px 0 38px; color: var(--ink-muted); font-size: 1.12rem; }
 .sectionTitle { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-bottom: 13px; border-bottom: 1px solid var(--border); color: var(--ink-muted); font-size: .81rem; letter-spacing: .06em; text-transform: uppercase; }
 .sectionTitle span { border: 1px solid #cfe0fc; border-radius: 6px; padding: 4px 9px; color: var(--action); background: #f1f6ff; font-weight: 800; letter-spacing: 0; text-transform: none; }
-.serviceList { display: grid; gap: 13px; padding: 26px 0 34px; }
+.serviceViewport {
+  height: 342px;
+  margin: 18px 0 24px;
+  overflow: hidden;
+  border-radius: 16px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+}
+.serviceTrack {
+  will-change: transform;
+  animation: serviceMarquee 38s linear infinite;
+}
+.serviceViewport:hover .serviceTrack,
+.serviceViewport:focus .serviceTrack,
+.serviceViewport:focus-within .serviceTrack { animation-play-state: paused; }
+.serviceSet { display: flex; flex-direction: column; gap: 12px; padding-bottom: 12px; }
 .service { min-height: 76px; display: grid; grid-template-columns: auto minmax(0,1fr) auto auto; align-items: center; gap: 14px; border: 1px solid var(--border); border-radius: 16px; padding: 10px 16px; background: #f8fbff; color: #9aacca; }
-.serviceLogo { width: 48px; height: 48px; display: grid; place-items: center; overflow: hidden; border: 1px solid #e0e8f3; border-radius: 13px; color: var(--action); background: #fff; }
-.serviceLogo img { width: 100%; height: 100%; object-fit: contain; }
+.serviceLogo { width: 48px; height: 48px; display: grid; place-items: center; overflow: hidden; flex: 0 0 48px; border: 1px solid #e0e8f3; border-radius: 13px; color: var(--action); background: #fff; }
+.serviceLogo img { width: 100%; height: 100%; padding: 4px; object-fit: contain; }
+.serviceLogoBlue { border-color: #c6dafb; color: #fff; background: linear-gradient(145deg, #208bd9, #1553bd); }
+.serviceLogoRed { border-color: #f4c6ad; color: #fff; background: linear-gradient(145deg, #ec6746, #d28a1c); }
+.serviceLogoTeal { border-color: #a9e1df; color: #fff; background: linear-gradient(145deg, #0a9b96, #1476aa); }
 .serviceCopy { min-width: 0; display: grid; }
 .serviceCopy strong { color: var(--ink-strong); }
 .serviceCopy small { overflow: hidden; color: var(--ink-muted); text-overflow: ellipsis; white-space: nowrap; }
@@ -22,6 +40,10 @@
 .notice { margin: 20px 0 0; color: var(--ink-muted); font-size: .78rem; }
 .formArea { display: grid; align-items: center; padding: clamp(32px, 4vw, 54px); border-top: 7px solid transparent; border-image: linear-gradient(90deg,#4e93f4,#544ae9) 1; }
 .compact .formArea { border-top-width: 1px; border-image: none; }
+@keyframes serviceMarquee {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
 @media (max-width: 1040px) {
   .frame { grid-template-columns: 1fr; }
   .context h1 { max-width: 850px; }
@@ -38,4 +60,13 @@
   .features { grid-template-columns: 1fr; }
   .features div { min-height: 0; }
   .formArea { padding: 28px 20px 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .serviceViewport {
+    overflow-y: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .serviceTrack { animation: none; transform: none; }
+  .duplicateSet { display: none; }
 }
