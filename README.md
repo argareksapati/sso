@@ -6,6 +6,10 @@ Fondasi staging untuk membangun ulang pengalaman SSO Layanan Kota Bandung. Repos
 
 Milestone aktif: foundation serta vertical slice login/auth states. Identity Provider, identity source, migration akun, aplikasi pilot, branding resmi, dan deployment staging masih menunggu keputusan PIC.
 
+Arahan integrasi awal mencakup layanan Disdukcapil, SIPETRUK, SIMPELMAN, SPMB
+Kota Bandung, GAMPIL, serta boundary layanan Puskesmas/Mobile JKN. Semuanya
+ditampilkan sebagai kandidat discovery dan belum memiliki launch URL production.
+
 ## Menjalankan local
 
 Prasyarat: Node.js 24+ dan npm.
@@ -79,6 +83,7 @@ Portal adalah relying party. OIDC Authorization Code + PKCE akan dihubungkan set
 - [Design system](docs/design-system.md)
 - [Migration plan](docs/migration-plan.md)
 - [Security notes](docs/security-notes.md)
+- [Inventaris kandidat integrasi](docs/integration-inventory.md)
 
 ## Environment variables
 

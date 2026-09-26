@@ -15,7 +15,9 @@ async function login(page: import("@playwright/test").Page) {
 test("login mock, portal, dan logout", async ({ page }) => {
   await login(page);
   await expect(page.getByRole("heading", { name: "Pilih layanan yang Anda perlukan" })).toBeVisible();
-  await expect(page.getByText("Belum ada layanan yang dikonfigurasi")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kandidat integrasi" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "SIPETRUK" })).toBeVisible();
+  await expect(page.getByText("6 aplikasi tercatat untuk tahap discovery.")).toBeVisible();
   await page.getByRole("button", { name: "Keluar" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
@@ -76,4 +78,20 @@ test("visual login mobile dan desktop", async ({ page }) => {
   await page.goto("/login");
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await expect(page).toHaveScreenshot("login-desktop.png", { fullPage: true });
+});
+
+test("portal kandidat integrasi responsif, aksesibel, dan stabil secara visual", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await login(page);
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+  ).toBeLessThanOrEqual(1);
+  await expect(page).toHaveScreenshot("portal-mobile.png", { fullPage: true });
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.reload();
+  await expect(page).toHaveScreenshot("portal-desktop.png", { fullPage: true });
 });

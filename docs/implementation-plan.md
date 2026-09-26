@@ -34,6 +34,8 @@ Implementasi awal membuktikan pengalaman autentikasi tanpa mengunci Identity Pro
 - Brand guide, logo, warna, dan tipografi resmi Kota Bandung.
 - Apakah registrasi mandiri dan Google login dipertahankan.
 - Pengganti CAPTCHA dan kebijakan "ingat perangkat".
+- Nama serta URL resmi aplikasi pada satu tautan Google Share yang belum teridentifikasi.
+- Boundary integrasi Mobile JKN: client SSO, deep-link, atau sistem Puskesmas lain.
 
 ## Information architecture awal
 
@@ -72,6 +74,9 @@ Administrasi (milestone berikutnya)
 4. Auth adapter: interface, mock development, adapter OIDC setelah metadata IdP tersedia.
 5. Admin: client, user, role, session, dan audit.
 6. Pilot: integrasi aplikasi yang dipilih, E2E, security review, UAT, dan rollback rehearsal.
+
+Daftar kandidat dan gate per aplikasi didokumentasikan pada
+[integration-inventory.md](integration-inventory.md).
 
 ## File awal
 

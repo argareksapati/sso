@@ -24,7 +24,7 @@ export function PortalShell({ displayName, children }: { displayName: string; ch
         </div>
       </nav>
       <main className={styles.main}>{children}</main>
-      <footer className={styles.footer}>Lingkungan pengembangan — data layanan belum dikonfigurasi.</footer>
+      <footer className={styles.footer}>Lingkungan pengembangan — kandidat aplikasi belum terhubung ke production.</footer>
     </div>
   );
 }

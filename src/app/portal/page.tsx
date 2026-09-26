@@ -1,54 +1,56 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Search } from "lucide-react";
 
-import { listConfiguredServices } from "@/lib/services/repository";
+import { listIntegrationCandidates } from "@/lib/services/repository";
 import styles from "./portal.module.css";
 
 export const metadata: Metadata = { title: "Portal layanan" };
 
 export default async function PortalPage() {
-  const services = await listConfiguredServices();
+  const services = await listIntegrationCandidates();
   return (
     <div className={styles.content}>
       <header className={styles.pageHeader}>
         <p className={styles.eyebrow}>Portal layanan</p>
         <h1>Pilih layanan yang Anda perlukan</h1>
-        <p>Layanan akan ditampilkan berdasarkan integrasi dan akses akun yang telah disetujui.</p>
+        <p>
+          Daftar awal ini berasal dari arahan integrasi. Akses baru diaktifkan setelah aplikasi
+          didaftarkan sebagai client dan seluruh pengujian selesai.
+        </p>
       </header>
 
       <section className={styles.directory} aria-labelledby="service-heading">
         <div className={styles.sectionHeader}>
           <div>
-            <h2 id="service-heading">Layanan terhubung</h2>
-            <p>{services.length} layanan tersedia pada lingkungan ini.</p>
+            <h2 id="service-heading">Kandidat integrasi</h2>
+            <p>{services.length} aplikasi tercatat untuk tahap discovery.</p>
           </div>
-          <label className={styles.search}>
-            <Search size={19} aria-hidden="true" />
-            <span className="sr-only">Cari layanan</span>
-            <input type="search" placeholder="Cari layanan" disabled={services.length === 0} />
-          </label>
+          <p className={styles.notice}>Belum terhubung ke production</p>
         </div>
 
-        {services.length === 0 ? (
-          <div className={styles.empty}>
-            <h3>Belum ada layanan yang dikonfigurasi</h3>
-            <p>Daftar layanan akan tersedia setelah inventory dan aplikasi pilot disetujui oleh PIC.</p>
-          </div>
-        ) : (
-          <ul className={styles.services}>
-            {services.map((service) => (
-              <li key={service.id}>
-                <div><span>{service.category}</span><h3>{service.name}</h3><p>{service.description}</p></div>
-                <Link href={service.href}>Buka layanan <ArrowRight size={17} aria-hidden="true" /></Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className={styles.services}>
+          {services.map((service) => (
+            <li key={service.id}>
+              <div className={styles.serviceMeta}>
+                <span>{service.category}</span>
+                <strong>{service.owner}</strong>
+              </div>
+              <div className={styles.serviceBody}>
+                <div>
+                  <h3>{service.name}</h3>
+                  <p>{service.description}</p>
+                </div>
+                <span className={styles.status} data-state={service.integrationState}>
+                  {service.integrationState === "DISCOVERY" ? "Discovery" : "Review eksternal"}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <aside className={styles.help}>
-        <div><h2>Kesulitan menemukan layanan?</h2><p>Informasi bantuan resmi dan kontak dukungan masih menunggu konfirmasi PIC.</p></div>
+        <div><h2>Aplikasi Anda belum tercatat?</h2><p>Nama aplikasi, URL resmi, owner, dan PIC teknis perlu masuk ke inventaris integrasi.</p></div>
         <Link href="/bantuan">Lihat bantuan</Link>
       </aside>
     </div>

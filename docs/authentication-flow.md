@@ -11,6 +11,17 @@
 7. Audit mencatat hasil tanpa password atau token lengkap.
 8. Pengguna kembali hanya ke tujuan yang telah diizinkan.
 
+## Peluncuran aplikasi layanan
+
+1. Portal membaca daftar client dan hak akses dari registry yang disetujui.
+2. Pengguna memilih aplikasi yang tersedia untuk akunnya.
+3. SSO membuat authorization response khusus client dengan scope dan audience minimum.
+4. Aplikasi memvalidasi issuer, signature, audience, nonce, expiry, dan callback.
+5. Aplikasi membuat session lokalnya sendiri dan mencatat login tanpa menyimpan token lengkap.
+
+Daftar pada portal saat ini hanya berstatus kandidat discovery. Tidak ada tombol
+peluncuran ke production sebelum client registration dan pengujian integrasi lulus.
+
 ## Login development mock
 
 Mock hanya tersedia saat `AUTH_PROVIDER=mock` dan bukan production. Akun sintetis dikonfigurasi melalui environment test. Mock menghasilkan session development untuk menguji UI, route protection, logout, expiry, dan return URL.
