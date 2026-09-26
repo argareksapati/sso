@@ -5,8 +5,11 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { AuthIdentity, AuthProvider, LoginCredentials } from "./contracts";
 import { mapSupabaseIdentity } from "./supabase-identity";
 
-function requireConfig(name: "SUPABASE_URL" | "SUPABASE_PUBLISHABLE_KEY") {
-  const value = process.env[name]?.trim();
+function requireConfig(
+  name: "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+  legacyName: "SUPABASE_URL" | "SUPABASE_PUBLISHABLE_KEY",
+) {
+  const value = process.env[name]?.trim() || process.env[legacyName]?.trim();
   if (!value) throw new Error(`${name} belum dikonfigurasi.`);
   return value;
 }
@@ -25,8 +28,8 @@ export class SupabaseAuthProvider implements AuthProvider {
 
   constructor() {
     this.client = createClient(
-      requireConfig("SUPABASE_URL"),
-      requireConfig("SUPABASE_PUBLISHABLE_KEY"),
+      requireConfig("NEXT_PUBLIC_SUPABASE_URL", "SUPABASE_URL"),
+      requireConfig("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEY"),
       {
         auth: {
           autoRefreshToken: false,
@@ -58,4 +61,3 @@ export class SupabaseAuthProvider implements AuthProvider {
     if (error) throw new Error("Pemulihan Supabase Auth tidak tersedia.");
   }
 }
-

@@ -41,8 +41,8 @@ lalu isi konfigurasi berikut. Gunakan publishable/anon key, bukan
 
 ```env
 AUTH_PROVIDER=supabase
-SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_PUBLISHABLE_KEY=<publishable-atau-anon-key>
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-atau-anon-key>
 SUPABASE_PASSWORD_RESET_REDIRECT=http://localhost:3000/reset-kata-sandi
 AUTH_SESSION_SECRET=<random-minimal-32-karakter>
 APP_ORIGIN=http://localhost:3000
@@ -115,8 +115,8 @@ Portal adalah relying party. OIDC Authorization Code + PKCE akan dihubungkan set
 | `AUTH_MOCK_DISPLAY_NAME` | Nama tampilan sintetis | Local/test |
 | `AUTH_SESSION_SECRET` | Penandatangan session aplikasi | Required, secret manager di staging/production |
 | `APP_ORIGIN` | Origin yang diizinkan untuk request auth | Required |
-| `SUPABASE_URL` | Project URL Supabase | Saat provider Supabase aktif |
-| `SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; jangan gunakan service role | Saat provider Supabase aktif |
+| `NEXT_PUBLIC_SUPABASE_URL` | Project URL Supabase; mengikuti konfigurasi MBI | Saat provider Supabase aktif |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; mengikuti konfigurasi MBI dan tidak boleh diganti secret/service role | Saat provider Supabase aktif |
 | `SUPABASE_PASSWORD_RESET_REDIRECT` | Redirect pemulihan yang didaftarkan di Supabase | Saat provider Supabase aktif |
 | `OIDC_ISSUER` | Issuer IdP | TBD |
 | `OIDC_CLIENT_ID` | Client portal | TBD |
