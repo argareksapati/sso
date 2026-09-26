@@ -7,9 +7,18 @@ const password = "local-test-password-only";
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/login");
   await page.getByLabel("Alamat email").fill(identifier);
-  await page.getByLabel("Kata sandi").fill(password);
+  await page.getByLabel("Kata sandi", { exact: true }).fill(password);
+  await solveCaptcha(page);
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
+}
+
+async function solveCaptcha(page: import("@playwright/test").Page) {
+  const question = page.locator("[aria-label^='Berapa'][aria-label*='ditambah']");
+  const prompt = await question.getAttribute("aria-label");
+  const numbers = prompt?.match(/\d+/g)?.map(Number) || [];
+  expect(numbers).toHaveLength(2);
+  await page.getByLabel("Verifikasi keamanan (Captcha)").fill(String(numbers[0] + numbers[1]));
 }
 
 test("login mock, portal, dan logout", async ({ page }) => {
@@ -71,7 +80,8 @@ test("pencarian layanan memfilter inventaris", async ({ page }) => {
 test("login gagal memakai pesan generik", async ({ page }) => {
   await page.goto("/login");
   await page.getByLabel("Alamat email").fill("akun.tidak.ada@example.test");
-  await page.getByLabel("Kata sandi").fill("wrong-password");
+  await page.getByLabel("Kata sandi", { exact: true }).fill("wrong-password");
+  await solveCaptcha(page);
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(
     page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("alert"),
@@ -82,7 +92,8 @@ test("login gagal memakai pesan generik", async ({ page }) => {
 test("return URL eksternal ditolak", async ({ page }) => {
   await page.goto("/login?returnTo=https://evil.example/path");
   await page.getByLabel("Alamat email").fill(identifier);
-  await page.getByLabel("Kata sandi").fill(password);
+  await page.getByLabel("Kata sandi", { exact: true }).fill(password);
+  await solveCaptcha(page);
   await page.getByRole("button", { name: "Masuk", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
 });
@@ -99,10 +110,25 @@ test("login dapat dioperasikan dengan keyboard dan lolos axe", async ({ page }) 
   await page.goto("/login");
   await expect(page.getByLabel("Alamat email")).toBeFocused();
   await page.getByLabel("Alamat email").fill(identifier);
-  await page.getByLabel("Kata sandi").fill(password);
+  await page.getByLabel("Kata sandi", { exact: true }).fill(password);
 
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
+});
+
+test("captcha login dapat dimuat ulang dan menolak jawaban yang salah", async ({ page }) => {
+  await page.goto("/login");
+  const question = page.locator("[aria-label^='Berapa'][aria-label*='ditambah']");
+  const before = await question.getAttribute("aria-label");
+  await page.getByRole("button", { name: "Muat ulang soal verifikasi" }).click();
+  await expect(question).not.toHaveAttribute("aria-label", before || "");
+
+  await page.getByLabel("Alamat email").fill(identifier);
+  await page.getByLabel("Kata sandi", { exact: true }).fill(password);
+  await page.getByLabel("Verifikasi keamanan (Captcha)").fill("99");
+  await page.getByRole("button", { name: "Masuk", exact: true }).click();
+  await expect(page.locator("#captcha-error")).toContainText("Jawaban verifikasi keamanan belum tepat");
+  await expect(page).toHaveURL(/\/login$/);
 });
 
 test("katalog login memuat seluruh logo dan marquee dapat dijeda", async ({ page }) => {
