@@ -1,5 +1,25 @@
 # Design System Awal
 
+## Referensi visual Stitch
+
+Proyek Stitch `6657328588435333414` menjadi referensi visual untuk delapan area final:
+
+1. login;
+2. dashboard profil saya;
+3. pengaturan log aktivitas;
+4. pengaturan profil saya;
+5. pengaturan kata sandi;
+6. pengaturan sesi perangkat;
+7. pengaturan aplikasi terkoneksi;
+8. pengaturan notifikasi.
+
+Tautan proyek dan 26 screen identifier disimpan sebagai referensi desain, tetapi isi
+screen tidak dapat dibaca tanpa sesi Google yang memiliki akses proyek. Implementasi
+saat ini mengikuti arsitektur informasi final dan token foundation yang sudah diuji.
+Pixel review dilakukan setelah pemilik proyek menyediakan akses publik atau export
+PNG/HTML screen. Revisi navigasi diterapkan sebagai sidebar desktop dan navigation
+strip horizontal pada viewport kecil.
+
 Semua token awal bersifat sementara sampai brand guide Pemerintah Kota Bandung disetujui. Tidak ada warna, logo, font, atau simbol di bawah yang diklaim sebagai identitas resmi.
 
 ## Arah

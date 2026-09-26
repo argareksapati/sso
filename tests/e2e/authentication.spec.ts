@@ -14,12 +14,58 @@ async function login(page: import("@playwright/test").Page) {
 
 test("login mock, portal, dan logout", async ({ page }) => {
   await login(page);
-  await expect(page.getByRole("heading", { name: "Pilih layanan yang Anda perlukan" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Kandidat integrasi" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Selamat datang, Pengguna" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Aplikasi layanan" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "SIPETRUK" })).toBeVisible();
-  await expect(page.getByText("6 aplikasi tercatat untuk tahap discovery.")).toBeVisible();
   await page.getByRole("button", { name: "Keluar" }).click();
   await expect(page).toHaveURL(/\/login$/);
+});
+
+test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) => {
+  const routes = [
+    ["/portal/layanan", "Pilih layanan yang Anda perlukan"],
+    ["/portal/pengaturan/profil", "Profil saya"],
+    ["/portal/pengaturan/password", "Kata sandi"],
+    ["/portal/pengaturan/sesi", "Sesi perangkat"],
+    ["/portal/pengaturan/aplikasi", "Aplikasi terkoneksi"],
+    ["/portal/pengaturan/notifikasi", "Notifikasi"],
+    ["/portal/pengaturan/aktivitas", "Log aktivitas"],
+  ] as const;
+
+  await page.goto(routes[0][0]);
+  await expect(page).toHaveURL(/\/login\?returnTo=\/portal$/);
+  await login(page);
+
+  for (const [route, heading] of routes) {
+    await page.goto(route);
+    await expect(page.getByRole("heading", { name: heading, level: 1 })).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+    ).toBeLessThanOrEqual(1);
+  }
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const [route, heading] of routes) {
+    await page.goto(route);
+    await expect(page.getByRole("heading", { name: heading, level: 1 })).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+    ).toBeLessThanOrEqual(1);
+  }
+
+  const accessibility = await new AxeBuilder({ page }).analyze();
+  expect(accessibility.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
+});
+
+test("pencarian layanan memfilter inventaris", async ({ page }) => {
+  await login(page);
+  await page.goto("/portal/layanan");
+  const search = page.locator("main input[name='q']");
+  await search.fill("SIPETRUK");
+  await search.press("Enter");
+  await expect(page).toHaveURL(/\/portal\/layanan\?q=SIPETRUK$/);
+  await expect(page.getByRole("heading", { name: "SIPETRUK" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "SIMPELMAN" })).toHaveCount(0);
 });
 
 test("login gagal memakai pesan generik", async ({ page }) => {
@@ -89,9 +135,9 @@ test("portal kandidat integrasi responsif, aksesibel, dan stabil secara visual",
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
   ).toBeLessThanOrEqual(1);
-  await expect(page).toHaveScreenshot("portal-mobile.png", { fullPage: true });
+  await expect(page).toHaveScreenshot("portal-mobile.png", { fullPage: true, caret: "initial" });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.reload();
-  await expect(page).toHaveScreenshot("portal-desktop.png", { fullPage: true });
+  await expect(page).toHaveScreenshot("portal-desktop.png", { fullPage: true, caret: "initial" });
 });

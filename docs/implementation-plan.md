@@ -7,6 +7,23 @@ state gagal, recovery generik, portal kosong, route state, CSP nonce, cookie pol
 accessibility, responsive checks, visual regression, build production, dan workflow
 CI sudah tersedia. Integrasi IdP nyata tetap menunggu keputusan pada bagian TBD.
 
+Shell portal dan delapan area desain Stitch juga sudah dipetakan ke route implementasi:
+
+```text
+/login
+/portal
+/portal/layanan
+/portal/pengaturan/profil
+/portal/pengaturan/password
+/portal/pengaturan/sesi
+/portal/pengaturan/aplikasi
+/portal/pengaturan/notifikasi
+/portal/pengaturan/aktivitas
+```
+
+Kontrol yang memerlukan master identity, audit store, session store, atau notification
+provider sengaja bersifat read-only sampai IdP final menyediakan API resminya.
+
 ## Sasaran vertical slice
 
 Implementasi awal membuktikan pengalaman autentikasi tanpa mengunci Identity Provider (IdP) yang belum diputuskan. Portal web bertindak sebagai relying party. Ia tidak menerbitkan token OAuth/OIDC produksi dan tidak menyimpan kata sandi pengguna.

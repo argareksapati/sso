@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import styles from "./portal-shell.module.css";
 
-export function LogoutButton() {
+export function LogoutButton({ label = "Keluar" }: { label?: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -24,9 +24,9 @@ export function LogoutButton() {
   }
 
   return (
-    <button className={styles.logout} type="button" onClick={logout} disabled={loading}>
+    <button className={styles.logout} type="button" onClick={logout} disabled={loading} aria-label={loading ? "Sedang keluar" : label}>
       <LogOut size={17} aria-hidden="true" />
-      {loading ? "Keluar…" : "Keluar"}
+      <span>{loading ? "Keluar…" : label}</span>
     </button>
   );
 }
