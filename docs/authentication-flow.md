@@ -26,6 +26,14 @@ peluncuran ke production sebelum client registration dan pengujian integrasi lul
 
 Mock hanya tersedia saat `AUTH_PROVIDER=mock` dan bukan production. Akun sintetis dikonfigurasi melalui environment test. Mock menghasilkan session development untuk menguji UI, route protection, logout, expiry, dan return URL.
 
+## Login Supabase Auth
+
+Saat `AUTH_PROVIDER=supabase`, endpoint login portal memanggil Supabase Auth
+`signInWithPassword` dari server menggunakan project URL dan publishable/anon
+key. Portal memetakan user ID, nama tampilan, dan role dari `app_metadata.roles`,
+lalu menerbitkan session portal bertanda tangan. Role dari `user_metadata` tidak
+dipercaya sebagai sumber otorisasi. Token Supabase tidak disimpan oleh portal.
+
 ## Recovery
 
 UI selalu mengembalikan pesan generik. Adapter final menentukan channel, assurance, token lifetime, rate limit, dan proses reset. Implementasi awal tidak mengirim pesan nyata.

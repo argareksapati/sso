@@ -10,7 +10,7 @@ export type LoginCredentials = {
 };
 
 export interface AuthProvider {
-  readonly kind: "mock" | "oidc";
+  readonly kind: "mock" | "supabase" | "oidc";
   authenticate(credentials: LoginCredentials): Promise<AuthIdentity | null>;
   requestPasswordRecovery(identifier: string): Promise<void>;
 }

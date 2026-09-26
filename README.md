@@ -4,7 +4,7 @@ Fondasi staging untuk membangun ulang pengalaman SSO Layanan Kota Bandung. Repos
 
 ## Status
 
-Milestone aktif: foundation serta vertical slice login/auth states. Identity Provider, identity source, migration akun, aplikasi pilot, branding resmi, dan deployment staging masih menunggu keputusan PIC.
+Milestone aktif: portal akun, UI sesuai rancangan, dan adapter Supabase Auth untuk login email/password. Identity source, migrasi akun, aplikasi pilot, branding resmi, OAuth client SSO, dan deployment staging masih menunggu keputusan PIC.
 
 Arahan integrasi awal mencakup layanan Disdukcapil, SIPETRUK, SIMPELMAN, SPMB
 Kota Bandung, GAMPIL, serta boundary layanan Puskesmas/Mobile JKN. Semuanya
@@ -32,6 +32,26 @@ APP_ORIGIN=http://localhost:3000
 ```
 
 Mock provider secara eksplisit ditolak bila `NODE_ENV=production`.
+
+### Mengaktifkan Supabase Auth
+
+Aktifkan Email provider di dashboard Supabase, tambahkan redirect URL yang sesuai,
+lalu isi konfigurasi berikut. Gunakan publishable/anon key, bukan
+`service_role` key.
+
+```env
+AUTH_PROVIDER=supabase
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_PUBLISHABLE_KEY=<publishable-atau-anon-key>
+SUPABASE_PASSWORD_RESET_REDIRECT=http://localhost:3000/reset-kata-sandi
+AUTH_SESSION_SECRET=<random-minimal-32-karakter>
+APP_ORIGIN=http://localhost:3000
+```
+
+Adapter hanya menukar email dan kata sandi dengan Supabase Auth di server. Access
+token dan refresh token Supabase tidak disimpan di cookie portal. Google OAuth dan
+authorization server untuk aplikasi mitra memerlukan konfigurasi callback serta
+alur OIDC terpisah.
 
 ## Pemeriksaan
 
@@ -89,12 +109,15 @@ Portal adalah relying party. OIDC Authorization Code + PKCE akan dihubungkan set
 
 | Nama | Kegunaan | Status |
 |---|---|---|
-| `AUTH_PROVIDER` | `mock` untuk local/test; `oidc` setelah adapter tersedia | Required |
+| `AUTH_PROVIDER` | `mock` untuk local/test atau `supabase` untuk Supabase Auth | Required |
 | `AUTH_MOCK_IDENTIFIER` | Identitas sintetis local/test | Local/test |
 | `AUTH_MOCK_PASSWORD` | Password sintetis local/test | Local/test |
 | `AUTH_MOCK_DISPLAY_NAME` | Nama tampilan sintetis | Local/test |
 | `AUTH_SESSION_SECRET` | Penandatangan session aplikasi | Required, secret manager di staging/production |
 | `APP_ORIGIN` | Origin yang diizinkan untuk request auth | Required |
+| `SUPABASE_URL` | Project URL Supabase | Saat provider Supabase aktif |
+| `SUPABASE_PUBLISHABLE_KEY` | Publishable/anon key; jangan gunakan service role | Saat provider Supabase aktif |
+| `SUPABASE_PASSWORD_RESET_REDIRECT` | Redirect pemulihan yang didaftarkan di Supabase | Saat provider Supabase aktif |
 | `OIDC_ISSUER` | Issuer IdP | TBD |
 | `OIDC_CLIENT_ID` | Client portal | TBD |
 | `OIDC_CLIENT_SECRET` | Secret confidential client bila diperlukan | TBD |
