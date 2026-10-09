@@ -6,6 +6,7 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, RefreshCw, ShieldCheck, Use
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { GoogleMark } from "./google-mark";
 import styles from "./form.module.css";
 
 type CaptchaChallenge = { left: number; right: number };
@@ -27,7 +28,14 @@ export function RegisterForm() {
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaError, setCaptchaError] = useState<string>();
   const [error, setError] = useState<string>();
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  function signUpWithGoogle() {
+    setGoogleLoading(true);
+    const params = new URLSearchParams({ remember: "true", returnTo: "/portal" });
+    window.location.assign(new URL(`/api/auth/google?${params.toString()}`, window.location.origin));
+  }
 
   function refreshCaptcha() {
     setCaptcha((current) => {
@@ -88,6 +96,17 @@ export function RegisterForm() {
         <p>Masukkan data Anda di bawah untuk membuat akun.</p>
       </div>
 
+      <button
+        className={styles.google}
+        type="button"
+        onClick={signUpWithGoogle}
+        disabled={googleLoading}
+      >
+        <GoogleMark />
+        <span>{googleLoading ? "Mengalihkan ke Google…" : "Daftar dengan Gmail"}</span>
+      </button>
+
+      <div className={styles.divider}><span>atau daftar dengan email</span></div>
       {error && <Alert tone="error">{error}</Alert>}
 
       <form className={styles.form} onSubmit={submit} noValidate>

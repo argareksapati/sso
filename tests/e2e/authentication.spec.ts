@@ -98,6 +98,7 @@ test("tautan daftar membuka form pendaftaran publik", async ({ page }) => {
   await expect(page.getByLabel("Alamat email")).toBeVisible();
   await expect(page.getByLabel("Kata sandi", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Konfirmasi kata sandi")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Daftar dengan Gmail" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Buat akun" })).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("link", { name: "Masuk", exact: true }),
