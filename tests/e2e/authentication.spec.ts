@@ -122,6 +122,18 @@ test("form daftar memvalidasi sandi dan captcha sebelum mengirim", async ({ page
   await expect(page).toHaveURL(/\/daftar$/);
 });
 
+test("halaman kebijakan dan ketentuan tersedia untuk publik", async ({ page }) => {
+  for (const [route, heading] of [
+    ["/kebijakan-privasi", "Kebijakan Privasi"],
+    ["/syarat-ketentuan", "Syarat & Ketentuan"],
+  ] as const) {
+    await page.goto(route);
+    await expect(page.getByRole("heading", { name: heading, level: 1 })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Kembali ke halaman masuk" })).toHaveAttribute("href", "/login");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
 for (const width of [360, 390, 768, 1024, 1280, 1440]) {
   test(`daftar tidak overflow pada lebar ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width < 600 ? 800 : 900 });

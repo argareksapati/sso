@@ -22,8 +22,14 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <span>Single Sign On Kota Bandung · Lingkungan pengembangan</span>
-          <nav aria-label="Tautan informasi"><Link href="/bantuan">Pusat Bantuan</Link><span aria-hidden="true">·</span><span>Integrasi IdP menunggu keputusan</span></nav>
+          <span>Single Sign On Kota Bandung · Versi 1.1.0</span>
+          <nav aria-label="Tautan informasi">
+            <Link href="/bantuan">Pusat Bantuan</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/kebijakan-privasi">Kebijakan Privasi</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/syarat-ketentuan">Syarat &amp; Ketentuan</Link>
+          </nav>
         </div>
       </footer>
     </div>
