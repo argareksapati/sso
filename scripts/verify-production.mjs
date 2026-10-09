@@ -31,7 +31,7 @@ try {
     throw new Error("Ada script framework tanpa nonce CSP.");
   }
 
-  const passwordInput = page.getByLabel("Kata sandi");
+  const passwordInput = page.getByRole("textbox", { name: "Kata sandi", exact: true });
   await passwordInput.fill("uji-hidrasi");
   await page.getByRole("button", { name: "Tampilkan" }).click();
   if ((await passwordInput.getAttribute("type")) !== "text") {
