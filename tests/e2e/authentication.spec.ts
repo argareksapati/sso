@@ -89,6 +89,48 @@ test("login gagal memakai pesan generik", async ({ page }) => {
   expect(new URL(page.url()).search).not.toContain("wrong-password");
 });
 
+test("tautan daftar membuka form pendaftaran publik", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByRole("link", { name: "Daftar", exact: true }).click();
+  await expect(page).toHaveURL(/\/daftar$/);
+  await expect(page.getByRole("heading", { name: "Buat akun", level: 2 })).toBeVisible();
+  await expect(page.getByLabel("Nama lengkap")).toBeFocused();
+  await expect(page.getByLabel("Alamat email")).toBeVisible();
+  await expect(page.getByLabel("Kata sandi", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Konfirmasi kata sandi")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Buat akun" })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("link", { name: "Masuk", exact: true }),
+  ).toHaveAttribute("href", "/login");
+});
+
+test("form daftar memvalidasi sandi dan captcha sebelum mengirim", async ({ page }) => {
+  await page.goto("/daftar");
+  await page.getByLabel("Nama lengkap").fill("Warga Bandung");
+  await page.getByLabel("Alamat email").fill("warga@gmail.com");
+  await page.getByLabel("Kata sandi", { exact: true }).fill("sandi-kuat-123");
+  await page.getByLabel("Konfirmasi kata sandi").fill("sandi-berbeda");
+  await page.getByRole("button", { name: "Buat akun" }).click();
+  await expect(
+    page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("alert"),
+  ).toContainText("Konfirmasi kata sandi belum sama");
+
+  await page.getByLabel("Konfirmasi kata sandi").fill("sandi-kuat-123");
+  await page.getByLabel("Verifikasi keamanan (Captcha)").fill("99");
+  await page.getByRole("button", { name: "Buat akun" }).click();
+  await expect(page.locator("#register-captcha-error")).toContainText("Jawaban verifikasi keamanan belum tepat");
+  await expect(page).toHaveURL(/\/daftar$/);
+});
+
+for (const width of [360, 390, 768, 1024, 1280, 1440]) {
+  test(`daftar tidak overflow pada lebar ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: width < 600 ? 800 : 900 });
+    await page.goto("/daftar");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+}
+
 test("return URL eksternal ditolak", async ({ page }) => {
   await page.goto("/login?returnTo=https://evil.example/path");
   await page.getByLabel("Alamat email").fill(identifier);
@@ -191,6 +233,25 @@ test("visual login mobile dan desktop", async ({ page }) => {
   ));
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await expect(page).toHaveScreenshot("login-desktop.png", { fullPage: true });
+});
+
+test("visual daftar mobile dan desktop", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/daftar", { waitUntil: "networkidle" });
+  await page.locator("img").evaluateAll((images) => Promise.all(
+    images.map((image) => (image as HTMLImageElement).decode()),
+  ));
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await expect(page).toHaveScreenshot("register-mobile.png", { fullPage: true });
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/daftar", { waitUntil: "networkidle" });
+  await page.locator("img").evaluateAll((images) => Promise.all(
+    images.map((image) => (image as HTMLImageElement).decode()),
+  ));
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await expect(page).toHaveScreenshot("register-desktop.png", { fullPage: true });
 });
 
 test("portal kandidat integrasi responsif, aksesibel, dan stabil secara visual", async ({ page }) => {

@@ -51,7 +51,7 @@ function randomCaptcha(): CaptchaChallenge {
   };
 }
 
-export function LoginForm({ returnTo, oauthError }: { returnTo?: string; oauthError?: string }) {
+export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: string; oauthError?: string; registered?: string }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -134,6 +134,7 @@ export function LoginForm({ returnTo, oauthError }: { returnTo?: string; oauthEr
 
       <div className={styles.divider}><span>atau masuk dengan email</span></div>
       {oauthError && <Alert tone="error">{oauthMessages[oauthError] || oauthMessages.callback_failed}</Alert>}
+      {registered === "confirmed" && <Alert tone="success">Email berhasil diverifikasi. Silakan masuk ke akun Anda.</Alert>}
       {error && <Alert tone="error">{error}</Alert>}
 
       <form className={styles.form} onSubmit={submit} noValidate>
@@ -225,7 +226,7 @@ export function LoginForm({ returnTo, oauthError }: { returnTo?: string; oauthEr
         <Button type="submit" loading={loading}>Masuk <ArrowRight size={19} aria-hidden="true" /></Button>
       </form>
 
-      <p className={styles.support}>Belum punya akses? <Link href="/bantuan">Hubungi administrator</Link></p>
+      <p className={styles.support}>Belum punya akun? <Link href="/daftar">Daftar</Link></p>
     </div>
   );
 }

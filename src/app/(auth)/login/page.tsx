@@ -7,8 +7,8 @@ import { getSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Masuk" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; oauthError?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; oauthError?: string; registered?: string }> }) {
   if (await getSession()) redirect("/portal");
-  const { returnTo, oauthError } = await searchParams;
-  return <AuthFrame><LoginForm returnTo={returnTo} oauthError={oauthError} /></AuthFrame>;
+  const { returnTo, oauthError, registered } = await searchParams;
+  return <AuthFrame><LoginForm returnTo={returnTo} oauthError={oauthError} registered={registered} /></AuthFrame>;
 }
