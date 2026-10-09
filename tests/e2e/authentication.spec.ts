@@ -30,6 +30,102 @@ test("login mock, portal, dan logout", async ({ page }) => {
   await expect(page).toHaveURL(/\/login$/);
 });
 
+test("tema terang dan gelap dapat diubah serta tersimpan di portal", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/login");
+
+  const root = page.locator("html");
+  const darkToggle = page.getByRole("button", { name: "Aktifkan tema gelap" });
+  await expect(darkToggle).toBeVisible();
+  await expect(root).toHaveAttribute("data-theme", "light");
+  const lightSurface = await root.evaluate((element) => getComputedStyle(element).getPropertyValue("--surface-page").trim());
+
+  await darkToggle.click();
+  await expect(root).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Aktifkan tema terang" })).toBeVisible();
+  const darkSurface = await root.evaluate((element) => getComputedStyle(element).getPropertyValue("--surface-page").trim());
+  expect(darkSurface).not.toBe(lightSurface);
+  expect(await page.evaluate(() => window.localStorage.getItem("sso-theme"))).toBe("dark");
+
+  await page.reload();
+  await expect(root).toHaveAttribute("data-theme", "dark");
+  await login(page);
+  await expect(root).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Aktifkan tema terang" })).toBeVisible();
+
+  for (const route of [
+    "/portal",
+    "/portal/layanan",
+    "/portal/pengaturan/profil",
+    "/portal/pengaturan/password",
+    "/portal/pengaturan/sesi",
+    "/portal/pengaturan/aplikasi",
+    "/portal/pengaturan/notifikasi",
+    "/portal/pengaturan/aktivitas",
+  ]) {
+    await page.goto(route);
+    await expect(root).toHaveAttribute("data-theme", "dark");
+    const accessibility = await new AxeBuilder({ page }).analyze();
+    expect(
+      accessibility.violations.filter((item) => ["serious", "critical"].includes(item.impact || "")),
+      `${route} harus lolos pemeriksaan aksesibilitas dalam tema gelap`,
+    ).toEqual([]);
+  }
+
+  await page.getByRole("button", { name: "Aktifkan tema terang" }).click();
+  await expect(root).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => window.localStorage.getItem("sso-theme"))).toBe("light");
+});
+
+test("seluruh halaman publik utama dapat dirender tanpa error browser", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+
+  const routes = [
+    ["/login", "Masuk ke akun Anda"],
+    ["/daftar", "Buat akun"],
+    ["/lupa-kata-sandi", "Lupa kata sandi"],
+    ["/bantuan", "Informasi bantuan sedang disiapkan"],
+    ["/daftar/berhasil", "Periksa email Anda"],
+    ["/pemulihan/dikirim", "Periksa petunjuk pemulihan"],
+    ["/reset-kata-sandi", "Tautan reset belum dapat digunakan"],
+    ["/pemeliharaan", "Layanan sementara tidak tersedia"],
+    ["/session-berakhir", "Silakan masuk kembali"],
+    ["/tidak-berwenang", "Anda belum dapat membuka halaman ini"],
+    ["/kebijakan-privasi", "Kebijakan Privasi"],
+    ["/syarat-ketentuan", "Syarat & Ketentuan"],
+  ] as const;
+
+  for (const [route, heading] of routes) {
+    const response = await page.goto(route, { waitUntil: "networkidle" });
+    expect(response?.ok(), `${route} seharusnya merespons sukses`).toBe(true);
+    await expect(page.getByRole("heading", { name: heading }).first()).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+  }
+
+  expect(errors).toEqual([]);
+});
+
+test("kontrol formulir login merespons interaksi", async ({ page }) => {
+  await page.goto("/login");
+  const passwordField = page.getByLabel("Kata sandi", { exact: true });
+  await passwordField.fill("contoh-sandi");
+  await expect(passwordField).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Tampilkan kata sandi" }).click();
+  await expect(passwordField).toHaveAttribute("type", "text");
+  await page.getByRole("button", { name: "Sembunyikan kata sandi" }).click();
+  await expect(passwordField).toHaveAttribute("type", "password");
+
+  const remember = page.getByLabel("Ingat saya selama 7 hari");
+  await remember.check();
+  await expect(remember).toBeChecked();
+  await remember.uncheck();
+  await expect(remember).not.toBeChecked();
+});
+
 test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) => {
   const routes = [
     ["/portal/layanan", "Pilih layanan yang Anda perlukan"],
@@ -64,6 +160,31 @@ test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) =
 
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
+});
+
+test("fitur portal yang menunggu IdP ditandai nonaktif dan sesi saat ini dapat dicabut", async ({ page }) => {
+  await login(page);
+
+  await page.goto("/portal/pengaturan/profil");
+  await expect(page.getByRole("button", { name: "Simpan Perubahan" })).toBeDisabled();
+  await expect(page.getByLabel("Nama Lengkap")).toBeDisabled();
+
+  await page.goto("/portal/pengaturan/password");
+  await expect(page.getByRole("button", { name: "Simpan Kata Sandi" })).toBeDisabled();
+  await expect(page.getByLabel("Kata Sandi Saat Ini")).toBeDisabled();
+
+  await page.goto("/portal/pengaturan/notifikasi");
+  const switches = page.getByRole("switch");
+  await expect(switches).toHaveCount(5);
+  for (let index = 0; index < 5; index += 1) await expect(switches.nth(index)).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Simpan Preferensi" })).toBeDisabled();
+
+  await page.goto("/portal/pengaturan/aplikasi");
+  await expect(page.getByText("Belum ada aplikasi terkoneksi")).toBeVisible();
+
+  await page.goto("/portal/pengaturan/sesi");
+  await page.getByRole("button", { name: "Cabut sesi ini" }).click();
+  await expect(page).toHaveURL(/\/login$/);
 });
 
 test("pencarian layanan memfilter inventaris", async ({ page }) => {
@@ -165,7 +286,9 @@ test("login Google memberi status yang jelas saat provider belum tersedia", asyn
   await page.goto("/login");
   await page.getByRole("button", { name: "Masuk dengan Gmail" }).click();
   await expect(page).toHaveURL(/\/login\?oauthError=unavailable$/);
-  await expect(page.getByRole("alert")).toContainText("Login Google hanya tersedia saat Supabase Auth digunakan");
+  await expect(
+    page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("alert"),
+  ).toContainText("Login Google hanya tersedia saat Supabase Auth digunakan");
 });
 
 test("login dapat dioperasikan dengan keyboard dan lolos axe", async ({ page }) => {

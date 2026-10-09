@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Bell, Grid2X2, LayoutDashboard, Settings } from "lucide-react";
 
 import { Wordmark } from "@/components/site/wordmark";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 import { LogoutButton } from "./logout-button";
 import styles from "./portal-shell.module.css";
 
@@ -19,6 +20,7 @@ export function PortalShell({ displayName, children }: { displayName: string; ch
             <Link href="/portal/pengaturan/profil"><Settings size={18} aria-hidden="true" /> Pengaturan</Link>
           </nav>
           <div className={styles.account}>
+            <ThemeToggle />
             <button className={styles.notification} type="button" aria-label="Notifikasi belum aktif" disabled><Bell size={19} aria-hidden="true" /></button>
             <span className={styles.avatar} aria-hidden="true">{initials}</span>
             <span className={styles.name}>{displayName}</span>

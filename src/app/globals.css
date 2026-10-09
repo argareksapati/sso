@@ -9,6 +9,8 @@
   --border-strong: #c7d5e7;
   --action: #1d55d5;
   --action-strong: #144fcf;
+  --action-fill: #1d55d5;
+  --action-fill-hover: #144fcf;
   --action-soft: #eaf2ff;
   --cyan: #19a8df;
   --danger: #e43d3d;
@@ -24,6 +26,32 @@
   --gradient-brand: linear-gradient(120deg, #2c62ed 0%, #276fe9 48%, #18a8df 100%);
   --container: 1480px;
   --font-sans: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --ink-strong: #eef4ff;
+  --ink: #cfdbed;
+  --ink-muted: #9bacc5;
+  --surface-page: #07111f;
+  --surface-raised: #101c2d;
+  --surface-subtle: #16243a;
+  --border: #273951;
+  --border-strong: #3a506f;
+  --action: #79a7ff;
+  --action-strong: #a8c5ff;
+  --action-fill: #285cc7;
+  --action-fill-hover: #3269db;
+  --action-soft: #172e51;
+  --cyan: #40c5f4;
+  --danger: #ff8989;
+  --danger-soft: #402124;
+  --success: #67dbb0;
+  --success-soft: #123b31;
+  --warning: #ffd17b;
+  --warning-soft: #3a2d16;
+  --focus: #ffd166;
+  --shadow-card: 0 18px 44px rgba(0, 0, 0, .32);
+  --gradient-brand: linear-gradient(120deg, #173f9e 0%, #1554bd 48%, #087cae 100%);
 }
 
 * { box-sizing: border-box; }
@@ -42,7 +70,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 a { color: var(--action); text-underline-offset: 3px; }
 a:hover { color: var(--action-strong); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-::selection { background: #c8e3ff; }
+::selection { color: #07111f; background: #c8e3ff; }
 .sr-only {
   position: absolute;
   width: 1px;

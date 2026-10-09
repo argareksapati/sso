@@ -177,7 +177,7 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
 
         <label className={styles.remember}>
           <input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} />
-          <span>Ingat saya</span>
+          <span>Ingat saya selama 7 hari</span>
         </label>
 
         <div className={styles.captchaCard}>

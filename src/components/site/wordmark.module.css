@@ -14,3 +14,6 @@
   .title { font-size: 1rem; }
   .title small, .subtitle { display: none; }
 }
+@media (max-width: 420px) {
+  .copy { display: none; }
+}

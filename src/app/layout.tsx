@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, colorScheme: "light" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, colorScheme: "light dark" };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // A fresh CSP nonce is attached by proxy.ts for every request. Dynamic

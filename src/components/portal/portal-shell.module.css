@@ -12,7 +12,7 @@
 .logout { min-height: 40px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgba(255,255,255,.34); border-radius: 10px; padding: 0 12px; color: #fff; background: rgba(255,255,255,.1); cursor: pointer; }
 .logout:hover:not(:disabled) { background: rgba(255,255,255,.18); }
 .main { width: min(100% - 56px,var(--container)); min-width: 0; margin: 0 auto; padding: 52px 0 76px; }
-.footer { display: flex; justify-content: space-between; gap: 20px; padding: 20px max(28px,calc((100% - var(--container))/2)); border-top: 1px solid var(--border); color: var(--ink-muted); background: #fff; font-size: .78rem; }
+.footer { display: flex; justify-content: space-between; gap: 20px; padding: 20px max(28px,calc((100% - var(--container))/2)); border-top: 1px solid var(--border); color: var(--ink-muted); background: var(--surface-raised); font-size: .78rem; }
 @media (max-width: 1120px) {
   .headerInner { grid-template-columns: 1fr auto; }
   .topNav { display: none; }

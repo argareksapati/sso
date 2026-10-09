@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { LogIn, Moon, Sun } from "lucide-react";
+import { LogIn } from "lucide-react";
 
+import { ThemeToggle } from "./theme-toggle";
 import { Wordmark } from "./wordmark";
 import styles from "./public-shell.module.css";
 
@@ -11,10 +12,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         <div className={styles.headerInner}>
           <Wordmark inverse />
           <div className={styles.actions}>
-            <span className={styles.theme} role="img" aria-label="Tema terang aktif">
-              <Sun size={17} aria-hidden="true" />
-              <Moon size={17} aria-hidden="true" />
-            </span>
+            <ThemeToggle />
             <Link className={styles.loginLink} href="/login"><LogIn size={20} aria-hidden="true" /> Masuk</Link>
           </div>
         </div>

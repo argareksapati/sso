@@ -2,7 +2,7 @@
 .button:hover:not(:disabled) { transform: translateY(-1px); }
 .button:disabled { cursor: not-allowed; opacity: .62; }
 .primary { color: #fff; background: linear-gradient(100deg,#4087f4,#265feb); box-shadow: 0 9px 20px rgba(44,101,238,.22); }
-.primary:hover:not(:disabled) { background: var(--action-strong); }
+.primary:hover:not(:disabled) { background: var(--action-fill-hover); }
 .secondary { color: var(--ink-strong); border-color: var(--border-strong); background: var(--surface-raised); }
 .secondary:hover:not(:disabled) { background: var(--surface-subtle); }
 .danger { color: #fff; background: var(--danger); }

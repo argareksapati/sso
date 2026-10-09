@@ -30,12 +30,12 @@
   border: 1px solid var(--border-strong);
   border-radius: 13px;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface-raised);
   box-shadow: 0 1px 2px rgba(23, 47, 86, .05);
   font-weight: 750;
 }
 .google { cursor: pointer; transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease; }
-.google:hover:not(:disabled) { border-color: #8aa9d5; background: #f8fbff; transform: translateY(-1px); }
+.google:hover:not(:disabled) { border-color: #8aa9d5; background: var(--surface-subtle); transform: translateY(-1px); }
 .google:disabled { cursor: wait; opacity: .72; }
 .googleMark { width: 20px; height: 20px; flex: 0 0 20px; }
 .divider {
@@ -109,7 +109,7 @@
   border: 1px solid #afd0ff;
   border-radius: 15px;
   padding: 14px;
-  background: #f1f7ff;
+  background: var(--action-soft);
 }
 .captchaHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .captchaHeading label { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-strong); font-size: .86rem; }
@@ -120,7 +120,7 @@
   border-radius: 8px;
   padding: 5px 9px;
   color: var(--action);
-  background: #e4efff;
+  background: var(--surface-subtle);
   font-size: .75rem;
   font-weight: 800;
 }
@@ -134,10 +134,10 @@
   border: 1px solid var(--border-strong);
   border-radius: 11px;
   color: var(--ink-muted);
-  background: #fff;
+  background: var(--surface-raised);
   cursor: pointer;
 }
-.captchaControls > button:hover { color: var(--action); border-color: #8cb3ef; background: #f8fbff; }
+.captchaControls > button:hover { color: var(--action); border-color: #8cb3ef; background: var(--surface-subtle); }
 .fieldError { margin: -2px 0 0; color: var(--danger); font-size: .8rem; }
 .support {
   margin: 0;
