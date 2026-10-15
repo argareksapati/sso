@@ -1,30 +1,26 @@
 import type { Metadata } from "next";
-import { History, KeyRound, LockKeyhole, MonitorSmartphone, ShieldCheck } from "lucide-react";
+import { KeyRound, LockKeyhole, MonitorSmartphone, ShieldCheck } from "lucide-react";
 
 import { AccountHero, AccountPage, Panel, accountStyles as styles } from "@/components/account/account-ui";
+import { PasswordEditor } from "@/components/account/password-editor";
+import { getSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Kata Sandi Saya" };
 
-export default function PasswordPage() {
+export default async function PasswordPage() {
+  const session = await getSession();
+  if (!session) return null;
   return (
-    <AccountPage settings title="Kata Sandi Saya" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun.">
-      <AccountHero eyebrow="Keamanan akun" title="Kata Sandi Akun" description="Kata sandi akun Google dikelola langsung oleh Google sebagai identity provider resmi." icon={LockKeyhole} stat={<><span>Proteksi sistem</span><strong>Google OAuth</strong></>} />
+    <AccountPage settings title="Kata Sandi Saya" description="Kelola kata sandi akun, pengaturan keamanan, dan instruksi perlindungan akun SSO Anda.">
+      <AccountHero eyebrow="Keamanan akun" title="Ubah Kata Sandi" description="Perbarui kata sandi secara berkala melalui penyedia identitas yang melindungi akun Single Sign On Anda." icon={LockKeyhole} stat={<><span>Proteksi sistem</span><strong>Enkripsi 256-bit</strong></>} />
       <div className={styles.grid2}>
-        <Panel title="Perbarui Kata Sandi" description="Portal SSO tidak menyimpan atau mengubah kata sandi akun Google Anda.">
-          <div className={styles.stack}>
-            <div className={styles.field}><label htmlFor="currentPassword">Kata Sandi Saat Ini</label><input id="currentPassword" type="password" placeholder="Dikelola oleh IdP" autoComplete="current-password" disabled /></div>
-            <div className={styles.field}><label htmlFor="newPassword">Kata Sandi Baru</label><input id="newPassword" type="password" placeholder="Dikelola oleh Google" autoComplete="new-password" disabled /></div>
-            <div className={styles.field}><label htmlFor="confirmPassword">Konfirmasi Kata Sandi Baru</label><input id="confirmPassword" type="password" placeholder="Dikelola oleh Google" autoComplete="new-password" disabled /></div>
-            <div className={styles.callout}><ShieldCheck size={19} aria-hidden="true" /><p>Gunakan pengaturan keamanan Akun Google untuk mengganti atau memulihkan kata sandi.</p></div>
-            <div className={styles.actions}><button className={styles.buttonSecondary} type="button" disabled>Batalkan</button><button className={styles.button} type="button" disabled><KeyRound size={17} aria-hidden="true" /> Simpan Kata Sandi</button></div>
-          </div>
-        </Panel>
-        <Panel title="Tips Keamanan" description="Jaga akun tetap aman saat integrasi kredensial aktif.">
+        <PasswordEditor initialIdentifier={session.email} />
+        <Panel title="Tips Keamanan" description="Jaga akun tetap aman saat mengganti kata sandi." icon={ShieldCheck}>
           <div className={styles.tips}>
-            <div className={styles.tip}><KeyRound size={20} aria-hidden="true" /><div><strong>Gunakan password unik</strong><span>Panjang, sulit ditebak, dan tidak dipakai ulang.</span></div></div>
-            <div className={styles.tip}><ShieldCheck size={20} aria-hidden="true" /><div><strong>Aktifkan perlindungan tambahan</strong><span>Gunakan MFA setelah didukung identity provider.</span></div></div>
-            <div className={styles.tip}><MonitorSmartphone size={20} aria-hidden="true" /><div><strong>Kelola perangkat lama</strong><span>Akhiri sesi yang sudah tidak digunakan.</span></div></div>
-            <div className={styles.tip}><History size={20} aria-hidden="true" /><div><strong>Status perubahan</strong><span>Riwayat password menunggu audit store IdP.</span></div></div>
+            <div className={styles.tip}><KeyRound size={20} aria-hidden="true" /><div><strong>Gunakan kata sandi unik</strong><span>Gabungkan simbol, angka, dan huruf serta jangan gunakan ulang.</span></div></div>
+            <div className={styles.tip}><ShieldCheck size={20} aria-hidden="true" /><div><strong>Aktifkan perlindungan tambahan</strong><span>Gunakan autentikasi dua langkah pada penyedia identitas.</span></div></div>
+            <div className={styles.tip}><MonitorSmartphone size={20} aria-hidden="true" /><div><strong>Keluar dari perangkat lama</strong><span>Cabut sesi pada perangkat yang tidak lagi Anda gunakan.</span></div></div>
+            <div className={styles.securityFoot}><span><KeyRound size={17} aria-hidden="true" /> Status perubahan</span><strong>Aktif</strong></div>
           </div>
         </Panel>
       </div>

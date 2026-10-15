@@ -25,7 +25,7 @@
   --shadow-card: 0 18px 44px rgba(41, 79, 139, 0.12);
   --gradient-brand: linear-gradient(120deg, #2c62ed 0%, #276fe9 48%, #18a8df 100%);
   --container: 1480px;
-  --font-sans: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
+  --font-sans: var(--font-plus-jakarta), "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
 }
 
 :root[data-theme="dark"] {

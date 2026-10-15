@@ -36,6 +36,7 @@ export function AccountHero({ eyebrow, title, description, icon: Icon, stat, chi
 }) {
   return (
     <section className={styles.hero}>
+      <span className={styles.accentLine} aria-hidden="true"><i /><i /><i /></span>
       <div className={styles.heroCopy}>
         <span className={styles.heroEyebrow}>{Icon && <Icon size={17} aria-hidden="true" />}{eyebrow}</span>
         <h2>{title}</h2>
@@ -58,7 +59,7 @@ export function Panel({ title, description, icon: Icon, children, className = ""
     <section className={`${styles.panel} ${className}`}>
       {(title || description) && (
         <header className={styles.panelHeader}>
-          {title && <h2>{Icon && <Icon size={21} aria-hidden="true" />}{title}</h2>}
+          {title && <h2>{Icon && <span className={styles.panelIcon}><Icon size={19} aria-hidden="true" /></span>}{title}</h2>}
           {description && <p>{description}</p>}
         </header>
       )}

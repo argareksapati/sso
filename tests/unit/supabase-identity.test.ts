@@ -12,6 +12,7 @@ describe("mapSupabaseIdentity", () => {
     })).toEqual({
       subject: "supabase:user-123",
       displayName: "Pengguna Bandung",
+      email: "pengguna@example.test",
       roles: ["citizen", "operator"],
     });
   });
@@ -24,6 +25,7 @@ describe("mapSupabaseIdentity", () => {
     })).toEqual({
       subject: "supabase:user-456",
       displayName: "warga",
+      email: "warga@example.test",
       roles: ["authenticated"],
     });
   });

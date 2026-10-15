@@ -45,6 +45,7 @@ export class DevelopmentMockProvider implements AuthProvider {
     return {
       subject: `development-${subject}`,
       displayName: process.env.AUTH_MOCK_DISPLAY_NAME?.trim() || "Pengguna Uji",
+      email: expectedIdentifier.trim().toLocaleLowerCase("id-ID"),
       roles: ["citizen"],
     };
   }

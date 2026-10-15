@@ -9,6 +9,7 @@
 /playwright-report/
 /test-results/
 /coverage/
+/.data/
 
 # environment and secrets
 .env*

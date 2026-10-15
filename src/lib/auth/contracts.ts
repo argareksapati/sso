@@ -1,6 +1,7 @@
 export type AuthIdentity = {
   subject: string;
   displayName: string;
+  email?: string;
   roles: string[];
 };
 

@@ -1,19 +1,18 @@
-.wordmark { display: inline-flex; align-items: center; gap: 18px; color: var(--ink-strong); text-decoration: none; }
-.logoTile { height: 58px; display: inline-flex; align-items: center; gap: 8px; border-radius: 15px; padding: 5px 14px 5px 8px; color: #17658f; background: #fff; box-shadow: 0 8px 24px rgba(4, 31, 87, .12); font-size: 1rem; letter-spacing: .04em; }
-.logoTile img { width: 42px; height: 42px; object-fit: contain; }
-.copy { display: grid; gap: 2px; }
-.title { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 780; letter-spacing: -.03em; white-space: nowrap; }
-.title small { border: 1px solid currentColor; border-radius: 999px; padding: 3px 9px; font-size: .66rem; letter-spacing: .03em; opacity: .8; }
-.subtitle { font-size: .83rem; opacity: .8; white-space: nowrap; }
+.wordmark { display: inline-flex; align-items: center; gap: 13px; color: var(--ink-strong); text-decoration: none; }
+.logoTile { height: 46px; display: inline-flex; align-items: center; gap: 6px; border: 2px solid #facc15; border-radius: 12px; padding: 4px 11px 4px 6px; color: #17658f; background: #fff; box-shadow: 0 7px 20px rgba(4, 31, 87, .14); font-size: .87rem; letter-spacing: .04em; }
+.logoTile img { width: 34px; height: 34px; object-fit: contain; }
+.copy { display: grid; gap: 1px; }
+.title { display: flex; align-items: center; gap: 8px; font-size: 1.18rem; font-weight: 820; letter-spacing: -.03em; white-space: nowrap; }
+.title small { border: 1px solid rgba(255, 255, 255, .46); border-radius: 999px; padding: 2px 8px; font-size: .56rem; letter-spacing: .04em; opacity: .92; }
+.subtitle { font-size: .72rem; font-weight: 560; opacity: .84; white-space: nowrap; }
 .wordmark[data-inverse="true"] { color: #fff; }
 @media (max-width: 700px) {
-  .logoTile { height: 48px; padding-right: 10px; }
-  .logoTile img { width: 34px; height: 34px; }
+  .logoTile { height: 40px; padding-right: 8px; }
+  .logoTile img { width: 29px; height: 29px; }
   .logoTile strong { display: none; }
-  .wordmark { gap: 10px; }
-  .title { font-size: 1rem; }
-  .title small, .subtitle { display: none; }
+  .wordmark { gap: 9px; }
+  .title { font-size: .93rem; }
+  .title small { font-size: .48rem; padding-inline: 6px; }
+  .subtitle { display: none; }
 }
-@media (max-width: 420px) {
-  .copy { display: none; }
-}
+@media (max-width: 420px) { .title small { display: none; } }

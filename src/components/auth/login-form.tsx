@@ -1,28 +1,39 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  LockKeyhole,
-  Mail,
-  RefreshCw,
-  ShieldCheck,
-} from "lucide-react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, RefreshCw, ShieldCheck } from "lucide-react";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { GoogleMark } from "./google-mark";
 import styles from "./form.module.css";
 
-type CaptchaChallenge = {
-  left: number;
-  right: number;
-};
+type CaptchaChallenge = { left: number; right: number };
+let initialChallengeRequest: Promise<CaptchaChallenge> | undefined;
 
-const initialCaptcha: CaptchaChallenge = { left: 8, right: 4 };
+async function fetchLoginChallenge(): Promise<CaptchaChallenge> {
+  const response = await fetch("/api/auth/challenge", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  const result = await response.json() as { left?: number; right?: number; message?: string };
+  if (!response.ok || !Number.isInteger(result.left) || !Number.isInteger(result.right)) {
+    throw new Error(result.message || "Verifikasi keamanan tidak dapat dimuat.");
+  }
+  return { left: result.left!, right: result.right! };
+}
+
+function getInitialLoginChallenge() {
+  if (!initialChallengeRequest) {
+    initialChallengeRequest = fetchLoginChallenge().catch((error: unknown) => {
+      initialChallengeRequest = undefined;
+      throw error;
+    });
+  }
+  return initialChallengeRequest;
+}
 
 const oauthMessages: Record<string, string> = {
   unavailable: "Login Google hanya tersedia saat Supabase Auth digunakan.",
@@ -32,38 +43,51 @@ const oauthMessages: Record<string, string> = {
   callback_failed: "Login Google tidak dapat diselesaikan. Silakan coba kembali.",
 };
 
-function randomCaptcha(): CaptchaChallenge {
-  const values = new Uint32Array(2);
-  globalThis.crypto.getRandomValues(values);
-  return {
-    left: (values[0] % 9) + 1,
-    right: (values[1] % 9) + 1,
-  };
-}
-
-export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: string; oauthError?: string; registered?: string }) {
+export function LoginForm({ returnTo, oauthError, registered, passwordChanged }: { returnTo?: string; oauthError?: string; registered?: string; passwordChanged?: string }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [captcha, setCaptcha] = useState(initialCaptcha);
+  const [captcha, setCaptcha] = useState<CaptchaChallenge>();
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaError, setCaptchaError] = useState<string>();
+  const [captchaLoading, setCaptchaLoading] = useState(true);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  function refreshCaptcha() {
-    setCaptcha((current) => {
-      const next = randomCaptcha();
-      if (next.left === current.left && next.right === current.right) {
-        return { left: current.left === 9 ? 1 : current.left + 1, right: current.right };
-      }
-      return next;
-    });
+  const requestChallenge = useCallback(async (clearError = true) => {
+    setCaptchaLoading(true);
     setCaptchaAnswer("");
-    setCaptchaError(undefined);
-  }
+    if (clearError) setCaptchaError(undefined);
+
+    try {
+      const nextChallenge = await fetchLoginChallenge();
+      initialChallengeRequest = Promise.resolve(nextChallenge);
+      setCaptcha(nextChallenge);
+    } catch (challengeError) {
+      setCaptcha(undefined);
+      if (clearError) setCaptchaError(challengeError instanceof Error ? challengeError.message : "Verifikasi keamanan tidak dapat dimuat. Periksa koneksi dan coba lagi.");
+    } finally {
+      setCaptchaLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getInitialLoginChallenge()
+      .then((challenge) => {
+        if (active) setCaptcha(challenge);
+      })
+      .catch((challengeError: unknown) => {
+        if (!active) return;
+        setCaptchaError(challengeError instanceof Error ? challengeError.message : "Verifikasi keamanan tidak dapat dimuat. Periksa koneksi dan coba lagi.");
+      })
+      .finally(() => {
+        if (active) setCaptchaLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   function signInWithGoogle() {
     setGoogleLoading(true);
@@ -77,8 +101,8 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
     setError(undefined);
     setCaptchaError(undefined);
 
-    if (Number(captchaAnswer) !== captcha.left + captcha.right) {
-      setCaptchaError("Jawaban verifikasi keamanan belum tepat.");
+    if (!captcha || captchaAnswer.trim() === "") {
+      setCaptchaError("Muat dan isi verifikasi keamanan terlebih dahulu.");
       return;
     }
 
@@ -87,18 +111,22 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password, remember, returnTo }),
+        body: JSON.stringify({ identifier, password, captchaAnswer, remember, returnTo }),
       });
-      const result = await response.json() as { message?: string; redirectTo?: string };
+      const result = await response.json() as { code?: string; message?: string; redirectTo?: string };
       if (!response.ok || !result.redirectTo) {
-        setError(result.message || "Layanan masuk sedang tidak tersedia. Coba kembali beberapa saat lagi.");
-        refreshCaptcha();
+        if (result.code === "invalid_challenge") {
+          setCaptchaError(result.message || "Jawaban verifikasi keamanan belum tepat.");
+        } else {
+          setError(result.message || "Layanan masuk sedang tidak tersedia. Coba kembali beberapa saat lagi.");
+        }
+        await requestChallenge(false);
         return;
       }
       window.location.assign(result.redirectTo);
     } catch {
       setError("Layanan masuk sedang tidak tersedia. Periksa koneksi dan coba lagi.");
-      refreshCaptcha();
+      await requestChallenge(false);
     } finally {
       setLoading(false);
     }
@@ -107,24 +135,20 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
   return (
     <div className={styles.content}>
       <div className={styles.heading}>
-        <p className={styles.kicker}>Masuk</p>
-        <h2>Masuk ke akun Anda</h2>
-        <p>Masukkan email dan kata sandi di bawah untuk masuk.</p>
+        <p className={styles.kicker}>Autentikasi akun</p>
+        <h2>Masuk ke Akun SSO</h2>
+        <p>Gunakan email dan kata sandi terdaftar Anda.</p>
       </div>
 
-      <button
-        className={styles.google}
-        type="button"
-        onClick={signInWithGoogle}
-        disabled={googleLoading}
-      >
+      <button className={styles.google} type="button" onClick={signInWithGoogle} disabled={googleLoading}>
         <GoogleMark />
-        <span>{googleLoading ? "Mengalihkan ke Google…" : "Masuk dengan Gmail"}</span>
+        <span>{googleLoading ? "Mengalihkan ke Google…" : "Masuk dengan Google"}</span>
       </button>
 
-      <div className={styles.divider}><span>atau masuk dengan email</span></div>
+      <div className={styles.divider}><span>atau email</span></div>
       {oauthError && <Alert tone="error">{oauthMessages[oauthError] || oauthMessages.callback_failed}</Alert>}
       {registered === "confirmed" && <Alert tone="success">Email berhasil diverifikasi. Silakan masuk ke akun Anda.</Alert>}
+      {passwordChanged === "1" && <Alert tone="success">Kata sandi berhasil diubah. Silakan masuk kembali menggunakan kata sandi baru.</Alert>}
       {error && <Alert tone="error">{error}</Alert>}
 
       <form className={styles.form} onSubmit={submit} noValidate>
@@ -132,17 +156,7 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
           <label htmlFor="identifier">Alamat email</label>
           <div className={styles.inputShell}>
             <Mail size={18} aria-hidden="true" />
-            <input
-              id="identifier"
-              name="identifier"
-              type="email"
-              placeholder="nama@contoh.com"
-              autoComplete="username"
-              value={identifier}
-              onChange={(event) => setIdentifier(event.target.value)}
-              required
-              autoFocus
-            />
+            <input id="identifier" name="identifier" type="email" placeholder="nama@bandung.go.id" autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.target.value)} required autoFocus />
           </div>
         </div>
 
@@ -153,23 +167,8 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
           </div>
           <div className={styles.inputShell}>
             <LockKeyhole size={18} aria-hidden="true" />
-            <input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Kata sandi"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-            <button
-              className={styles.visibilityToggle}
-              type="button"
-              onClick={() => setShowPassword((value) => !value)}
-              aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-              aria-pressed={showPassword}
-            >
+            <input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="Masukkan kata sandi" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+            <button className={styles.visibilityToggle} type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"} aria-pressed={showPassword}>
               {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
             </button>
           </div>
@@ -177,46 +176,27 @@ export function LoginForm({ returnTo, oauthError, registered }: { returnTo?: str
 
         <label className={styles.remember}>
           <input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} />
-          <span>Ingat saya selama 7 hari</span>
+          <span>Ingat saya di perangkat ini</span>
         </label>
 
         <div className={styles.captchaCard}>
           <div className={styles.captchaHeading}>
-            <label htmlFor="captcha-answer">
-              <ShieldCheck size={19} aria-hidden="true" />
-              <strong>Verifikasi keamanan (Captcha)</strong>
-            </label>
-            <span aria-label={`Berapa ${captcha.left} ditambah ${captcha.right}?`}>
-              Berapa {captcha.left} + {captcha.right}?
+            <label htmlFor="captcha-answer"><ShieldCheck size={18} aria-hidden="true" /><strong>Verifikasi keamanan</strong></label>
+            <span aria-label={captcha ? `Berapa ${captcha.left} ditambah ${captcha.right}?` : "Memuat soal verifikasi"}>
+              {captcha ? `Berapa ${captcha.left} + ${captcha.right}?` : "Memuat soal…"}
             </span>
           </div>
           <div className={styles.captchaControls}>
-            <input
-              id="captcha-answer"
-              name="captcha"
-              type="number"
-              inputMode="numeric"
-              placeholder="Hasil penjumlahan"
-              value={captchaAnswer}
-              onChange={(event) => {
-                setCaptchaAnswer(event.target.value);
-                setCaptchaError(undefined);
-              }}
-              aria-invalid={Boolean(captchaError)}
-              aria-describedby={captchaError ? "captcha-error" : undefined}
-              required
-            />
-            <button type="button" onClick={refreshCaptcha} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal">
-              <RefreshCw size={20} aria-hidden="true" />
-            </button>
+            <input id="captcha-answer" name="captcha" type="number" inputMode="numeric" min={2} max={18} placeholder="Jawaban angka" value={captchaAnswer} disabled={!captcha || captchaLoading} onChange={(event) => { setCaptchaAnswer(event.target.value); setCaptchaError(undefined); }} aria-invalid={Boolean(captchaError)} aria-describedby={captchaError ? "captcha-error" : undefined} required />
+            <button type="button" onClick={() => void requestChallenge()} disabled={captchaLoading} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal"><RefreshCw size={19} aria-hidden="true" /></button>
           </div>
           {captchaError && <p className={styles.fieldError} id="captcha-error" role="alert">{captchaError}</p>}
         </div>
 
-        <Button type="submit" loading={loading}>Masuk <ArrowRight size={19} aria-hidden="true" /></Button>
+        <Button type="submit" variant="success" loading={loading} disabled={!captcha || captchaLoading}>Masuk Sekarang <ArrowRight size={19} aria-hidden="true" /></Button>
       </form>
 
-      <p className={styles.support}>Belum punya akun? <Link href="/daftar">Daftar</Link></p>
+      <p className={styles.support}>Belum memiliki akun SSO? <Link href="/daftar">Daftar Akun Baru</Link></p>
     </div>
   );
 }

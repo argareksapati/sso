@@ -9,7 +9,7 @@ async function login(page: import("@playwright/test").Page) {
   await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi", { exact: true }).fill(password);
   await solveCaptcha(page);
-  await page.getByRole("button", { name: "Masuk", exact: true }).click();
+  await page.getByRole("button", { name: "Masuk Sekarang", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
 }
 
@@ -18,14 +18,14 @@ async function solveCaptcha(page: import("@playwright/test").Page) {
   const prompt = await question.getAttribute("aria-label");
   const numbers = prompt?.match(/\d+/g)?.map(Number) || [];
   expect(numbers).toHaveLength(2);
-  await page.getByLabel("Verifikasi keamanan (Captcha)").fill(String(numbers[0] + numbers[1]));
+  await page.getByLabel("Verifikasi keamanan", { exact: true }).fill(String(numbers[0] + numbers[1]));
 }
 
 test("login mock, portal, dan logout", async ({ page }) => {
   await login(page);
-  await expect(page.getByRole("heading", { name: "Profil Saya", level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Aksi Cepat" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Frekuensi Penggunaan" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pengguna Uji", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pengaturan & Layanan Profil" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Frekuensi Penggunaan Layanan" })).toBeVisible();
   await page.getByRole("button", { name: "Keluar" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
@@ -85,7 +85,7 @@ test("seluruh halaman publik utama dapat dirender tanpa error browser", async ({
   });
 
   const routes = [
-    ["/login", "Masuk ke akun Anda"],
+    ["/login", "Masuk ke Akun SSO"],
     ["/daftar", "Buat akun"],
     ["/lupa-kata-sandi", "Lupa kata sandi"],
     ["/bantuan", "Informasi bantuan sedang disiapkan"],
@@ -119,7 +119,7 @@ test("kontrol formulir login merespons interaksi", async ({ page }) => {
   await page.getByRole("button", { name: "Sembunyikan kata sandi" }).click();
   await expect(passwordField).toHaveAttribute("type", "password");
 
-  const remember = page.getByLabel("Ingat saya selama 7 hari");
+  const remember = page.getByLabel("Ingat saya di perangkat ini");
   await remember.check();
   await expect(remember).toBeChecked();
   await remember.uncheck();
@@ -128,7 +128,7 @@ test("kontrol formulir login merespons interaksi", async ({ page }) => {
 
 test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) => {
   const routes = [
-    ["/portal/layanan", "Pilih layanan yang Anda perlukan"],
+    ["/portal/layanan", "Daftar Layanan Aplikasi SSO"],
     ["/portal/pengaturan/profil", "Profil Saya"],
     ["/portal/pengaturan/password", "Kata Sandi Saya"],
     ["/portal/pengaturan/sesi", "Sesi Perangkat"],
@@ -162,40 +162,90 @@ test("seluruh halaman akun terlindungi dan dapat dinavigasi", async ({ page }) =
   expect(accessibility.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
 });
 
-test("fitur portal yang menunggu IdP ditandai nonaktif dan sesi saat ini dapat dicabut", async ({ page }) => {
+test("fitur portal membedakan kontrol lokal dan kontrol yang membutuhkan IdP", async ({ page }) => {
   await login(page);
 
   await page.goto("/portal/pengaturan/profil");
-  await expect(page.getByRole("button", { name: "Simpan Perubahan" })).toBeDisabled();
-  await expect(page.getByLabel("Nama Lengkap")).toBeDisabled();
+  const firstName = page.getByLabel("Nama Depan");
+  await expect(firstName).toBeEnabled();
+  await firstName.fill("Warga");
+  await expect(page.getByText("Warga Uji", { exact: true }).first()).toBeVisible();
+  await page.getByRole("button", { name: "Simpan Perubahan" }).click();
+  await expect(page.getByRole("status")).toContainText("berhasil disimpan");
+  await page.reload();
+  await expect(page.getByLabel("Nama Depan")).toHaveValue("Warga");
+
+  await page.locator('input[type="file"]#profilePhoto').setInputFiles({
+    name: "foto-profil.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+  });
+  await expect(page.getByAltText("Foto profil Warga Uji")).toBeVisible();
+  await page.getByRole("button", { name: "Simpan Perubahan" }).click();
+  await expect(page.getByRole("status")).toContainText("berhasil disimpan");
+  await page.reload();
+  await expect(page.getByAltText("Foto profil Warga Uji")).toBeVisible();
+  await page.getByRole("button", { name: "Hapus Foto" }).click();
+  await page.getByRole("button", { name: "Simpan Perubahan" }).click();
+  await expect(page.getByRole("status")).toContainText("berhasil disimpan");
+  await page.reload();
+  await expect(page.getByAltText("Foto profil Warga Uji")).toHaveCount(0);
 
   await page.goto("/portal/pengaturan/password");
-  await expect(page.getByRole("button", { name: "Simpan Kata Sandi" })).toBeDisabled();
-  await expect(page.getByLabel("Kata Sandi Saat Ini")).toBeDisabled();
+  await expect(page.getByLabel("Kata Sandi Saat Ini", { exact: true })).toBeEnabled();
+  await expect(page.getByLabel("Kata Sandi Baru", { exact: true })).toBeEnabled();
+  await expect(page.getByLabel("Konfirmasi Kata Sandi Baru", { exact: true })).toBeEnabled();
+  await page.getByLabel("Kata Sandi Saat Ini", { exact: true }).fill(password);
+  await page.getByLabel("Kata Sandi Baru", { exact: true }).fill("SandiBaru!234");
+  await page.getByLabel("Konfirmasi Kata Sandi Baru", { exact: true }).fill("berbeda");
+  await page.getByRole("button", { name: "Simpan Kata Sandi" }).click();
+  await expect(page.getByText("Konfirmasi kata sandi baru belum sama.", { exact: true })).toBeVisible();
 
   await page.goto("/portal/pengaturan/notifikasi");
   const switches = page.getByRole("switch");
-  await expect(switches).toHaveCount(5);
-  for (let index = 0; index < 5; index += 1) await expect(switches.nth(index)).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Simpan Preferensi" })).toBeDisabled();
+  await expect(switches).toHaveCount(6);
+  const weeklyDigest = page.getByRole("switch", { name: "Weekly digest" });
+  await expect(weeklyDigest).toHaveAttribute("aria-checked", "false");
+  await weeklyDigest.click();
+  await expect(weeklyDigest).toHaveAttribute("aria-checked", "true");
+  await page.getByRole("button", { name: "Simpan Preferensi" }).click();
+  await expect(page.getByRole("status")).toContainText("Preferensi tersimpan");
+  await page.reload();
+  await expect(page.getByRole("switch", { name: "Weekly digest" })).toHaveAttribute("aria-checked", "true");
 
   await page.goto("/portal/pengaturan/aplikasi");
-  await expect(page.getByText("Belum ada aplikasi terkoneksi")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Bandung Citizen Journalism" })).toBeVisible();
+  await expect(page.getByText("Pembaruan izin mengikuti kebijakan client")).toHaveCount(0);
+  await expect(page.getByText(/Pencabutan server akan aktif/)).toHaveCount(0);
+  await page.getByRole("button", { name: "Cabut Akses" }).click();
+  await expect(page.getByRole("status")).toContainText("Akses aplikasi berhasil dicabut");
+  await expect(page.getByRole("heading", { name: "Belum ada aplikasi terhubung" })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Belum ada aplikasi terhubung" })).toBeVisible();
 
   await page.goto("/portal/pengaturan/sesi");
   await page.getByRole("button", { name: "Cabut sesi ini" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });
 
+test("kata sandi dapat diubah melalui form aktif", async ({ page }) => {
+  await login(page);
+  await page.goto("/portal/pengaturan/password");
+  await expect(page.getByLabel("Email Akun")).toHaveValue(identifier);
+  await page.getByLabel("Kata Sandi Saat Ini", { exact: true }).fill(password);
+  await page.getByLabel("Kata Sandi Baru", { exact: true }).fill("SandiBaru!234");
+  await page.getByLabel("Konfirmasi Kata Sandi Baru", { exact: true }).fill("SandiBaru!234");
+  await page.getByRole("button", { name: "Simpan Kata Sandi" }).click();
+  await expect(page).toHaveURL(/\/login\?passwordChanged=1$/);
+  await expect(page.getByText("Kata sandi berhasil diubah. Silakan masuk kembali menggunakan kata sandi baru.")).toBeVisible();
+});
+
 test("pencarian layanan memfilter inventaris", async ({ page }) => {
   await login(page);
-  await page.goto("/portal/layanan");
-  const search = page.locator("main input[name='q']");
-  await search.fill("SIPETRUK");
-  await search.press("Enter");
-  await expect(page).toHaveURL(/\/portal\/layanan\?q=SIPETRUK$/);
-  await expect(page.getByRole("heading", { name: "SIPETRUK" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "SIMPELMAN" })).toHaveCount(0);
+  await page.goto("/portal/layanan?q=SALAMAN");
+  await expect(page.getByLabel("Cari layanan")).toHaveValue("SALAMAN");
+  await expect(page.getByRole("heading", { name: "SALAMAN" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "New Bimma" })).toHaveCount(0);
 });
 
 test("login gagal memakai pesan generik", async ({ page }) => {
@@ -203,7 +253,7 @@ test("login gagal memakai pesan generik", async ({ page }) => {
   await page.getByLabel("Alamat email").fill("akun.tidak.ada@example.test");
   await page.getByLabel("Kata sandi", { exact: true }).fill("wrong-password");
   await solveCaptcha(page);
-  await page.getByRole("button", { name: "Masuk", exact: true }).click();
+  await page.getByRole("button", { name: "Masuk Sekarang", exact: true }).click();
   await expect(
     page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("alert"),
   ).toContainText("Identitas akun atau kata sandi tidak sesuai");
@@ -212,7 +262,7 @@ test("login gagal memakai pesan generik", async ({ page }) => {
 
 test("tautan daftar membuka form pendaftaran publik", async ({ page }) => {
   await page.goto("/login");
-  await page.getByRole("link", { name: "Daftar", exact: true }).click();
+  await page.getByRole("link", { name: "Daftar Akun Baru", exact: true }).click();
   await expect(page).toHaveURL(/\/daftar$/);
   await expect(page.getByRole("heading", { name: "Buat akun", level: 2 })).toBeVisible();
   await expect(page.getByLabel("Nama lengkap")).toBeFocused();
@@ -270,7 +320,7 @@ test("return URL eksternal ditolak", async ({ page }) => {
   await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi", { exact: true }).fill(password);
   await solveCaptcha(page);
-  await page.getByRole("button", { name: "Masuk", exact: true }).click();
+  await page.getByRole("button", { name: "Masuk Sekarang", exact: true }).click();
   await expect(page).toHaveURL(/\/portal$/);
 });
 
@@ -284,7 +334,7 @@ test("recovery tidak mengungkap keberadaan akun", async ({ page }) => {
 
 test("login Google memberi status yang jelas saat provider belum tersedia", async ({ page }) => {
   await page.goto("/login");
-  await page.getByRole("button", { name: "Masuk dengan Gmail" }).click();
+  await page.getByRole("button", { name: "Masuk dengan Google" }).click();
   await expect(page).toHaveURL(/\/login\?oauthError=unavailable$/);
   await expect(
     page.getByRole("region", { name: "Akses SSO Bandung" }).getByRole("alert"),
@@ -310,37 +360,19 @@ test("captcha login dapat dimuat ulang dan menolak jawaban yang salah", async ({
 
   await page.getByLabel("Alamat email").fill(identifier);
   await page.getByLabel("Kata sandi", { exact: true }).fill(password);
-  await page.getByLabel("Verifikasi keamanan (Captcha)").fill("99");
-  await page.getByRole("button", { name: "Masuk", exact: true }).click();
+  await page.getByLabel("Verifikasi keamanan", { exact: true }).fill("99");
+  await page.getByRole("button", { name: "Masuk Sekarang", exact: true }).click();
   await expect(page.locator("#captcha-error")).toContainText("Jawaban verifikasi keamanan belum tepat");
   await expect(page).toHaveURL(/\/login$/);
 });
 
-test("katalog login memuat seluruh logo dan marquee dapat dijeda", async ({ page }) => {
+test("hero login memuat Gedung Sate dan identitas Kota Bandung", async ({ page }) => {
   await page.goto("/login", { waitUntil: "networkidle" });
-  const catalog = page.getByRole("region", { name: /Daftar 14 layanan terintegrasi/ });
-  await expect(catalog.getByRole("listitem")).toHaveCount(14);
-
-  const logos = catalog.locator("img");
-  await expect(logos).toHaveCount(22);
-  await expect.poll(
-    () => logos.evaluateAll((images) => images.every((image) => {
-      const logo = image as HTMLImageElement;
-      return logo.complete && logo.naturalWidth > 0;
-    })),
-  ).toBe(true);
-
-  const track = catalog.locator(":scope > div").first();
-  const before = await track.evaluate((element) => getComputedStyle(element).transform);
-  await page.waitForTimeout(500);
-  const after = await track.evaluate((element) => getComputedStyle(element).transform);
-  expect(after).not.toBe(before);
-
-  await catalog.hover();
-  await page.waitForTimeout(100);
-  const pausedAt = await track.evaluate((element) => getComputedStyle(element).transform);
-  await page.waitForTimeout(500);
-  expect(await track.evaluate((element) => getComputedStyle(element).transform)).toBe(pausedAt);
+  await expect(page.getByRole("heading", { name: "Selamat datang di Portal Single Sign On Kota Bandung" })).toBeVisible();
+  await expect(page.getByText("14+ portal layanan")).toBeVisible();
+  const hero = page.getByAltText("Gedung Sate, pusat pemerintahan Provinsi Jawa Barat di Kota Bandung");
+  await expect(hero).toBeVisible();
+  await expect.poll(() => hero.evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true);
 });
 
 for (const width of [360, 390, 768, 1024, 1280, 1440]) {
@@ -360,7 +392,11 @@ test("visual login mobile dan desktop", async ({ page }) => {
     images.map((image) => (image as HTMLImageElement).decode()),
   ));
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-  await expect(page).toHaveScreenshot("login-mobile.png", { fullPage: true });
+  await expect(page).toHaveScreenshot("login-mobile.png", {
+    fullPage: true,
+    mask: [page.locator("[aria-label^='Berapa'][aria-label*='ditambah']")],
+    maxDiffPixels: 50,
+  });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/login", { waitUntil: "networkidle" });
@@ -368,7 +404,11 @@ test("visual login mobile dan desktop", async ({ page }) => {
     images.map((image) => (image as HTMLImageElement).decode()),
   ));
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-  await expect(page).toHaveScreenshot("login-desktop.png", { fullPage: true });
+  await expect(page).toHaveScreenshot("login-desktop.png", {
+    fullPage: true,
+    mask: [page.locator("[aria-label^='Berapa'][aria-label*='ditambah']")],
+    maxDiffPixels: 50,
+  });
 });
 
 test("visual daftar mobile dan desktop", async ({ page }) => {
@@ -390,7 +430,7 @@ test("visual daftar mobile dan desktop", async ({ page }) => {
   await expect(page).toHaveScreenshot("register-desktop.png", { fullPage: true });
 });
 
-test("portal kandidat integrasi responsif, aksesibel, dan stabil secara visual", async ({ page }) => {
+test("portal profil responsif, aksesibel, dan stabil secara visual", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await login(page);
 
@@ -404,4 +444,32 @@ test("portal kandidat integrasi responsif, aksesibel, dan stabil secara visual",
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.reload();
   await expect(page).toHaveScreenshot("portal-desktop.png", { fullPage: true, caret: "initial" });
+});
+
+test("katalog layanan dapat dicari dan difilter tanpa memuat ulang halaman", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await login(page);
+  await page.goto("/portal/layanan");
+
+  await expect(page.getByRole("heading", { name: "Daftar Layanan Aplikasi SSO", level: 1 })).toBeVisible();
+  await page.getByLabel("Cari layanan").fill("opendata");
+  await expect(page.getByRole("heading", { name: "Bandung Opendata", level: 2 })).toBeVisible();
+  await expect(page.getByText("1 layanan ditemukan")).toBeVisible();
+
+  await page.getByRole("button", { name: "Reset filter" }).click();
+  await page.getByRole("button", { name: "Internal Pemkot" }).click();
+  await expect(page.getByRole("button", { name: "Internal Pemkot" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("heading", { name: "New Bimma", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "SALAMAN", level: 2 })).toHaveCount(0);
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+
+  await page.getByRole("button", { name: "Reset filter" }).click();
+  await expect(page).toHaveScreenshot("services-mobile.png", { fullPage: true, caret: "initial" });
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.reload();
+  await expect(page).toHaveScreenshot("services-desktop.png", { fullPage: true, caret: "initial" });
 });

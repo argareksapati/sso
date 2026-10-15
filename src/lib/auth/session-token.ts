@@ -44,6 +44,7 @@ export function verifySessionToken(token: string | undefined): AppSession | null
     if (
       typeof session.subject !== "string" ||
       typeof session.displayName !== "string" ||
+      (session.email !== undefined && typeof session.email !== "string") ||
       !Array.isArray(session.roles) ||
       typeof session.expiresAt !== "number" ||
       session.expiresAt <= Math.floor(Date.now() / 1000)

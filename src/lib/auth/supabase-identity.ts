@@ -34,6 +34,7 @@ export function mapSupabaseIdentity(user: SupabaseUserIdentity): AuthIdentity {
   return {
     subject: `supabase:${user.id}`,
     displayName: safeDisplayName(user),
+    ...(user.email ? { email: user.email.trim().toLocaleLowerCase("id-ID") } : {}),
     roles: safeRoles(user),
   };
 }

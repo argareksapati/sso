@@ -4,7 +4,7 @@ import styles from "./button.module.css";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "success" | "secondary" | "danger";
 };
 
 export function Button({ children, loading = false, variant = "primary", className = "", disabled, ...props }: Props) {

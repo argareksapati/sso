@@ -19,7 +19,10 @@ export function SettingsNavigation() {
   const pathname = usePathname();
   return (
     <aside className={styles.settingsNav}>
-      <p>Pengaturan</p>
+      <div className={styles.settingsNavHeader}>
+        <p>Pengaturan akun</p>
+        <span>Geser <ChevronRight size={13} aria-hidden="true" /></span>
+      </div>
       <nav aria-label="Pengaturan akun">
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
