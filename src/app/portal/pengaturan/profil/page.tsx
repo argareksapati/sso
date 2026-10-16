@@ -17,7 +17,7 @@ export default async function ProfilePage() {
   ]);
 
   return (
-    <AccountPage settings title="Profil Saya" description="Kelola identitas profil, informasi akun, dan status keamanan SSO Anda.">
+    <AccountPage settings title="Profil Saya" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun SSO Anda.">
       <ProfileEditor initialProfile={profile} initialHasPhoto={initialHasPhoto} />
     </AccountPage>
   );

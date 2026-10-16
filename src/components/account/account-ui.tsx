@@ -1,5 +1,4 @@
-import type { LucideIcon } from "lucide-react";
-
+import { MaterialIcon } from "@/components/ui/material-icon";
 import { SettingsNavigation } from "./settings-navigation";
 import styles from "./account-ui.module.css";
 
@@ -26,19 +25,20 @@ export function AccountPage({ eyebrow, title, description, action, settings = fa
   );
 }
 
-export function AccountHero({ eyebrow, title, description, icon: Icon, stat, children }: {
+export function AccountHero({ eyebrow, title, description, materialIcon, stat, children, className = "" }: {
   eyebrow: string;
   title: string;
   description?: string;
-  icon?: LucideIcon;
+  materialIcon?: string;
   stat?: React.ReactNode;
   children?: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <section className={styles.hero}>
+    <section className={`${styles.hero} ${className}`}>
       <span className={styles.accentLine} aria-hidden="true"><i /><i /><i /></span>
       <div className={styles.heroCopy}>
-        <span className={styles.heroEyebrow}>{Icon && <Icon size={17} aria-hidden="true" />}{eyebrow}</span>
+        <span className={styles.heroEyebrow}>{materialIcon ? <MaterialIcon name={materialIcon} size={17} /> : null}{eyebrow}</span>
         <h2>{title}</h2>
         {description && <p>{description}</p>}
         {children}
@@ -48,10 +48,10 @@ export function AccountHero({ eyebrow, title, description, icon: Icon, stat, chi
   );
 }
 
-export function Panel({ title, description, icon: Icon, children, className = "" }: {
+export function Panel({ title, description, materialIcon, children, className = "" }: {
   title?: string;
   description?: string;
-  icon?: LucideIcon;
+  materialIcon?: string;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -59,7 +59,7 @@ export function Panel({ title, description, icon: Icon, children, className = ""
     <section className={`${styles.panel} ${className}`}>
       {(title || description) && (
         <header className={styles.panelHeader}>
-          {title && <h2>{Icon && <span className={styles.panelIcon}><Icon size={19} aria-hidden="true" /></span>}{title}</h2>}
+          {title && <h2>{materialIcon ? <span className={styles.panelIcon}><MaterialIcon name={materialIcon} size={19} /></span> : null}{title}</h2>}
           {description && <p>{description}</p>}
         </header>
       )}

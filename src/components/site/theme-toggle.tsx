@@ -1,8 +1,8 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./theme-toggle.module.css";
 
 type Theme = "light" | "dark";
@@ -42,7 +42,7 @@ function subscribeToTheme(onStoreChange: () => void) {
   };
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ compact = false, auth = false }: { compact?: boolean; auth?: boolean }) {
   const theme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerThemeSnapshot);
 
   useEffect(() => {
@@ -62,16 +62,18 @@ export function ThemeToggle() {
     <button
       type="button"
       className={styles.toggle}
+      data-compact={compact}
+      data-auth={auth}
       aria-label={isDark ? "Aktifkan tema terang" : "Aktifkan tema gelap"}
       aria-pressed={isDark}
       title={isDark ? "Aktifkan tema terang" : "Aktifkan tema gelap"}
       onClick={toggleTheme}
     >
       <span className={styles.icon} data-active={!isDark} aria-hidden="true">
-        <Sun size={17} />
+        <MaterialIcon name="light_mode" size={17} />
       </span>
       <span className={styles.icon} data-active={isDark} aria-hidden="true">
-        <Moon size={17} />
+        <MaterialIcon name="dark_mode" size={17} />
       </span>
     </button>
   );

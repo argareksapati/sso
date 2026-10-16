@@ -76,7 +76,7 @@ const existingSsoCatalog = [
   {
     id: "bandung-citizen-journalism",
     name: "Bandung Citizen Journalism",
-    description: "Wadah jurnalistik warga untuk berita dan liputan seputar Kota Bandung.",
+    description: "Wadah jurnalistik warga untuk berkontribusi dalam berita dan liputan seputar Kota Bandung.",
     category: "PUBLIC",
     owner: "Diskominfo Kota Bandung",
     logoPath: "/services/bcj.png",
@@ -84,7 +84,7 @@ const existingSsoCatalog = [
   {
     id: "dpmptsp-bandung",
     name: "DPMPTSP Bandung",
-    description: "Pelayanan penanaman modal dan perizinan terpadu satu pintu.",
+    description: "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Kota Bandung.",
     category: "PUBLIC",
     owner: "DPMPTSP Kota Bandung",
     logoPath: "/services/dpmptsp-logo.png",
@@ -93,7 +93,7 @@ const existingSsoCatalog = [
   {
     id: "salaman",
     name: "SALAMAN",
-    description: "Sistem layanan administrasi kependudukan Kota Bandung.",
+    description: "Sistem Administrasi Kependudukan Disdukcapil Kota Bandung (KTP, KK, Akta).",
     category: "PUBLIC",
     owner: "Disdukcapil Kota Bandung",
     logoPath: "/services/salaman-logo.png",
@@ -102,7 +102,7 @@ const existingSsoCatalog = [
   {
     id: "new-bimma",
     name: "New Bimma",
-    description: "Aplikasi bimbingan manajemen dan tata kelola kinerja ASN.",
+    description: "Aplikasi Bimbingan Manajemen & Tata Kelola Kinerja ASN Pemkot Bandung.",
     category: "INTERNAL",
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/new-bimma.png",
@@ -110,14 +110,14 @@ const existingSsoCatalog = [
   {
     id: "bandung-smart-map-plus",
     name: "Bandung Smart Map Plus",
-    description: "Sistem informasi geografis dan pemetaan interaktif Kota Bandung.",
+    description: "Sistem Informasi Geografis (GIS) dan pemetaan interaktif wilayah Kota Bandung.",
     category: "INNOVATION",
     owner: "Pemerintah Kota Bandung",
   },
   {
     id: "bandung-opendata",
     name: "Bandung Opendata",
-    description: "Portal resmi data terbuka Pemerintah Kota Bandung.",
+    description: "Portal Resmi Data Terbuka Publik Pemerintah Kota Bandung.",
     category: "INNOVATION",
     owner: "Diskominfo Kota Bandung",
     logoPath: "/services/bandung-opendata-logo.png",
@@ -126,8 +126,8 @@ const existingSsoCatalog = [
   {
     id: "arimbi-bandung",
     name: "Arimbi Bandung",
-    description: "Platform informasi dan operasional internal Pemerintah Kota Bandung.",
-    category: "INTERNAL",
+    description: "Aplikasi informasi ketersediaan dan pemantauan harga pangan real-time.",
+    category: "PUBLIC",
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/arimbi-logo.png",
     sourceUrl: "https://diskominfo.bandung.go.id/",
@@ -135,14 +135,14 @@ const existingSsoCatalog = [
   {
     id: "bandung-kita",
     name: "Bandung Kita",
-    description: "Akses informasi publik dan partisipasi warga Kota Bandung.",
+    description: "Portal berita, informasi publik, dan agenda kegiatan resmi Kota Bandung.",
     category: "PUBLIC",
     owner: "Pemerintah Kota Bandung",
   },
   {
     id: "bandung-sadayana",
     name: "Bandung Sadayana",
-    description: "Portal terpadu layanan publik warga Kota Bandung.",
+    description: "Super app integrasi pelayanan publik dan aduan warga Kota Bandung.",
     category: "PUBLIC",
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/sadayana.png",
@@ -150,7 +150,7 @@ const existingSsoCatalog = [
   {
     id: "ai-asisten-bandung",
     name: "AI Asisten Bandung",
-    description: "Layanan kecerdasan buatan untuk membantu pencarian informasi kota.",
+    description: "Layanan interaktif berbasis kecerdasan buatan untuk bantuan informasi warga.",
     category: "INNOVATION",
     owner: "Diskominfo Kota Bandung",
     logoPath: "/services/teh-ai-logo.png",
@@ -159,7 +159,7 @@ const existingSsoCatalog = [
   {
     id: "gercep-asik",
     name: "Gercep Asik",
-    description: "Layanan respons cepat dan kolaborasi pelayanan warga.",
+    description: "Gerakan Cepat Aplikasi Sistem Informasi Penanganan Keluhan Warga Kota Bandung.",
     category: "PUBLIC",
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/gercep.png",
@@ -167,8 +167,8 @@ const existingSsoCatalog = [
   {
     id: "bsm-pro",
     name: "BSM Pro",
-    description: "Bandung Smart Maps Professional untuk kebutuhan operasional perangkat daerah.",
-    category: "INTERNAL",
+    description: "Versi pembaruan platform Bandung Smart Map Plus (GIS Pro) untuk pemetaan spasial terpadu.",
+    category: "INNOVATION",
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/bsm-pro-logo.png",
     sourceUrl: "https://bsm.bandung.go.id/",
@@ -176,14 +176,15 @@ const existingSsoCatalog = [
   {
     id: "perizinan-bandung",
     name: "Perizinan Bandung",
-    description: "Akses layanan dan pemantauan proses perizinan Kota Bandung.",
+    description: "Portal layanan pengajuan, pemrosesan, dan verifikasi perizinan usaha & non-usaha online.",
     category: "PUBLIC",
     owner: "DPMPTSP Kota Bandung",
+    logoPath: "/services/dpmptsp-logo.png",
   },
   {
     id: "management-pemdi",
     name: "Management PEMDI",
-    description: "Aplikasi pengelolaan data dan layanan internal pemerintahan.",
+    description: "Sistem perencanaan dan Manajemen Pembangunan Daerah Terpadu Pemkot Bandung.",
     category: "INTERNAL",
     owner: "Pemerintah Kota Bandung",
   },

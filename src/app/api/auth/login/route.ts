@@ -4,7 +4,7 @@ import { z } from "zod";
 import { recordAuditEvent } from "@/lib/audit";
 import { getAuthProvider } from "@/lib/auth/provider";
 import { challengeCookieOptions, LOGIN_CHALLENGE_COOKIE, verifyLoginChallenge } from "@/lib/auth/login-challenge";
-import { consumeAuthAttempt } from "@/lib/auth/rate-limit";
+import { consumeAuthAttempt, resetAuthAttempts } from "@/lib/auth/rate-limit";
 import { normalizeReturnUrl } from "@/lib/auth/return-url";
 import { isSameOriginRequest } from "@/lib/auth/same-origin";
 import { createSessionToken, SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session";
@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
       return clearChallenge(NextResponse.json({ message: genericError }, { status: 401 }));
     }
 
+    resetAuthAttempts(parsed.data.identifier, request.headers.get("x-forwarded-for"));
     const { token, expiresAt } = createSessionToken(identity, parsed.data.remember);
     const response = NextResponse.json({ redirectTo: normalizeReturnUrl(parsed.data.returnTo) });
     response.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(expiresAt));

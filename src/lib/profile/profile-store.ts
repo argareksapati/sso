@@ -48,7 +48,7 @@ function profileUsername(displayName: string) {
 export function defaultProfile(session: AppSession): EditableProfile {
   const { firstName, lastName } = displayNameParts(session.displayName);
   return {
-    contactEmail: "",
+    contactEmail: session.email || "",
     username: profileUsername(session.displayName),
     nickname: firstName,
     whatsapp: "",

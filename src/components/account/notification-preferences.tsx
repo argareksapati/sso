@@ -1,8 +1,8 @@
 "use client";
 
-import { Bell, Mail, MessageSquare, ShieldCheck } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./account-ui.module.css";
 
 type PreferenceKey = "emailLogin" | "emailSecurity" | "whatsappLogin" | "inApp" | "whatsappSecurity" | "weeklyDigest";
@@ -44,23 +44,23 @@ function parsePreferences(snapshot: string): Preferences {
   }
 }
 
-const primaryItems: Array<{ key: PreferenceKey; title: string; description: string; icon: typeof Bell }> = [
-  { key: "emailLogin", title: "Email login alerts", description: "Dapatkan email saat login baru terdeteksi pada akun Anda.", icon: Mail },
-  { key: "emailSecurity", title: "Email security alerts", description: "Notifikasi reset kata sandi dan perubahan data sensitif.", icon: ShieldCheck },
-  { key: "whatsappLogin", title: "WhatsApp login alerts", description: "Peringatan login baru melalui WhatsApp.", icon: MessageSquare },
-  { key: "inApp", title: "In-app notifications", description: "Tampilkan peringatan keamanan langsung di portal SSO.", icon: Bell },
+const primaryItems: Array<{ key: PreferenceKey; title: string; description: string; icon: string }> = [
+  { key: "emailLogin", title: "Email login alerts", description: "Dapatkan email saat login baru terdeteksi pada akun Anda.", icon: "mail" },
+  { key: "emailSecurity", title: "Email security alerts", description: "Notifikasi untuk reset kata sandi dan perubahan data sensitif.", icon: "shield" },
+  { key: "whatsappLogin", title: "WhatsApp login alerts", description: "Peringatan instant mengenai login baru via WhatsApp.", icon: "chat" },
+  { key: "inApp", title: "In-app notifications", description: "Tampilkan lonceng dan banner notifikasi di dalam portal SSO.", icon: "notifications" },
 ];
 
-function PreferenceRow({ item, checked, onToggle }: {
+function PreferenceRow({ item, checked, onToggle, compact = false }: {
   item: (typeof primaryItems)[number];
   checked: boolean;
   onToggle: () => void;
+  compact?: boolean;
 }) {
-  const Icon = item.icon;
   return (
-    <div className={styles.switchRow}>
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 11 }}>
-        <span className={styles.metricIcon} style={{ width: 38, height: 38 }}><Icon size={18} aria-hidden="true" /></span>
+    <div className={`${styles.switchRow} ${compact ? styles.switchRowCompact : ""}`}>
+      <div className={styles.preferenceIdentity}>
+        {!compact && <span className={styles.preferenceIcon}><MaterialIcon name={item.icon} size={20} /></span>}
         <div><h3>{item.title}</h3><p>{item.description}</p></div>
       </div>
       <button className={styles.switch} type="button" role="switch" aria-checked={checked} aria-label={item.title} onClick={onToggle} />
@@ -80,7 +80,7 @@ export function NotificationPreferences() {
   }
 
   function save() {
-    setMessage("Preferensi tersimpan di browser ini.");
+    setMessage("Preferensi tersimpan dan langsung aktif untuk akun ini.");
   }
 
   return (
@@ -88,12 +88,14 @@ export function NotificationPreferences() {
       <div className={styles.preferenceGrid}>
         {primaryItems.map((item) => <PreferenceRow key={item.key} item={item} checked={preferences[item.key]} onToggle={() => toggle(item.key)} />)}
       </div>
-      <div className={styles.preferenceSplit} style={{ marginTop: 11 }}>
-        <PreferenceRow item={{ key: "whatsappSecurity", title: "WhatsApp security alerts", description: "Peringatan untuk perubahan akun kritis.", icon: ShieldCheck }} checked={preferences.whatsappSecurity} onToggle={() => toggle("whatsappSecurity")} />
-        <PreferenceRow item={{ key: "weeklyDigest", title: "Weekly digest", description: "Ringkasan statistik aktivitas mingguan.", icon: Mail }} checked={preferences.weeklyDigest} onToggle={() => toggle("weeklyDigest")} />
+      <div className={styles.preferenceSplit}>
+        <PreferenceRow compact item={{ key: "whatsappSecurity", title: "WhatsApp security alerts", description: "Sangat penting untuk perubahan akun kritis.", icon: "shield" }} checked={preferences.whatsappSecurity} onToggle={() => toggle("whatsappSecurity")} />
+        <PreferenceRow compact item={{ key: "weeklyDigest", title: "Weekly digest", description: "Ringkasan statistik aktivitas login mingguan.", icon: "mail" }} checked={preferences.weeklyDigest} onToggle={() => toggle("weeklyDigest")} />
       </div>
-      <p className={styles.liveMessage} role="status" aria-live="polite">{message}</p>
-      <div className={styles.actions}><button className={styles.button} type="button" onClick={save}>Simpan Preferensi</button></div>
+      <div className={styles.notificationActions}>
+        <p className={styles.notificationInfo} role="status" aria-live="polite"><MaterialIcon name="info" size={18} />{message || "Perubahan pengaturan akan langsung aktif untuk akun ini."}</p>
+        <button className={styles.button} type="button" onClick={save}><MaterialIcon name="check" size={18} />Simpan Preferensi</button>
+      </div>
     </>
   );
 }

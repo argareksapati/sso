@@ -1,10 +1,10 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./status-content.module.css";
 
 export function StatusContent({
-  icon: Icon,
+  icon,
   eyebrow,
   title,
   description,
@@ -12,7 +12,7 @@ export function StatusContent({
   primaryLabel = "Kembali ke halaman masuk",
   children,
 }: {
-  icon: LucideIcon;
+  icon: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -22,7 +22,7 @@ export function StatusContent({
 }) {
   return (
     <div className={styles.status}>
-      <span className={styles.icon}><Icon size={27} strokeWidth={1.8} aria-hidden="true" /></span>
+      <span className={styles.icon}><MaterialIcon name={icon} size={27} /></span>
       <p className={styles.eyebrow}>{eyebrow}</p>
       <h1>{title}</h1>
       <p className={styles.description}>{description}</p>

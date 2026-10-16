@@ -1,54 +1,149 @@
-.content { width: 100%; max-width: 480px; margin: 0 auto; display: grid; gap: 17px; }
-.heading { display: grid; gap: 4px; }
-.heading h1, .heading h2 { margin: 0; color: var(--ink-strong); font-size: clamp(1.6rem, 2.6vw, 2rem); line-height: 1.15; letter-spacing: -.035em; }
-.heading p { margin: 0; color: var(--ink-muted); font-size: .88rem; }
-.heading .kicker { width: fit-content; margin-bottom: 4px; border-radius: 6px; padding: 4px 8px; color: #1d4ed8; background: #dbeafe; font-size: .63rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-:global(:root[data-theme="dark"]) .heading .kicker { color: #bfdbfe; background: rgba(30, 64, 175, .45); }
-.google { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 11px; border: 1px solid var(--border-strong); border-radius: 12px; color: var(--ink); background: var(--surface-raised); box-shadow: 0 1px 2px rgba(23, 47, 86, .05); font-size: .86rem; font-weight: 780; cursor: pointer; transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease; }
-.google:hover:not(:disabled) { border-color: #7d9dbb; background: var(--surface-subtle); transform: translateY(-1px); }
-.google:disabled { cursor: wait; opacity: .72; }
-.googleMark { width: 19px; height: 19px; flex: 0 0 19px; }
-.divider { display: flex; align-items: center; gap: 13px; color: var(--ink-muted); font-size: .64rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
-.divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--border); }
-.form { display: grid; gap: 13px; }
-.field { display: grid; gap: 6px; }
-.field > label, .labelRow label { color: var(--ink); font-size: .78rem; font-weight: 780; }
-.labelRow { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-.labelRow a { color: #047857; font-size: .74rem; font-weight: 750; }
-.inputShell { position: relative; display: flex; align-items: center; }
-.inputShell > svg { position: absolute; left: 13px; color: #94a3b8; pointer-events: none; }
-.inputShell input, .captchaControls input { width: 100%; min-height: 47px; border: 1px solid var(--border-strong); border-radius: 11px; color: var(--ink-strong); background: var(--surface-raised); font-size: .85rem; transition: border-color 140ms ease, box-shadow 140ms ease; }
-.inputShell input { padding: 9px 44px 9px 40px; }
-.inputShell input::placeholder, .captchaControls input::placeholder { color: #94a3b8; }
-.inputShell input:hover, .captchaControls input:hover { border-color: #7f9ac0; }
-.inputShell input:focus, .captchaControls input:focus { border-color: #10b981; outline: 0; box-shadow: 0 0 0 3px rgba(16, 185, 129, .15); }
-.inputShell input:disabled, .captchaControls input:disabled { cursor: wait; opacity: .65; }
-.visibilityToggle { position: absolute; right: 3px; width: 41px; height: 41px; display: grid; place-items: center; border: 0; border-radius: 9px; color: #8da1be; background: transparent; cursor: pointer; }
-.visibilityToggle:hover { color: #059669; background: var(--surface-subtle); }
-.remember { width: fit-content; min-height: 25px; display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size: .76rem; font-weight: 620; cursor: pointer; }
-.remember input { width: 16px; height: 16px; margin: 0; accent-color: #059669; }
-.captchaCard { display: grid; gap: 9px; border: 1px solid #f2d29a; border-radius: 14px; padding: 12px; background: #fff9eb; }
-:global(:root[data-theme="dark"]) .captchaCard { border-color: #6a5123; background: rgba(63, 48, 20, .34); }
-.captchaHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.captchaHeading label { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-strong); font-size: .76rem; }
-.captchaHeading label svg { color: #d97706; }
-.captchaHeading > span { flex: 0 0 auto; border: 1px solid #f2c977; border-radius: 7px; padding: 4px 8px; color: #78350f; background: #fde7a7; font-size: .7rem; font-weight: 850; }
-:global(:root[data-theme="dark"]) .captchaHeading > span { border-color: #72561d; color: #fde68a; background: #4d3918; }
-.captchaControls { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 8px; }
-.captchaControls input { min-height: 43px; padding: 8px 12px; }
-.captchaControls > button { width: 44px; min-height: 43px; display: grid; place-items: center; border: 1px solid var(--border-strong); border-radius: 10px; color: var(--ink-muted); background: var(--surface-raised); cursor: pointer; }
-.captchaControls > button:hover:not(:disabled) { color: #059669; border-color: #6fbd9e; background: var(--surface-subtle); }
-.captchaControls > button:disabled { cursor: wait; opacity: .55; }
-.fieldError { margin: -1px 0 0; color: var(--danger); font-size: .74rem; }
-.support { margin: 0; padding-top: 16px; border-top: 1px solid var(--border); color: var(--ink-muted); text-align: center; font-size: .76rem; }
-.support a { color: #2563eb; font-weight: 800; }
-.back { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
-@media (max-width: 520px) {
-  .content { gap: 15px; }
-  .heading h1, .heading h2 { font-size: 1.55rem; }
-  .captchaHeading { align-items: flex-start; }
-  .captchaHeading label { max-width: 190px; }
+.content {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
+
+.heading { display: grid; gap: 0; margin-bottom: 24px; padding-top: 5px; }
+.registerContent .heading { margin-bottom: 20px; }
+.heading h1, .heading h2 { margin: 0; color: var(--ink-strong); font-size: 1.5rem; line-height: 32px; font-weight: 800; letter-spacing: -.025em; }
+.heading p { margin: 4px 0 0; color: var(--ink-muted); font-size: .875rem; line-height: 20px; }
+.heading .kicker {
+  width: fit-content;
+  margin: 0 0 8px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: .625rem;
+  line-height: 1.5;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.heading .registerKicker { color: #065f46; background: #d1fae5; }
+:global(:root[data-theme="dark"]) .heading .kicker { color: #bfdbfe; background: rgba(30, 58, 138, .5); }
+:global(:root[data-theme="dark"]) .heading .registerKicker { color: #6ee7b7; background: rgba(6, 78, 59, .55); }
+
+.google {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0 16px;
+  color: var(--ink);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+  font-size: .875rem;
+  line-height: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+.google:hover:not(:disabled) { background: var(--surface-subtle); transform: scale(.99); }
+.google:disabled { cursor: wait; opacity: .72; }
+.googleMark { width: 16px; height: 16px; flex: 0 0 16px; }
+
+.divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block: 20px;
+  color: #64748b;
+  font-size: .625rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.divider::before { content: ""; width: 100%; border-top: 1px solid var(--border); }
+.divider::after { display: none; }
+.divider span { position: absolute; padding-inline: 12px; background: var(--surface-raised); }
+
+.form { display: grid; gap: 16px; }
+.registerContent .form { gap: 12px; }
+.field { display: grid; gap: 4px; }
+.field > label, .labelRow label { color: var(--ink); font-size: .75rem; line-height: 16px; font-weight: 700; }
+.labelRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.labelRow, .labelRow a { line-height: 16px; }
+.labelRow a { color: #047857; font-size: .75rem; font-weight: 700; }
+.inputShell { position: relative; display: flex; align-items: center; }
+.inputShell > svg,
+.inputShell > :global(.material-symbols-outlined) { position: absolute; left: 12px; width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+.inputShell input, .captchaControls input {
+  width: 100%;
+  min-height: 42px;
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: var(--ink-strong);
+  background: var(--surface-raised);
+  font-size: .875rem;
+  line-height: 20px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.inputShell input { padding: 10px 40px 10px 36px; }
+.registerContent .inputShell input { min-height: 38px; height: 38px; padding-block: 8px; }
+.inputShell input::placeholder, .captchaControls input::placeholder { color: #94a3b8; }
+.inputShell input:focus, .captchaControls input:focus { border-color: #10b981; outline: 0; box-shadow: 0 0 0 2px rgba(16, 185, 129, .28); }
+.inputShell input:disabled, .captchaControls input:disabled { cursor: wait; opacity: .65; }
+.visibilityToggle { position: absolute; right: 6px; width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 8px; color: #94a3b8; background: transparent; cursor: pointer; }
+.visibilityToggle:hover { color: #475569; background: var(--surface-subtle); }
+
+.remember { width: fit-content; min-height: 16px; display: inline-flex; align-items: center; gap: 8px; color: var(--ink-muted); font-size: .75rem; line-height: 16px; font-weight: 600; cursor: pointer; }
+.remember input { width: 16px; height: 16px; margin: 0; accent-color: #059669; }
+
+.captchaCard { display: grid; gap: 8px; border: 1px solid rgba(253, 230, 138, .8); border-radius: 16px; padding: 14px; background: rgba(255, 251, 235, .6); }
+:global(:root[data-theme="dark"]) .captchaCard { border-color: rgba(120, 53, 15, .5); background: rgba(30, 41, 59, .8); }
+.captchaHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.captchaHeading label { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-size: .75rem; }
+.captchaHeading label svg,
+.captchaHeading label :global(.material-symbols-outlined) { width: 16px; height: 16px; color: #d97706; }
+.captchaHeading > span { min-width: 104px; flex: 0 0 auto; border-radius: 6px; padding: 2px 10px; color: #78350f; background: #fde68a; font-size: .6875rem; font-variant-numeric: tabular-nums; font-weight: 900; text-align: center; }
+:global(:root[data-theme="dark"]) .captchaHeading > span { color: #fde68a; background: rgba(120, 53, 15, .8); }
+.captchaControls { display: flex; align-items: center; gap: 8px; }
+.captchaControls input { min-width: 0; min-height: 38px; height: 38px; flex: 1 1 0; padding: 8px 12px; }
+.captchaControls > button { width: 36px; min-width: 36px; min-height: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 8px; color: var(--ink-muted); background: var(--surface-raised); cursor: pointer; }
+.captchaControls > button:hover:not(:disabled) { color: #059669; background: var(--surface-subtle); }
+.captchaControls > button:disabled { cursor: wait; opacity: .55; }
+.fieldError { margin: 0; color: var(--danger); font-size: .75rem; }
+
+.registerContent .captchaCard { padding: 12px; }
+.submit { min-height: 44px; gap: 8px; border-radius: 12px; font-size: .875rem; line-height: 20px; letter-spacing: .025em; }
+.support { margin: 16px 0 0; padding-top: 20px; border-top: 1px solid var(--border); color: var(--ink-muted); text-align: center; font-size: .75rem; line-height: 16px; font-weight: 500; }
+.registerContent .support { margin-top: 12px; padding-top: 16px; }
+.support a { margin-left: 4px; color: #2563eb; font-weight: 800; }
+.back { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
+
+@media (max-width: 639px) {
+  .content { padding-top: 4px; }
+  .heading { margin-bottom: 20px; padding-top: 5px; }
+  .registerContent .heading { margin-bottom: 16px; }
+  .heading h1, .heading h2 { font-size: 1.125rem; line-height: 28px; }
+  .heading p { margin-top: 2px; font-size: .75rem; line-height: 16px; }
+  .google { min-height: 38px; font-size: .75rem; line-height: 16px; }
+  .divider { margin-block: 16px; }
+  .form { gap: 12px; }
+  .registerContent .form { gap: 10px; }
+  .field > label, .labelRow label { line-height: 16px; }
+  .labelRow, .labelRow a { line-height: 16px; }
+  .inputShell input, .captchaControls input,
+  .registerContent .inputShell input { min-height: 34px; height: 34px; padding-block: 8px; font-size: .75rem; line-height: 16px; }
+  .remember { line-height: 16px; }
+  .captchaCard { padding: 12px; }
+  .captchaControls input { min-width: 0; flex: 1 1 0; }
+  .captchaControls > button { width: 36px; min-width: 36px; min-height: 42px; height: 42px; padding: 8px; }
+  .submit { min-height: 40px; gap: 8px; }
+  .support { padding-top: 16px; margin-top: 12px; line-height: 16px; }
+  .registerContent .support { padding-top: 12px; margin-top: 8px; }
+}
+
 @media (max-width: 380px) {
   .captchaHeading { display: grid; }
   .captchaHeading > span { width: fit-content; }

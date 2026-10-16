@@ -1,12 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./portal-shell.module.css";
 
-export function LogoutButton({ label = "Keluar" }: { label?: string }) {
+export function LogoutButton({
+  label = "Keluar",
+  loadingLabel = "Keluar…",
+  className,
+  iconSize = 17,
+}: {
+  label?: string;
+  loadingLabel?: string;
+  className?: string;
+  iconSize?: number;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -24,9 +34,9 @@ export function LogoutButton({ label = "Keluar" }: { label?: string }) {
   }
 
   return (
-    <button className={styles.logout} type="button" onClick={logout} disabled={loading} aria-label={loading ? "Sedang keluar" : label}>
-      <LogOut size={17} aria-hidden="true" />
-      <span>{loading ? "Keluar…" : label}</span>
+    <button className={`${styles.logout} ${className ?? ""}`} type="button" onClick={logout} disabled={loading} aria-label={loading ? loadingLabel : label}>
+      <MaterialIcon name="logout" size={iconSize} />
+      <span className={styles.logoutLabel}>{loading ? loadingLabel : label}</span>
     </button>
   );
 }

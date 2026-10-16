@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { ServiceCatalog } from "@/components/portal/service-catalog";
 import { listExistingSsoCatalog } from "@/lib/services/repository";
-import styles from "../portal.module.css";
+import styles from "./catalog.module.css";
 
 export const metadata: Metadata = { title: "Daftar Layanan" };
 

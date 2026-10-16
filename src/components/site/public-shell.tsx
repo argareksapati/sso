@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { LogIn } from "lucide-react";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import { ThemeToggle } from "./theme-toggle";
 import { Wordmark } from "./wordmark";
 import styles from "./public-shell.module.css";
@@ -10,10 +10,10 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <Wordmark inverse />
+          <Wordmark inverse variant="auth" />
           <div className={styles.actions}>
-            <ThemeToggle />
-            <Link className={styles.loginLink} href="/login"><LogIn size={20} aria-hidden="true" /> Masuk</Link>
+            <ThemeToggle auth />
+            <Link className={styles.loginLink} href="/login"><MaterialIcon name="login" size={20} /> Masuk</Link>
           </div>
         </div>
       </header>

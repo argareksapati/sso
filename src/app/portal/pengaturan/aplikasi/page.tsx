@@ -19,7 +19,7 @@ export default async function ConnectedAppsPage() {
   const connected = catalogApplication && !revokedIds.includes(catalogApplication.id) ? catalogApplication : undefined;
 
   return (
-    <AccountPage settings title="Aplikasi Terkoneksi" description="Kelola aplikasi yang menggunakan akun Single Sign On dan izin profil Anda.">
+    <AccountPage settings title="Aplikasi Terkoneksi" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun SSO Anda.">
       <ConnectedAppsManager application={connected} />
     </AccountPage>
   );

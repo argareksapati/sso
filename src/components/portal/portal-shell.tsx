@@ -11,9 +11,9 @@ export function PortalShell({ children }: { displayName: string; children: React
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <Wordmark inverse href="/portal" />
+          <Wordmark inverse href="/portal" variant="portal" />
           <div className={styles.account}>
-            <ThemeToggle />
+            <ThemeToggle compact />
             <LogoutButton />
           </div>
         </div>
@@ -24,7 +24,7 @@ export function PortalShell({ children }: { displayName: string; children: React
       <main className={styles.main}>{children}</main>
 
       <footer className={styles.footer}>
-        <span>© 2026 Pemerintah Kota Bandung · Single Sign On</span>
+        <span>Sistem SSO Kota Bandung Aktif &amp; Aman <i aria-hidden="true">|</i> Versi 1.1.0</span>
         <span className={styles.footerLinks}>
           <Link href="/bantuan">Bantuan</Link>
           <Link href="/kebijakan-privasi">Kebijakan Privasi</Link>

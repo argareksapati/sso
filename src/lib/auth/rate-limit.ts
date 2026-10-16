@@ -10,10 +10,14 @@ function privacyKey(value: string) {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
+function bucketKey(identifier: string, forwardedFor: string | null) {
+  const clientHint = forwardedFor?.split(",")[0]?.trim() || "unknown";
+  return privacyKey(`${clientHint}:${identifier.trim().toLocaleLowerCase("id-ID")}`);
+}
+
 export function consumeAuthAttempt(identifier: string, forwardedFor: string | null) {
   const now = Date.now();
-  const clientHint = forwardedFor?.split(",")[0]?.trim() || "unknown";
-  const key = privacyKey(`${clientHint}:${identifier.trim().toLocaleLowerCase("id-ID")}`);
+  const key = bucketKey(identifier, forwardedFor);
   const current = buckets.get(key);
 
   if (!current || current.resetAt <= now) {
@@ -28,4 +32,8 @@ export function consumeAuthAttempt(identifier: string, forwardedFor: string | nu
     allowed: false,
     retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
   };
+}
+
+export function resetAuthAttempts(identifier: string, forwardedFor: string | null) {
+  buckets.delete(bucketKey(identifier, forwardedFor));
 }

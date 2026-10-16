@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, RefreshCw, ShieldCheck } from "lucide-react";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { MaterialIcon } from "@/components/ui/material-icon";
 import { GoogleMark } from "./google-mark";
 import styles from "./form.module.css";
 
@@ -137,7 +137,7 @@ export function LoginForm({ returnTo, oauthError, registered, passwordChanged }:
       <div className={styles.heading}>
         <p className={styles.kicker}>Autentikasi akun</p>
         <h2>Masuk ke Akun SSO</h2>
-        <p>Gunakan email dan kata sandi terdaftar Anda.</p>
+        <p>Gunakan email dan kata sandi terdaftar Anda</p>
       </div>
 
       <button className={styles.google} type="button" onClick={signInWithGoogle} disabled={googleLoading}>
@@ -153,23 +153,23 @@ export function LoginForm({ returnTo, oauthError, registered, passwordChanged }:
 
       <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.field}>
-          <label htmlFor="identifier">Alamat email</label>
+          <label htmlFor="identifier">Alamat Email</label>
           <div className={styles.inputShell}>
-            <Mail size={18} aria-hidden="true" />
-            <input id="identifier" name="identifier" type="email" placeholder="nama@bandung.go.id" autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.target.value)} required autoFocus />
+            <MaterialIcon name="mail" size={18} />
+            <input id="identifier" name="identifier" type="email" placeholder="nama@bandung.go.id" autoComplete="username" value={identifier} onChange={(event) => setIdentifier(event.target.value)} required />
           </div>
         </div>
 
         <div className={styles.field}>
           <div className={styles.labelRow}>
-            <label htmlFor="password">Kata sandi</label>
+            <label htmlFor="password">Kata Sandi</label>
             <Link href="/lupa-kata-sandi">Lupa kata sandi?</Link>
           </div>
           <div className={styles.inputShell}>
-            <LockKeyhole size={18} aria-hidden="true" />
+            <MaterialIcon name="lock" size={18} />
             <input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="Masukkan kata sandi" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required />
             <button className={styles.visibilityToggle} type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"} aria-pressed={showPassword}>
-              {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
+              <MaterialIcon name={showPassword ? "visibility_off" : "visibility"} size={19} />
             </button>
           </div>
         </div>
@@ -181,19 +181,19 @@ export function LoginForm({ returnTo, oauthError, registered, passwordChanged }:
 
         <div className={styles.captchaCard}>
           <div className={styles.captchaHeading}>
-            <label htmlFor="captcha-answer"><ShieldCheck size={18} aria-hidden="true" /><strong>Verifikasi keamanan</strong></label>
+            <label htmlFor="captcha-answer"><MaterialIcon name="verified_user" size={18} /><strong>Verifikasi Keamanan</strong></label>
             <span aria-label={captcha ? `Berapa ${captcha.left} ditambah ${captcha.right}?` : "Memuat soal verifikasi"}>
-              {captcha ? `Berapa ${captcha.left} + ${captcha.right}?` : "Memuat soal…"}
+              {captcha ? `Berapa ${captcha.left} + ${captcha.right} ?` : "Memuat soal…"}
             </span>
           </div>
           <div className={styles.captchaControls}>
             <input id="captcha-answer" name="captcha" type="number" inputMode="numeric" min={2} max={18} placeholder="Jawaban angka" value={captchaAnswer} disabled={!captcha || captchaLoading} onChange={(event) => { setCaptchaAnswer(event.target.value); setCaptchaError(undefined); }} aria-invalid={Boolean(captchaError)} aria-describedby={captchaError ? "captcha-error" : undefined} required />
-            <button type="button" onClick={() => void requestChallenge()} disabled={captchaLoading} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal"><RefreshCw size={19} aria-hidden="true" /></button>
+            <button type="button" onClick={() => void requestChallenge()} disabled={captchaLoading} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal"><MaterialIcon name="refresh" size={19} /></button>
           </div>
           {captchaError && <p className={styles.fieldError} id="captcha-error" role="alert">{captchaError}</p>}
         </div>
 
-        <Button type="submit" variant="success" loading={loading} disabled={!captcha || captchaLoading}>Masuk Sekarang <ArrowRight size={19} aria-hidden="true" /></Button>
+        <Button className={styles.submit} type="submit" variant="success" loading={loading} disabled={!captcha || captchaLoading}>Masuk Sekarang <MaterialIcon name="arrow_forward" size={19} /></Button>
       </form>
 
       <p className={styles.support}>Belum memiliki akun SSO? <Link href="/daftar">Daftar Akun Baru</Link></p>

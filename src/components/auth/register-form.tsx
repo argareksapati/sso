@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, RefreshCw, ShieldCheck, UserRound } from "lucide-react";
 
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { GoogleMark } from "./google-mark";
+import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./form.module.css";
 
 type CaptchaChallenge = { left: number; right: number };
@@ -28,14 +27,7 @@ export function RegisterForm() {
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaError, setCaptchaError] = useState<string>();
   const [error, setError] = useState<string>();
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  function signUpWithGoogle() {
-    setGoogleLoading(true);
-    const params = new URLSearchParams({ remember: "true", returnTo: "/portal" });
-    window.location.assign(new URL(`/api/auth/google?${params.toString()}`, window.location.origin));
-  }
 
   function refreshCaptcha() {
     setCaptcha((current) => {
@@ -89,78 +81,69 @@ export function RegisterForm() {
   }
 
   return (
-    <div className={styles.content}>
+    <div className={`${styles.content} ${styles.registerContent}`}>
       <div className={styles.heading}>
-        <p className={styles.kicker}>Daftar</p>
-        <h2>Buat akun</h2>
-        <p>Masukkan data Anda di bawah untuk membuat akun.</p>
+        <p className={`${styles.kicker} ${styles.registerKicker}`}>Pendaftaran akun</p>
+        <h2>Buat Akun SSO Baru</h2>
+        <p>Lengkapi identitas Anda untuk pendaftaran</p>
       </div>
-
-      <button
-        className={styles.google}
-        type="button"
-        onClick={signUpWithGoogle}
-        disabled={googleLoading}
-      >
-        <GoogleMark />
-        <span>{googleLoading ? "Mengalihkan ke Google…" : "Daftar dengan Gmail"}</span>
-      </button>
-
-      <div className={styles.divider}><span>atau daftar dengan email</span></div>
       {error && <Alert tone="error">{error}</Alert>}
 
       <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.field}>
-          <label htmlFor="full-name">Nama lengkap</label>
+          <label htmlFor="full-name">Nama Lengkap</label>
           <div className={styles.inputShell}>
-            <UserRound size={18} aria-hidden="true" />
-            <input id="full-name" name="fullName" type="text" placeholder="Nama lengkap" autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} minLength={2} maxLength={120} required autoFocus />
+            <MaterialIcon name="person" size={18} />
+            <input id="full-name" name="fullName" type="text" placeholder="Sesuai KTP" autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} minLength={2} maxLength={120} required />
           </div>
         </div>
 
         <div className={styles.field}>
-          <label htmlFor="register-email">Alamat email</label>
+          <label htmlFor="register-email">Alamat Email Aktif</label>
           <div className={styles.inputShell}>
-            <Mail size={18} aria-hidden="true" />
+            <MaterialIcon name="mail" size={18} />
             <input id="register-email" name="email" type="email" placeholder="nama@contoh.com" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
           </div>
         </div>
 
         <div className={styles.field}>
-          <label htmlFor="register-password">Kata sandi</label>
+          <label htmlFor="register-password">Kata Sandi</label>
           <div className={styles.inputShell}>
-            <LockKeyhole size={18} aria-hidden="true" />
+            <MaterialIcon name="lock" size={18} />
             <input id="register-password" name="password" type={showPassword ? "text" : "password"} placeholder="Minimal 8 karakter" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required />
             <button className={styles.visibilityToggle} type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"} aria-pressed={showPassword}>
-              {showPassword ? <EyeOff size={19} aria-hidden="true" /> : <Eye size={19} aria-hidden="true" />}
+              <MaterialIcon name={showPassword ? "visibility_off" : "visibility"} size={19} />
             </button>
           </div>
         </div>
 
         <div className={styles.field}>
-          <label htmlFor="password-confirmation">Konfirmasi kata sandi</label>
+          <label htmlFor="password-confirmation">Konfirmasi Kata Sandi</label>
           <div className={styles.inputShell}>
-            <LockKeyhole size={18} aria-hidden="true" />
+            <MaterialIcon name="lock_reset" size={18} />
             <input id="password-confirmation" name="passwordConfirmation" type={showPassword ? "text" : "password"} placeholder="Ulangi kata sandi" autoComplete="new-password" value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)} required />
+            <button className={styles.visibilityToggle} type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan sandi ulang" : "Tampilkan sandi ulang"} aria-pressed={showPassword}>
+              <MaterialIcon name={showPassword ? "visibility_off" : "visibility"} size={19} />
+            </button>
           </div>
         </div>
 
         <div className={styles.captchaCard}>
           <div className={styles.captchaHeading}>
-            <label htmlFor="register-captcha-answer"><ShieldCheck size={19} aria-hidden="true" /><strong>Verifikasi keamanan (Captcha)</strong></label>
-            <span aria-label={`Berapa ${captcha.left} ditambah ${captcha.right}?`}>Berapa {captcha.left} + {captcha.right}?</span>
+            <label htmlFor="register-captcha-answer"><MaterialIcon name="verified_user" size={19} /><strong>Verifikasi Keamanan</strong></label>
+            <span aria-label={`Berapa ${captcha.left} ditambah ${captcha.right}?`}>Berapa {captcha.left} + {captcha.right} ?</span>
           </div>
           <div className={styles.captchaControls}>
-            <input id="register-captcha-answer" name="captcha" type="number" inputMode="numeric" placeholder="Hasil penjumlahan" value={captchaAnswer} onChange={(event) => { setCaptchaAnswer(event.target.value); setCaptchaError(undefined); }} aria-invalid={Boolean(captchaError)} aria-describedby={captchaError ? "register-captcha-error" : undefined} required />
-            <button type="button" onClick={refreshCaptcha} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal"><RefreshCw size={20} aria-hidden="true" /></button>
+            <input id="register-captcha-answer" name="captcha" type="number" inputMode="numeric" placeholder="Jawaban angka" value={captchaAnswer} onChange={(event) => { setCaptchaAnswer(event.target.value); setCaptchaError(undefined); }} aria-invalid={Boolean(captchaError)} aria-describedby={captchaError ? "register-captcha-error" : undefined} required />
+            <button type="button" onClick={refreshCaptcha} aria-label="Muat ulang soal verifikasi" title="Muat ulang soal"><MaterialIcon name="refresh" size={20} /></button>
           </div>
           {captchaError && <p className={styles.fieldError} id="register-captcha-error" role="alert">{captchaError}</p>}
         </div>
 
-        <Button type="submit" loading={loading}>Buat akun <ArrowRight size={19} aria-hidden="true" /></Button>
+        <Button className={styles.submit} type="submit" variant="success" loading={loading}>Daftar Akun SSO <MaterialIcon name="arrow_forward" size={19} /></Button>
       </form>
 
-      <p className={styles.support}>Sudah punya akun? <Link href="/login">Masuk</Link></p>
+      <p className={styles.support}>Sudah memiliki akun? <Link href="/login">Masuk Akun</Link></p>
     </div>
   );
 }

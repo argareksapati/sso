@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Grid2X2, Search, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { MaterialIcon } from "@/components/ui/material-icon";
 import type { ExistingCatalogEntry, ServiceCategory } from "@/lib/services/repository";
-import styles from "@/app/portal/portal.module.css";
+import styles from "@/app/portal/layanan/catalog.module.css";
 
 type CategoryFilter = "ALL" | ServiceCategory;
 
@@ -22,8 +22,10 @@ const categoryLabels: Record<ServiceCategory, string> = {
   INNOVATION: "Inovasi & Data",
 };
 
-function initials(name: string) {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+function CatalogIcon({ id }: { id: string }) {
+  if (id === "bandung-smart-map-plus") return <MaterialIcon name="map" size={24} />;
+  if (id === "bandung-kita") return <MaterialIcon name="newspaper" size={24} />;
+  return <MaterialIcon name="account_balance" size={24} />;
 }
 
 export function ServiceCatalog({ services, initialQuery = "" }: {
@@ -51,7 +53,7 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
           <div>
             <span className={styles.ecosystemBadge}><i /> Ekosistem Terintegrasi SSO Kota Bandung</span>
             <h1 id="services-title">Daftar Layanan Aplikasi SSO</h1>
-            <p>Akses portal pelayanan publik, data terbuka, dan aplikasi operasional Pemerintah Kota Bandung dari satu tempat.</p>
+            <p>Akses seluruh portal resmi pelayanan publik, informasi data terbuka, dan aplikasi operasional Pemerintah Kota Bandung menggunakan satu akun terverifikasi.</p>
           </div>
           <div className={styles.totalServices}><small>Total Layanan</small><strong>{services.length} Aplikasi</strong></div>
         </div>
@@ -59,7 +61,7 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
         <div className={styles.catalogTools}>
           <label className={styles.searchField}>
             <span className="sr-only">Cari layanan</span>
-            <Search size={20} aria-hidden="true" />
+            <MaterialIcon name="search" size={20} />
             <input
               value={query}
               maxLength={120}
@@ -83,10 +85,7 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
         </div>
       </section>
 
-      <div className={styles.resultsSummary} role="status" aria-live="polite">
-        <span>{visibleServices.length} layanan ditemukan</span>
-        {(query || category !== "ALL") && <button type="button" onClick={() => { setQuery(""); setCategory("ALL"); }}>Reset filter</button>}
-      </div>
+      <span className="sr-only" role="status" aria-live="polite">{visibleServices.length} layanan ditemukan</span>
 
       {visibleServices.length > 0 ? (
         <section className={styles.serviceGrid} aria-label="Daftar aplikasi SSO">
@@ -97,7 +96,7 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
                   <span className={styles.serviceLogo} aria-hidden="true">
                     {service.logoPath
                       ? <Image src={service.logoPath} alt="" width={48} height={48} sizes="48px" />
-                      : <span>{initials(service.name)}</span>}
+                      : <CatalogIcon id={service.id} />}
                   </span>
                   <span className={styles.categoryBadge} data-category={service.category}>{categoryLabels[service.category]}</span>
                 </div>
@@ -105,31 +104,26 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
                 <p>{service.description}</p>
               </div>
               <footer className={styles.serviceFooter}>
-                <span className={service.sourceUrl ? styles.connected : styles.pending}>
-                  <i /> {service.sourceUrl ? "Portal terverifikasi" : "Menunggu integrasi"}
-                </span>
-                {service.sourceUrl ? (
-                  <a href={service.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    Buka <ArrowRight size={14} aria-hidden="true" />
-                  </a>
-                ) : <span className={styles.soon}>Segera</span>}
+                <span className={styles.connected}><i /> Terhubung SSO</span>
+                <a
+                  href={service.sourceUrl ?? "#"}
+                  target={service.sourceUrl ? "_blank" : undefined}
+                  rel={service.sourceUrl ? "noopener noreferrer" : undefined}
+                  onClick={service.sourceUrl ? undefined : (event) => event.preventDefault()}
+                >
+                  Buka <MaterialIcon name="arrow_forward" size={14} />
+                </a>
               </footer>
             </article>
           ))}
         </section>
       ) : (
         <section className={styles.catalogEmpty}>
-          <Grid2X2 size={34} aria-hidden="true" />
-          <h2>Layanan tidak ditemukan</h2>
-          <p>Coba gunakan kata kunci lain atau tampilkan kembali seluruh kategori.</p>
-          <button type="button" onClick={() => { setQuery(""); setCategory("ALL"); }}>Tampilkan semua layanan</button>
+          <MaterialIcon name="search_off" size={34} />
+          <h2>Layanan Tidak Ditemukan</h2>
+          <p>Coba gunakan kata kunci pencarian lain atau ganti kategori filter.</p>
         </section>
       )}
-
-      <aside className={styles.catalogSecurity}>
-        <ShieldCheck size={20} aria-hidden="true" />
-        <p>Tautan keluar hanya menggunakan alamat layanan resmi yang sudah tercatat pada katalog server.</p>
-      </aside>
     </>
   );
 }

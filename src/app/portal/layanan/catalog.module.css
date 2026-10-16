@@ -1,0 +1,125 @@
+.catalogPage { display: grid; gap: 24px; min-width: 0; }
+
+.catalogHero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, .8);
+  border-radius: 24px;
+  padding: 28px 28px 25px;
+  background: var(--surface-raised);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+}
+
+.colorRail {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.colorRail span:nth-child(1) { background: #2563eb; }
+.colorRail span:nth-child(2) { background: #facc15; }
+.colorRail span:nth-child(3) { background: #10b981; }
+
+.catalogHeading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 4px; }
+.catalogHeading > div:first-child { max-width: 672px; }
+.ecosystemBadge { width: fit-content; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; border: 1px solid rgba(167, 243, 208, .8); border-radius: 999px; padding: 4px 10px; color: #047857; background: #ecfdf5; font-size: .75rem; font-weight: 700; }
+.ecosystemBadge i { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulseDot 2s ease-in-out infinite; }
+.catalogHeading h1 { margin: 0; color: var(--ink-strong); font-size: 1.875rem; line-height: 1.2; font-weight: 800; letter-spacing: -.025em; }
+.catalogHeading p { margin: 4px 0 0; color: var(--ink-muted); font-size: .875rem; line-height: 1.5; }
+.totalServices { flex: 0 0 auto; border: 1px solid var(--border); border-radius: 16px; padding: 8px 14px; background: var(--surface-subtle); text-align: center; }
+.totalServices small, .totalServices strong { display: block; }
+.totalServices small { color: #64748b; font-size: .625rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.totalServices strong { color: #047857; font-size: 1rem; font-weight: 800; }
+
+.catalogTools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px; }
+.searchField { position: relative; display: block; flex: 1 1 0; }
+.searchField svg, .searchField > :global(.material-symbols-outlined) { position: absolute; top: 50%; left: 14px; color: #94a3b8; transform: translateY(-50%); pointer-events: none; }
+.searchField input { width: 100%; min-height: 42px; border: 1px solid var(--border); border-radius: 12px; padding: 8px 16px 8px 40px; color: var(--ink-strong); background: var(--surface-subtle); font-size: .875rem; }
+.searchField input::placeholder { color: #94a3b8; }
+.searchField input:focus { border-color: #10b981; outline: 0; box-shadow: 0 0 0 2px rgba(16, 185, 129, .28); }
+.filters { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; width: auto; }
+.filters button { min-height: 34px; border: 0; border-radius: 12px; padding: 0 12px; color: var(--ink-muted); background: var(--surface-subtle); font: inherit; font-size: .75rem; font-weight: 600; text-align: center; cursor: pointer; transition: color 150ms ease, background-color 150ms ease; }
+.filters button:hover { background: color-mix(in srgb, var(--surface-subtle) 75%, var(--border)); }
+.filters button[aria-pressed="true"] { color: #fff; background: #047857; box-shadow: 0 1px 2px rgba(15, 23, 42, .08); font-weight: 700; }
+
+.serviceGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.serviceCard {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(226, 232, 240, .8);
+  border-radius: 16px;
+  padding: 16px;
+  background: var(--surface-raised);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.serviceCard:hover { border-color: #10b981; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, .1), 0 2px 4px -2px rgba(15, 23, 42, .1); }
+.serviceTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.serviceLogo { width: 48px; height: 48px; display: grid; flex: 0 0 auto; place-items: center; overflow: hidden; border: 1px solid rgba(226, 232, 240, .8); border-radius: 12px; color: #fff; background: linear-gradient(135deg, #2563eb, #059669); box-shadow: 0 1px 2px rgba(15, 23, 42, .08); }
+.serviceLogo img { width: 100%; height: 100%; padding: 4px; object-fit: contain; background: #fff; }
+.serviceCard:nth-child(5) .serviceLogo { background: #0d9488; }
+.serviceCard:nth-child(8) .serviceLogo { color: #0f172a; background: #f59e0b; }
+.categoryBadge { border: 1px solid rgba(167, 243, 208, .6); border-radius: 999px; padding: 2px 8px; color: #047857; background: #ecfdf5; font-size: .625rem; line-height: 1.5; font-weight: 700; white-space: nowrap; }
+.categoryBadge[data-category="INTERNAL"] { border-color: rgba(191, 219, 254, .6); color: #1d4ed8; background: #eff6ff; }
+.categoryBadge[data-category="INNOVATION"] { border-color: rgba(221, 214, 254, .6); color: #6d28d9; background: #faf5ff; }
+.serviceCard h2 { margin: 0; color: var(--ink-strong); font-size: 1rem; line-height: 1.5; font-weight: 700; transition: color 150ms ease; }
+.serviceCard:hover h2 { color: #059669; }
+.serviceCard > div > p { margin: 4px 0 0; color: var(--ink-muted); font-size: .75rem; line-height: 1.625; }
+.serviceFooter { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+.connected { display: inline-flex; align-items: center; gap: 4px; color: #047857; font-size: .6875rem; font-weight: 700; }
+.connected i { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+.serviceFooter a { min-height: 30px; display: inline-flex; align-items: center; gap: 4px; border-radius: 12px; padding: 0 12px; color: var(--ink); background: var(--surface-subtle); font-size: .75rem; font-weight: 700; text-decoration: none; transition: color 150ms ease, background-color 150ms ease; }
+.serviceFooter a:hover { color: #fff; background: #059669; }
+
+.catalogEmpty { min-height: 190px; display: grid; place-items: center; align-content: center; border: 1px solid var(--border); border-radius: 24px; padding: 48px; color: #94a3b8; background: var(--surface-raised); text-align: center; }
+.catalogEmpty h2 { margin: 8px 0 0; color: var(--ink-strong); font-size: 1rem; }
+.catalogEmpty p { margin: 4px 0 0; color: var(--ink-muted); font-size: .75rem; }
+
+:global(:root[data-theme="dark"]) .catalogHero,
+:global(:root[data-theme="dark"]) .serviceCard,
+:global(:root[data-theme="dark"]) .serviceLogo { border-color: #1e293b; }
+:global(:root[data-theme="dark"]) .totalServices small { color: #cbd5e1; }
+:global(:root[data-theme="dark"]) .totalServices strong,
+:global(:root[data-theme="dark"]) .connected { color: #6ee7b7; }
+:global(:root[data-theme="dark"]) .ecosystemBadge { border-color: rgba(6, 95, 70, .6); color: #6ee7b7; background: rgba(2, 44, 34, .6); }
+:global(:root[data-theme="dark"]) .categoryBadge { border-color: rgba(6, 95, 70, .6); color: #6ee7b7; background: rgba(2, 44, 34, .6); }
+:global(:root[data-theme="dark"]) .categoryBadge[data-category="INTERNAL"] { border-color: rgba(30, 58, 138, .6); color: #93c5fd; background: rgba(23, 37, 84, .6); }
+:global(:root[data-theme="dark"]) .categoryBadge[data-category="INNOVATION"] { border-color: rgba(88, 28, 135, .6); color: #d8b4fe; background: rgba(59, 7, 100, .6); }
+
+@keyframes pulseDot { 50% { opacity: .5; } }
+
+@media (max-width: 1279px) {
+  .serviceGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1023px) {
+  .catalogTools { align-items: stretch; flex-direction: column; }
+  .filters { justify-content: flex-start; }
+}
+
+@media (max-width: 639px) {
+  .catalogHero { border-radius: 16px; padding: 20px; }
+  .colorRail { height: 6px; }
+  .catalogHeading { align-items: flex-start; flex-direction: column; }
+  .catalogHeading h1 { font-size: 1.25rem; }
+  .catalogHeading p { font-size: .75rem; }
+  .totalServices { padding: 8px 14px; }
+  .catalogTools { margin-top: 24px; padding-top: 20px; }
+  .searchField input { min-height: 40px; font-size: .75rem; }
+  .filters { flex-wrap: nowrap; width: 100%; gap: 8px; }
+  .filters button { min-width: 0; min-height: 34px; flex: 1 1 0; padding-inline: 6px; font-size: .75rem; line-height: 1.2; }
+  .serviceGrid { grid-template-columns: 1fr; }
+  .catalogEmpty { border-radius: 16px; }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .serviceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ecosystemBadge i { animation: none; }
+  .serviceCard { transition: none; }
+}

@@ -3,7 +3,17 @@
 .icon { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; transition: color 160ms ease, background-color 160ms ease, transform 160ms ease; }
 .icon[data-active="true"] { color: #172033; background: #facc15; box-shadow: 0 2px 8px rgba(0, 0, 0, .2); transform: scale(1.03); }
 .toggle[aria-pressed="true"] .icon[data-active="true"] { color: #172033; background: #facc15; }
+.toggle[data-compact="true"] { min-width: 56px; min-height: 32px; gap: 2px; padding: 2px 4px; }
+.toggle[data-compact="true"] .icon { width: 24px; height: 24px; }
+.toggle[data-auth="true"] { min-width: 64px; width: 64px; min-height: 32px; height: 32px; gap: 2px; padding: 3px 4px; }
+.toggle[data-auth="true"] .icon { width: 24px; height: 24px; }
 @media (max-width: 700px) {
   .toggle { min-width: 38px; width: 38px; min-height: 38px; justify-content: center; padding: 4px; }
   .icon:not([data-active="true"]) { display: none; }
+  .toggle[data-compact="true"] { min-width: 44px; width: 44px; min-height: 28px; justify-content: space-between; padding: 2px 3px; }
+  .toggle[data-compact="true"] .icon { width: 20px; height: 20px; }
+  .toggle[data-compact="true"] .icon:not([data-active="true"]) { display: grid; }
+  .toggle[data-auth="true"] { min-width: 48px; width: 48px; min-height: 28px; height: 28px; justify-content: space-between; padding: 3px; }
+  .toggle[data-auth="true"] .icon { width: 20px; height: 20px; }
+  .toggle[data-auth="true"] .icon:not([data-active="true"]) { display: grid; }
 }

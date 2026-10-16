@@ -1,11 +1,21 @@
-.wordmark { display: inline-flex; align-items: center; gap: 13px; color: var(--ink-strong); text-decoration: none; }
+.wordmark { display: inline-flex; align-items: center; gap: 14px; min-width: 0; color: var(--ink-strong); text-decoration: none; }
 .logoTile { height: 46px; display: inline-flex; align-items: center; gap: 6px; border: 2px solid #facc15; border-radius: 12px; padding: 4px 11px 4px 6px; color: #17658f; background: #fff; box-shadow: 0 7px 20px rgba(4, 31, 87, .14); font-size: .87rem; letter-spacing: .04em; }
 .logoTile img { width: 34px; height: 34px; object-fit: contain; }
-.copy { display: grid; gap: 1px; }
+.copy { min-width: 0; display: grid; gap: 1px; }
 .title { display: flex; align-items: center; gap: 8px; font-size: 1.18rem; font-weight: 820; letter-spacing: -.03em; white-space: nowrap; }
 .title small { border: 1px solid rgba(255, 255, 255, .46); border-radius: 999px; padding: 2px 8px; font-size: .56rem; letter-spacing: .04em; opacity: .92; }
 .subtitle { font-size: .72rem; font-weight: 560; opacity: .84; white-space: nowrap; }
 .wordmark[data-inverse="true"] { color: #fff; }
+
+.wordmark[data-variant="auth"] .logoTile,
+.wordmark[data-variant="portal"] .logoTile { min-width: 154.015625px; height: 44px; justify-content: center; padding: 4px 12px 4px 8px; }
+.wordmark[data-variant="auth"] .logoTile img,
+.wordmark[data-variant="portal"] .logoTile img { width: 32px; height: 32px; }
+.wordmark[data-variant="auth"] .title { font-size: 1.25rem; }
+.wordmark[data-variant="auth"] .copy { width: 246.25px; height: auto; display: grid; overflow: visible; }
+.wordmark[data-variant="auth"] .title { height: 24px; flex: 0 0 24px; line-height: 24px; }
+.wordmark[data-variant="portal"] .title { font-size: 1.15rem; }
+
 @media (max-width: 700px) {
   .logoTile { height: 40px; padding-right: 8px; }
   .logoTile img { width: 29px; height: 29px; }
@@ -15,4 +25,27 @@
   .title small { font-size: .48rem; padding-inline: 6px; }
   .subtitle { display: none; }
 }
-@media (max-width: 420px) { .title small { display: none; } }
+
+@media (max-width: 639px) {
+  .wordmark[data-variant="auth"],
+  .wordmark[data-variant="portal"] { gap: 10px; }
+  .wordmark[data-variant="auth"] .logoTile,
+  .wordmark[data-variant="portal"] .logoTile { min-width: 114.515625px; height: 36px; flex-shrink: 0; gap: 4px; border-radius: 12px; padding: 4px 8px; font-size: .62rem; }
+  .wordmark[data-variant="auth"] .logoTile img,
+  .wordmark[data-variant="portal"] .logoTile img { width: 24px; height: 24px; }
+  .wordmark[data-variant="auth"] .logoTile strong,
+  .wordmark[data-variant="portal"] .logoTile strong { display: inline; }
+  .wordmark[data-variant="auth"] .copy,
+  .wordmark[data-variant="portal"] .copy { width: auto; height: auto; display: grid; overflow: visible; }
+  .wordmark[data-variant="auth"] .title,
+  .wordmark[data-variant="portal"] .title { height: auto; flex: initial; flex-wrap: wrap; gap: 6px; font-size: .875rem; line-height: 1.25; }
+  .wordmark[data-variant="auth"] .title small,
+  .wordmark[data-variant="portal"] .title small { display: inline; padding: 2px 6px; font-size: .5rem; }
+  .wordmark[data-variant="auth"] .subtitle { display: none; }
+}
+
+@media (max-width: 420px) {
+  .title small { display: none; }
+  .wordmark[data-variant="auth"] .title small,
+  .wordmark[data-variant="portal"] .title small { display: inline; }
+}

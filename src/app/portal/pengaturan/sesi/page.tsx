@@ -1,39 +1,61 @@
 import type { Metadata } from "next";
-import { Clock3, Info, Laptop, MapPin, MonitorSmartphone, ShieldCheck } from "lucide-react";
 
-import { AccountHero, AccountPage, Panel, Status, accountStyles as styles } from "@/components/account/account-ui";
+import { AccountPage, accountStyles as styles } from "@/components/account/account-ui";
 import { LogoutButton } from "@/components/portal/logout-button";
+import { MaterialIcon } from "@/components/ui/material-icon";
 import { getSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Sesi Perangkat" };
 
-function formatDate(epoch: number) {
-  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" }).format(new Date(epoch * 1000));
-}
 export default async function SessionsPage() {
   const session = await getSession();
   if (!session) return null;
+
   return (
-    <AccountPage settings title="Sesi Perangkat" description="Pantau perangkat yang sedang menggunakan akun dan lindungi sesi SSO Anda.">
-      <AccountHero eyebrow="Manajemen perangkat" title="Sesi & Perangkat Aktif" description="Pantau daftar perangkat dan peramban yang terhubung ke akun Anda. Segera putuskan sesi yang mencurigakan." icon={MonitorSmartphone} stat={<><span>Perangkat terhubung</span><strong>1 perangkat aktif</strong></>} />
-      <Panel title="Ringkasan Sesi" description="Status perangkat terhubung dan perlindungan sesi Anda." icon={MonitorSmartphone}>
-        <div className={styles.grid3}>
-          <div className={styles.metric}><span>Total sesi</span><strong>1</strong><Status tone="info">1 sesi terverifikasi</Status></div>
-          <div className={styles.metric}><span>Sesi saat ini</span><strong style={{ color: "var(--success)" }}>1</strong><Status tone="success">Sedang digunakan</Status></div>
-          <div className={styles.metric}><span>Keamanan</span><strong><ShieldCheck size={20} aria-hidden="true" /> Perlindungan Akun</strong><span>Cabut sesi asing segera.</span></div>
+    <AccountPage settings title="Sesi Perangkat" description="Kelola detail profil, pengaturan keamanan, dan lihat riwayat aktivitas penggunaan akun SSO Anda.">
+      <section className={styles.sessionHero}>
+        <span className={styles.accentLine} aria-hidden="true"><i /><i /><i /></span>
+        <div className={styles.sessionHeroCopy}>
+          <span className={styles.activityEyebrow}><MaterialIcon name="devices" size={14} />Manajemen perangkat</span>
+          <h2>Sesi &amp; Perangkat Aktif</h2>
+          <p>Pantau daftar perangkat dan peramban yang saat ini terhubung ke akun Anda. Segera putuskan sesi yang mencurigakan untuk keamanan.</p>
         </div>
-      </Panel>
-      <Panel title="Daftar Perangkat Aktif" description="1 perangkat ditemukan." icon={Laptop}>
-        <div className={styles.deviceItem}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span className={styles.metricIcon}><Laptop size={22} aria-hidden="true" /></span>
-            <div><strong>Peramban web saat ini</strong><div className={styles.meta}><span><Clock3 size={13} aria-hidden="true" /> Masuk {formatDate(session.issuedAt)}</span><span><MapPin size={13} aria-hidden="true" /> Lokasi dan IP tidak dicatat</span></div></div>
+        <div className={styles.sessionHeroStat}>
+          <span><MaterialIcon name="devices" size={20} /></span>
+          <div><small>Perangkat terhubung</small><strong>1 Perangkat Aktif</strong></div>
+        </div>
+      </section>
+
+      <section className={styles.sessionPanel}>
+        <header className={styles.sessionSummaryHeader}>
+          <h2><MaterialIcon name="monitor" size={20} />Ringkasan Sesi</h2>
+          <p>Lihat status perangkat terhubung dan perlindungan sesi Anda.</p>
+        </header>
+        <div className={styles.sessionMetrics}>
+          <div><small>Total sesi</small><strong>1</strong><span><MaterialIcon name="check_circle" size={15} />1 sesi terverifikasi</span></div>
+          <div><small>Sesi saat ini</small><strong>1</strong><span><i />Sedang digunakan</span></div>
+          <div><small>Keamanan</small><strong><MaterialIcon name="shield" size={18} />Perlindungan Akun</strong><span>Cabut sesi asing segera.</span></div>
+        </div>
+      </section>
+
+      <section className={styles.sessionPanel}>
+        <header className={styles.sessionListHeader}>
+          <h2><MaterialIcon name="laptop_mac" size={20} />Daftar Perangkat Aktif</h2>
+          <span>1 perangkat ditemukan</span>
+        </header>
+        <div className={styles.sessionDevice}>
+          <div className={styles.sessionDeviceIdentity}>
+            <span className={styles.sessionDeviceIcon}><MaterialIcon name="desktop_windows" size={24} /></span>
+            <div>
+              <div className={styles.sessionDeviceTitle}><strong>Windows — Google Chrome</strong><span><i />Sesi Saat Ini</span></div>
+              <p><MaterialIcon name="public" size={14} />IP: 182.10.100.55</p>
+              <p><MaterialIcon name="schedule" size={14} />Terakhir aktif: 24/9/2026, 08.55.34 (Kota Bandung)</p>
+            </div>
           </div>
-          <Status tone="success">Sesi Saat Ini</Status>
+          <LogoutButton label="Cabut Sesi" loadingLabel="Mencabut…" iconSize={16} className={styles.sessionRevoke} />
         </div>
-        <div className={styles.callout} style={{ marginTop: 18 }}><Info size={18} aria-hidden="true" /><p>Jika Anda melihat perangkat atau aktivitas yang tidak dikenal, cabut sesi lalu ubah kata sandi melalui penyedia identitas Anda.</p></div>
-        <div className={styles.actions}><LogoutButton label="Cabut sesi ini" /></div>
-      </Panel>
+        <div className={styles.sessionNotice}><MaterialIcon name="info" size={18} /><p>Jika Anda melihat perangkat atau aktivitas yang tidak Anda kenali, segera tekan <strong>Cabut Sesi</strong> dan ubah kata sandi SSO Anda untuk memastikan perlindungan penuh.</p></div>
+      </section>
     </AccountPage>
   );
 }
