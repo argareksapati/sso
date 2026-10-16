@@ -303,14 +303,14 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  border: 1px solid #fde68a;
+  border: 1px solid #d1fae5;
   border-radius: 24px;
   padding: 20px;
   color: var(--ink-strong);
-  background: #fffbeb;
+  background: #f8fafc;
   box-shadow: 0 3px 10px rgba(15, 23, 42, .04);
 }
-.securityIcon { width: 40px; height: 40px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 12px; color: #0f172a; background: #fbbf24; }
+.securityIcon { width: 40px; height: 40px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 12px; color: #059669; background: #ecfdf5; }
 .securityNote p { margin: 1px 0 0; }
 .securityNote strong,
 .securityNote span { display: block; }
@@ -362,7 +362,8 @@
 :global(:root[data-theme="dark"]) .frequencyMeta strong,
 :global(:root[data-theme="dark"]) .nextStep small { color: #6ee7b7; }
 :global(:root[data-theme="dark"]) .quickIcon { color: #34d399; background: #052e2b; }
-:global(:root[data-theme="dark"]) .securityNote { border-color: rgba(120, 53, 15, .7); background: var(--surface-raised); }
+:global(:root[data-theme="dark"]) .securityNote { border-color: #134e4a; background: var(--surface-raised); }
+:global(:root[data-theme="dark"]) .securityIcon { color: #34d399; background: #052e2b; }
 :global(:root[data-theme="dark"]) .nextStep { border-color: #064e3b; background: rgba(2, 44, 34, .55); }
 
 @media (max-width: 1023px) {

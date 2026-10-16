@@ -145,7 +145,7 @@ export default async function PortalPage() {
 
           <aside className={styles.securityNote}>
             <span className={styles.securityIcon}><MaterialIcon name="shield" size={20} /></span>
-            <p><strong>Enkripsi SHA-256 Terjamin</strong><span>Seluruh transaksi autentikasi terlindungi protokol resmi Diskominfo Kota Bandung.</span></p>
+            <p><strong>Enkripsi SHA-256 Aktif</strong><span>Identitas Anda terlindungi protokol keamanan Sandi Siber Diskominfo.</span></p>
           </aside>
         </div>
       </div>
