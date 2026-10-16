@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { ActivityRefreshButton } from "@/components/account/activity-refresh-button";
 import { AccountPage, accountStyles as styles } from "@/components/account/account-ui";
 import { MaterialIcon } from "@/components/ui/material-icon";
 import { getSession } from "@/lib/auth/session";
@@ -67,7 +68,7 @@ export default async function ActivityPage() {
       </div>
 
       <div className={styles.activityPagination}>
-        <span><MaterialIcon name="sync" size={16} />Halaman aktivitas SSO</span>
+        <ActivityRefreshButton />
         <div><button type="button" disabled>« Sebelumnya</button><button type="button" aria-current="page">1</button><button type="button" disabled>Selanjutnya »</button></div>
       </div>
     </AccountPage>

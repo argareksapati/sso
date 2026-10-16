@@ -482,6 +482,11 @@ test("log aktivitas dan sesi perangkat sesuai desain responsif", async ({ page }
 
   await page.goto("/portal/pengaturan/aktivitas");
   await expect(page.getByRole("heading", { name: "Log Aktivitas", level: 1 })).toBeVisible();
+  const refreshActivity = page.getByRole("button", { name: "Perbarui log aktivitas" });
+  await refreshActivity.click();
+  await expect(refreshActivity).toBeDisabled();
+  await expect(page.getByRole("status")).toHaveText("Log aktivitas berhasil diperbarui");
+  await expect(refreshActivity).toBeEnabled();
   await expect(page).toHaveScreenshot("settings-activity-mobile.png", { fullPage: true, caret: "initial" });
 
   await page.setViewportSize({ width: 1280, height: 900 });

@@ -220,11 +220,11 @@
 .integrationSummaryPanel .panelBody,
 .notificationSummaryPanel .panelBody { padding: 0 24px 24px; }
 .integrationMetrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.integrationMetric { min-height: 126px; display: grid; align-content: start; gap: 4px; border: 1px solid var(--border); border-radius: 16px; padding: 16px; background: var(--surface-subtle); }
+.integrationMetric { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border); border-radius: 16px; padding: 16px; background: var(--surface-subtle); }
 .integrationMetric small { color: #94a3b8; font-size: .625rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .integrationMetric strong { margin-top: 2px; color: var(--ink-strong); font-size: 1.5rem; line-height: 1.25; font-weight: 800; }
 .integrationMetric p { margin: 7px 0 0; color: var(--ink); font-size: .75rem; line-height: 1.5; font-weight: 500; }
-.integrationMetric > span { display: inline-flex; align-items: center; gap: 4px; color: #059669; font-size: .75rem; font-weight: 700; }
+.integrationMetric > span { display: inline-flex; align-items: center; gap: 4px; margin-top: auto; color: #059669; font-size: .75rem; font-weight: 700; }
 .integrationMetric:first-child > span { color: var(--ink-muted); font-weight: 500; }
 .integrationMetric:first-child > span :global(.material-symbols-outlined) { color: #059669; }
 .integrationMetric > span[data-tone="warning"] { color: #f59e0b; }
@@ -250,10 +250,10 @@
 .notificationPreferencesPanel .panelHeader { padding-bottom: 18px; }
 .notificationPreferencesPanel .panelBody { padding: 0 24px 24px; }
 .notificationSummaryPanel .channelGrid { gap: 16px; }
-.notificationSummaryPanel .channel { min-height: 126px; gap: 5px; border-radius: 16px; padding: 16px; }
+.notificationSummaryPanel .channel { min-height: 0; display: flex; flex-direction: column; gap: 0; border-radius: 16px; padding: 16px; }
 .notificationSummaryPanel .channel small { color: #94a3b8; font-size: .625rem; letter-spacing: .05em; }
 .notificationSummaryPanel .channel > span:not(.channelState) { margin-top: 7px; color: var(--ink); font-weight: 500; }
-.notificationSummaryPanel .channelState { margin-top: 0; }
+.notificationSummaryPanel .channelState { margin-top: 7px; }
 .notificationPreferencesPanel .preferenceGrid { gap: 14px; }
 .notificationPreferencesPanel .switchRow { min-height: 74px; margin: 0; border-radius: 16px; padding: 16px; background: var(--surface-raised); }
 .preferenceIdentity { min-width: 0; display: flex; align-items: center; gap: 14px; }
@@ -478,13 +478,21 @@
 .activityAuditService strong { color: var(--ink-strong); font-size: .875rem; }
 .activityDate { display: flex; align-items: center; gap: 4px; margin-top: 6px; color: var(--ink-muted); font-size: .75rem; }
 .activityPagination { min-height: 61px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--border); border-radius: 16px; padding: 14px 20px; background: var(--surface-raised); box-shadow: 0 1px 2px rgba(15, 23, 42, .05); }
-.activityPagination > span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-muted); font-size: .75rem; font-weight: 500; }
-.activityPagination > span svg,
-.activityPagination > span :global(.material-symbols-outlined) { color: #059669; }
-.activityPagination > div { display: flex; align-items: center; gap: 6px; }
+.activityRefreshGroup { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-muted); font-size: .75rem; font-weight: 500; }
+.activityRefreshButton { width: 26px; height: 26px; display: grid; flex: 0 0 auto; place-items: center; border: 0; border-radius: 8px; padding: 0; color: #059669; background: transparent; cursor: pointer; transition: color 160ms ease, background 160ms ease, transform 160ms ease; }
+.activityRefreshButton:hover:not(:disabled) { color: #047857; background: var(--success-soft); }
+.activityRefreshButton:focus-visible { outline: 2px solid #059669; outline-offset: 2px; }
+.activityRefreshButton:active:not(:disabled) { transform: scale(.92); }
+.activityRefreshButton:disabled { cursor: wait; }
+.activityRefreshButton[aria-busy="true"] :global(.material-symbols-outlined) { animation: activityRefreshSpin 650ms linear infinite; }
+.activityPagination > div:last-child { display: flex; align-items: center; gap: 6px; }
 .activityPagination button { min-height: 32px; border: 1px solid var(--border); border-radius: 12px; padding: 0 12px; color: var(--ink); background: var(--surface-raised); font-size: .75rem; font-weight: 500; }
+.activityPagination .activityRefreshButton { min-height: 26px; flex: 0 0 auto; border: 0; padding: 0; color: #059669; background: transparent; }
+.activityPagination .activityRefreshButton:hover:not(:disabled) { color: #047857; background: var(--success-soft); }
 .activityPagination button[aria-current="page"] { width: 32px; padding: 0; border-color: #059669; color: #fff; background: #059669; font-weight: 700; }
 .activityPagination button:disabled { cursor: not-allowed; opacity: .5; }
+.activityPagination .activityRefreshButton:disabled { cursor: wait; opacity: 1; }
+@keyframes activityRefreshSpin { to { transform: rotate(360deg); } }
 
 /* Sessions redesign. */
 .sessionHeroStat { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface-subtle); box-shadow: 0 1px 2px rgba(15, 23, 42, .05); }
@@ -688,7 +696,7 @@
   .activityAuditRow { align-items: flex-start; }
   .activityAuditRow { flex-direction: column; }
   .activityPagination { align-items: stretch; flex-direction: column; }
-  .activityPagination > div { width: 100%; }
+  .activityPagination > div:last-child { width: 100%; }
   .activityPagination button { flex: 1; }
   .sessionHeroStat { align-self: flex-start; }
   .sessionMetrics > div { min-height: 0; }
