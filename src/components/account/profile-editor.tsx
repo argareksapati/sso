@@ -161,7 +161,10 @@ export function ProfileEditor({ initialProfile, initialHasPhoto }: ProfileEditor
                 </div>
                 <div className={styles.field}>
                   <label htmlFor="username">Username Akun</label>
-                  <input className={styles.monospaceInput} id="username" value={profile.username} onChange={(event) => update("username", event.target.value)} minLength={3} maxLength={40} pattern="[A-Za-z0-9._-]+" required />
+                  <div className={styles.usernameInput}>
+                    <input className={styles.monospaceInput} id="username" value={profile.username} onChange={(event) => update("username", event.target.value)} minLength={3} maxLength={40} pattern="[A-Za-z0-9._-]+" required />
+                    <MaterialIcon name="lock" size={18} />
+                  </div>
                   <small>Perubahan username hanya dapat dilakukan 1 kali.</small>
                 </div>
                 <div className={styles.field}><label htmlFor="nickname">Nama Panggilan / Nickname</label><input id="nickname" value={profile.nickname} onChange={(event) => update("nickname", event.target.value)} placeholder="Contoh: Budi" maxLength={60} required /></div>

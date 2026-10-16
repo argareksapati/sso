@@ -159,9 +159,9 @@
 .tip { display: flex; align-items: flex-start; gap: 11px; border: 1px solid var(--border); border-radius: 13px; padding: 15px; background: var(--surface-subtle); }
 .tip svg,
 .tip > :global(.material-symbols-outlined) { flex: 0 0 auto; color: #059669; }
-.tip strong, .tip span { display: block; }
-.tip strong { font-size: .87rem; }
-.tip span { color: var(--ink-muted); font-size: .76rem; }
+.tip > div > strong, .tip > div > span { display: block; }
+.tip > div > strong { font-size: .87rem; }
+.tip > div > span { color: var(--ink-muted); font-size: .76rem; }
 .channelGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
 .channel { min-height: 105px; display: grid; align-content: start; gap: 7px; border: 1px solid var(--border); border-radius: 13px; padding: 16px; background: var(--surface-subtle); }
 .channel svg, .channel :global(.material-symbols-outlined) { color: #059669; }
@@ -334,7 +334,10 @@
 .formSectionHeader p { margin: 2px 0 0; color: var(--ink-muted); font-size: .75rem; line-height: 16px; }
 .verifiedInput { position: relative; display: flex; align-items: center; }
 .verifiedInput input { padding-right: 112px; }
-.verifiedInput span { position: absolute; right: 10px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #a7f3d0; border-radius: 8px; padding: 2px 8px; color: #059669; background: #ecfdf5; font-size: .6875rem; font-weight: 700; }
+.verifiedInput > span { position: absolute; right: 10px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #a7f3d0; border-radius: 8px; padding: 2px 8px; color: #059669; background: #ecfdf5; font-size: .6875rem; font-weight: 700; }
+.usernameInput { position: relative; display: flex; align-items: center; }
+.usernameInput input { padding-right: 40px; }
+.usernameInput > :global(.material-symbols-outlined) { position: absolute; top: 50%; right: 12px; color: #94a3b8; pointer-events: none; transform: translateY(-50%); }
 .monospaceInput { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-weight: 700 !important; }
 .fieldFull { grid-column: 1 / -1; padding-bottom: 6px; }
 .field small { margin-top: -2px; line-height: 16.5px; }
@@ -425,8 +428,8 @@
 .securityTipsPanel .panelBody { padding: 0 20px 20px; }
 .securityTipsPanel .tips { padding-top: 16px; }
 .securityTipsPanel .tip { padding: 12px; }
-.securityTipsPanel .tip strong { font-size: .75rem; }
-.securityTipsPanel .tip span { margin-top: 2px; font-size: .6875rem; line-height: 1.625; }
+.securityTipsPanel .tip > div > strong { font-size: .75rem; }
+.securityTipsPanel .tip > div > span { margin-top: 2px; font-size: .6875rem; line-height: 1.625; }
 .securityTipsPanel .tip:nth-child(3) > svg,
 .securityTipsPanel .tip:nth-child(3) > :global(.material-symbols-outlined) { color: #f59e0b; }
 .securityTipsPanel .securityFoot { margin-top: 4px; padding: 12px; }
@@ -555,7 +558,7 @@
 :global(:root[data-theme="dark"]) .channel small,
 :global(:root[data-theme="dark"]) .inlineLabel { color: #9bacc5; }
 :global(:root[data-theme="dark"]) .profileBadges > span:last-child,
-:global(:root[data-theme="dark"]) .verifiedInput span,
+:global(:root[data-theme="dark"]) .verifiedInput > span,
 :global(:root[data-theme="dark"]) .previewHeading > div > span { border-color: #065f46; color: #6ee7b7; background: rgba(6, 78, 59, .55); }
 :global(:root[data-theme="dark"]) .photoRatio { border-color: #065f46; background: rgba(6, 78, 59, .2); }
 :global(:root[data-theme="dark"]) .photoRatio > div { border-color: #064e3b; }
