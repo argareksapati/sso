@@ -209,7 +209,7 @@ export function ProfileEditor({ initialProfile, initialHasPhoto }: ProfileEditor
             </div>
             <div className={styles.previewProfile}>
               <span className={styles.previewAvatar}>{photoUrl ? <img src={photoUrl} alt={`Foto profil ${displayName}`} /> : initials(displayName)}</span>
-              <div><strong>{displayName}</strong><MaterialIcon name="verified" size={16} /><span>@{profile.username}</span><small><MaterialIcon name="location_on" size={13} />{profile.birthPlace || "Bandung"}, Indonesia</small></div>
+              <div><strong>{displayName}</strong><MaterialIcon className={styles.previewVerifiedIcon} name="verified" size={16} filled /><span className={styles.previewUsername}>@{profile.username}</span><small><MaterialIcon name="location_on" size={13} />{profile.birthPlace || "Bandung"}, Indonesia</small></div>
             </div>
             <div className={styles.photoRatio}>
               <p><MaterialIcon name="lightbulb" size={18} /><span>Rasio foto disarankan <strong>1:1</strong> dengan format JPG, PNG atau WEBP maksimal <strong>2MB</strong>.</span></p>

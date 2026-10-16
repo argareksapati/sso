@@ -364,9 +364,8 @@
 .previewAvatar img { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; }
 .previewProfile > div { min-width: 0; display: grid; grid-template-columns: auto 16px; align-items: center; column-gap: 6px; }
 .previewProfile > div > strong { overflow: hidden; color: var(--ink-strong); font-size: .875rem; text-overflow: ellipsis; white-space: nowrap; }
-.previewProfile > div > svg,
-.previewProfile > div > :global(.material-symbols-outlined) { color: #059669; }
-.previewProfile > div > span { grid-column: 1 / -1; color: var(--ink-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .75rem; }
+.previewVerifiedIcon { width: 16px; height: 16px; overflow: visible; color: #059669; line-height: 1; }
+.previewUsername { grid-column: 1 / -1; color: var(--ink-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .75rem; }
 .previewProfile > div > small { grid-column: 1 / -1; display: flex; align-items: center; gap: 4px; padding-top: 2px; color: var(--ink-muted); font-size: .6875rem; }
 .photoRatio { display: grid; gap: 12px; border: 1px dashed #a7f3d0; border-radius: 12px; padding: 16px; background: color-mix(in srgb, #ecfdf5 50%, transparent); }
 .photoRatio > p { display: flex; align-items: flex-start; gap: 10px; margin: 0; color: var(--ink); font-size: .75rem; line-height: 1.625; }

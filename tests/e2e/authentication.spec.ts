@@ -459,6 +459,7 @@ test("pengaturan profil dan kata sandi sesuai desain responsif", async ({ page }
 
   await page.goto("/portal/pengaturan/profil");
   await expect(page.getByRole("heading", { name: "Profil Saya", level: 1 })).toBeVisible();
+  await expect(page.locator("div[class*='previewProfile'] [data-icon='verified']")).toHaveCSS("font-family", /Material Symbols/);
   const profilePhotos = page.locator("span[class*='profileAvatar'], span[class*='previewAvatar']");
   await expect(page).toHaveScreenshot("settings-profile-mobile.png", { fullPage: true, caret: "initial", mask: [profilePhotos] });
 
