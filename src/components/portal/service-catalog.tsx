@@ -93,7 +93,7 @@ export function ServiceCatalog({ services, initialQuery = "" }: {
             <article className={styles.serviceCard} key={service.id}>
               <div>
                 <div className={styles.serviceTop}>
-                  <span className={styles.serviceLogo} aria-hidden="true">
+                  <span className={styles.serviceLogo} data-service-id={service.id} aria-hidden="true">
                     {service.logoPath
                       ? <Image src={service.logoPath} alt="" width={48} height={48} sizes="48px" />
                       : <CatalogIcon id={service.id} />}
