@@ -85,7 +85,7 @@ test("seluruh halaman publik utama dapat dirender tanpa error browser", async ({
   });
 
   const routes = [
-    ["/login", "Masuk ke Akun SSO"],
+    ["/login", "Selamat Datang di SSO"],
     ["/daftar", "Buat Akun SSO Baru"],
     ["/lupa-kata-sandi", "Lupa kata sandi"],
     ["/bantuan", "Informasi bantuan sedang disiapkan"],
@@ -359,13 +359,12 @@ test("captcha login dapat dimuat ulang dan menolak jawaban yang salah", async ({
   await expect(page).toHaveURL(/\/login$/);
 });
 
-test("hero login memuat Gedung Sate dan identitas Kota Bandung", async ({ page }) => {
+test("login memuat identitas Kota Bandung dan tampilan autentikasi baru", async ({ page }) => {
   await page.goto("/login", { waitUntil: "networkidle" });
-  await expect(page.getByRole("heading", { name: "Selamat Datang di Portal Single Sign On Kota Bandung" })).toBeVisible();
-  await expect(page.getByText("14+ portal layanan")).toBeVisible();
-  const hero = page.getByAltText("Gedung Sate, pusat pemerintahan Provinsi Jawa Barat di Kota Bandung");
-  await expect(hero).toBeVisible();
-  await expect.poll(() => hero.evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true);
+  await expect(page.getByRole("heading", { name: "Selamat Datang di SSO" })).toBeVisible();
+  await expect(page.getByText("Akses Terpadu Layanan Publik & Internal Pemkot")).toBeVisible();
+  await expect(page.getByText("AUTENTIKASI AKUN")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Masuk dengan Google" })).toBeVisible();
 });
 
 for (const width of [360, 390, 768, 1024, 1280, 1440]) {

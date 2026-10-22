@@ -8,7 +8,7 @@
 
 .heading { display: grid; gap: 0; margin-bottom: 24px; padding-top: 5px; }
 .registerContent .heading { margin-bottom: 20px; }
-.heading h1, .heading h2 { margin: 0; color: var(--ink-strong); font-size: 1.5rem; line-height: 32px; font-weight: 800; letter-spacing: -.025em; }
+.heading h1, .heading h2 { margin: 0; color: var(--ink-strong); font-size: 1.875rem; line-height: 36px; font-weight: 800; letter-spacing: -.025em; }
 .heading p { margin: 4px 0 0; color: var(--ink-muted); font-size: .875rem; line-height: 20px; }
 .heading .kicker {
   width: fit-content;
@@ -115,7 +115,7 @@
 .fieldError { margin: 0; color: var(--danger); font-size: .75rem; }
 
 .registerContent .captchaCard { padding: 12px; }
-.submit { min-height: 44px; gap: 8px; border-radius: 12px; font-size: .875rem; line-height: 20px; letter-spacing: .025em; }
+.submit { min-height: 48px; gap: 8px; border-radius: 12px; font-size: .875rem; line-height: 20px; letter-spacing: .025em; }
 .support { margin: 16px 0 0; padding-top: 20px; border-top: 1px solid var(--border); color: var(--ink-muted); text-align: center; font-size: .75rem; line-height: 16px; font-weight: 500; }
 .registerContent .support { margin-top: 12px; padding-top: 16px; }
 .support a { margin-left: 4px; color: #2563eb; font-weight: 800; }

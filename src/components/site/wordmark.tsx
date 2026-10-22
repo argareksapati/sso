@@ -20,7 +20,7 @@ export function Wordmark({
       </span>
       <span className={styles.copy}>
         <span className={styles.title}>Single Sign On <small>KOTA BANDUNG</small></span>
-        {variant === "default" ? <span className={styles.subtitle}>Masuk Sekali Untuk Semua Layanan Kota Bandung</span> : null}
+        {variant !== "portal" ? <span className={styles.subtitle}>{variant === "auth" ? "Akses Terpadu Layanan Publik & Internal Pemkot" : "Masuk Sekali Untuk Semua Layanan Kota Bandung"}</span> : null}
       </span>
     </Link>
   );
