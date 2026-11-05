@@ -11,8 +11,8 @@ function adminSessionToken() {
   const payload = Buffer.from(JSON.stringify({
     subject: "test-admin",
     displayName: "Admin SSO",
-    email: "admin@example.test",
-    roles: ["admin"],
+    email: "m.argareksapati21@gmail.com",
+    roles: ["authenticated"],
     issuedAt,
     expiresAt: issuedAt + 7200,
   }), "utf8").toString("base64url");
