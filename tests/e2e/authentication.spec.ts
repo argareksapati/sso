@@ -563,6 +563,7 @@ test("pengelolaan layanan dibatasi untuk admin dan kontrol CRUD berfungsi", asyn
   await page.goto("/portal/admin/layanan");
   await expect(page.getByRole("button", { name: "Tambah Layanan" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Kelola Layanan/ })).toHaveAttribute("aria-current", "page");
+  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();

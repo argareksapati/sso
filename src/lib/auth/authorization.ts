@@ -12,11 +12,14 @@ function normalizedAdminEmails() {
 }
 
 export function isAdministrativeIdentity(identity: Pick<AuthIdentity, "email" | "roles">) {
+  const adminEmails = normalizedAdminEmails();
+  if (adminEmails.size > 0) {
+    const email = identity.email?.trim().toLocaleLowerCase("id-ID");
+    return Boolean(email && adminEmails.has(email));
+  }
+
   const hasAdministrativeRole = identity.roles.some((role) =>
     administrativeRoles.has(role.trim().toLocaleLowerCase("id-ID")),
   );
-  if (hasAdministrativeRole) return true;
-
-  const email = identity.email?.trim().toLocaleLowerCase("id-ID");
-  return Boolean(email && normalizedAdminEmails().has(email));
+  return hasAdministrativeRole;
 }

@@ -20,4 +20,11 @@ describe("administrative authorization", () => {
     expect(isAdministrativeIdentity({ email: "lain@gmail.com", roles: ["authenticated"] })).toBe(false);
     expect(isAdministrativeIdentity({ email: "m.argareksapati21@gmail.com.attacker.test", roles: ["authenticated"] })).toBe(false);
   });
+
+  it("menjadikan allowlist sebagai satu-satunya sumber akses saat dikonfigurasi", () => {
+    process.env.SSO_ADMIN_EMAILS = "m.argareksapati21@gmail.com";
+
+    expect(isAdministrativeIdentity({ email: "akun.lain@gmail.com", roles: ["admin"] })).toBe(false);
+    expect(isAdministrativeIdentity({ email: "m.argareksapati21@gmail.com", roles: ["authenticated"] })).toBe(true);
+  });
 });
