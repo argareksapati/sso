@@ -6,16 +6,19 @@ import { usePathname } from "next/navigation";
 import { MaterialIcon } from "@/components/ui/material-icon";
 import styles from "./portal-shell.module.css";
 
-const items = [
+const baseItems = [
   { href: "/portal", label: "Beranda", shortLabel: "Beranda", icon: "home", match: "exact" },
   { href: "/portal/layanan", label: "Daftar Layanan", shortLabel: "Layanan", icon: "grid_view", match: "prefix" },
   { href: "/portal/pengaturan/profil", label: "Pengaturan", shortLabel: "Pengaturan", icon: "settings", match: "settings" },
 ] as const;
 
-export function PortalNavigation() {
-  const pathname = usePathname();
+const adminItem = { href: "/portal/admin/layanan", label: "Kelola Layanan", shortLabel: "Admin", icon: "admin_panel_settings", match: "prefix" } as const;
 
-  function isActive(match: (typeof items)[number]["match"], href: string) {
+export function PortalNavigation({ isAdmin = false }: { isAdmin?: boolean }) {
+  const pathname = usePathname();
+  const items = isAdmin ? [...baseItems, adminItem] : baseItems;
+
+  function isActive(match: "exact" | "prefix" | "settings", href: string) {
     if (match === "exact") return pathname === href;
     if (match === "settings") return pathname.startsWith("/portal/pengaturan");
     return pathname.startsWith(href);
@@ -40,7 +43,7 @@ export function PortalNavigation() {
         </div>
       </nav>
 
-      <nav className={styles.mobileNav} aria-label="Navigasi portal seluler">
+      <nav className={styles.mobileNav} data-admin={isAdmin} aria-label="Navigasi portal seluler">
         {items.map(({ href, shortLabel, icon, match }) => {
           const active = isActive(match, href);
           return (

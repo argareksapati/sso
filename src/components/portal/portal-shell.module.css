@@ -149,6 +149,7 @@
     box-shadow: 0 -4px 16px rgba(15, 23, 42, .08);
     backdrop-filter: blur(16px);
   }
+  .mobileNav[data-admin="true"] { grid-template-columns: repeat(4, 1fr); }
   .mobileNav a {
     display: grid;
     place-items: center;

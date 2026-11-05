@@ -136,8 +136,8 @@ export function LoginForm({ returnTo, oauthError, registered, passwordChanged }:
     <div className={styles.content}>
       <div className={styles.heading}>
         <p className={styles.kicker}>Autentikasi akun</p>
-        <h2>Selamat Datang di SSO</h2>
-        <p>Gunakan email dan kata sandi terdaftar Anda untuk masuk ke sistem terpadu Kota Bandung</p>
+        <h2>Selamat Datang</h2>
+        <p>Gunakan email dan kata sandi terdaftar Anda untuk masuk ke SSO Kota Bandung.</p>
       </div>
 
       <button className={styles.google} type="button" onClick={signInWithGoogle} disabled={googleLoading}>

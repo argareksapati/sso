@@ -108,13 +108,6 @@ const existingSsoCatalog = [
     logoPath: "/services/new-bimma.png",
   },
   {
-    id: "bandung-smart-map-plus",
-    name: "Bandung Smart Map Plus",
-    description: "Sistem Informasi Geografis (GIS) dan pemetaan interaktif wilayah Kota Bandung.",
-    category: "INNOVATION",
-    owner: "Pemerintah Kota Bandung",
-  },
-  {
     id: "bandung-opendata",
     name: "Bandung Opendata",
     description: "Portal Resmi Data Terbuka Publik Pemerintah Kota Bandung.",
@@ -148,15 +141,6 @@ const existingSsoCatalog = [
     logoPath: "/services/sadayana.png",
   },
   {
-    id: "ai-asisten-bandung",
-    name: "AI Asisten Bandung",
-    description: "Layanan interaktif berbasis kecerdasan buatan untuk bantuan informasi warga.",
-    category: "INNOVATION",
-    owner: "Diskominfo Kota Bandung",
-    logoPath: "/services/teh-ai-logo.png",
-    sourceUrl: "https://sso.bandung.go.id/",
-  },
-  {
     id: "gercep-asik",
     name: "Gercep Asik",
     description: "Gerakan Cepat Aplikasi Sistem Informasi Penanganan Keluhan Warga Kota Bandung.",
@@ -172,21 +156,6 @@ const existingSsoCatalog = [
     owner: "Pemerintah Kota Bandung",
     logoPath: "/services/bsm-pro-logo.png",
     sourceUrl: "https://bsm.bandung.go.id/",
-  },
-  {
-    id: "perizinan-bandung",
-    name: "Perizinan Bandung",
-    description: "Portal layanan pengajuan, pemrosesan, dan verifikasi perizinan usaha & non-usaha online.",
-    category: "PUBLIC",
-    owner: "DPMPTSP Kota Bandung",
-    logoPath: "/services/dpmptsp-logo.png",
-  },
-  {
-    id: "management-pemdi",
-    name: "Management PEMDI",
-    description: "Sistem perencanaan dan Manajemen Pembangunan Daerah Terpadu Pemkot Bandung.",
-    category: "INTERNAL",
-    owner: "Pemerintah Kota Bandung",
   },
 ] as const satisfies readonly ExistingCatalogEntry[];
 

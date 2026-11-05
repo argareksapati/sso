@@ -84,8 +84,8 @@ export function RegisterForm() {
     <div className={`${styles.content} ${styles.registerContent}`}>
       <div className={styles.heading}>
         <p className={`${styles.kicker} ${styles.registerKicker}`}>Pendaftaran akun</p>
-        <h2>Buat Akun SSO Baru</h2>
-        <p>Lengkapi identitas Anda untuk pendaftaran</p>
+        <h2>Buat Akun SSO</h2>
+        <p>Lengkapi identitas Anda untuk pendaftaran akun terpadu Kota Bandung</p>
       </div>
       {error && <Alert tone="error">{error}</Alert>}
 

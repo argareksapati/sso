@@ -6,7 +6,7 @@ import { LogoutButton } from "./logout-button";
 import { PortalNavigation } from "./portal-navigation";
 import styles from "./portal-shell.module.css";
 
-export function PortalShell({ children }: { displayName: string; children: React.ReactNode }) {
+export function PortalShell({ children, isAdmin = false }: { displayName: string; isAdmin?: boolean; children: React.ReactNode }) {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -19,7 +19,7 @@ export function PortalShell({ children }: { displayName: string; children: React
         </div>
       </header>
 
-      <PortalNavigation />
+      <PortalNavigation isAdmin={isAdmin} />
 
       <main className={styles.main}>{children}</main>
 

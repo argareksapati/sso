@@ -6,5 +6,6 @@ import { getSession } from "@/lib/auth/session";
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/login?returnTo=/portal");
-  return <PortalShell displayName={session.displayName}>{children}</PortalShell>;
+  const isAdmin = session.roles.some((role) => ["admin", "operator", "sso_admin"].includes(role.toLocaleLowerCase("id-ID")));
+  return <PortalShell displayName={session.displayName} isAdmin={isAdmin}>{children}</PortalShell>;
 }

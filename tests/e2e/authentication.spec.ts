@@ -1,8 +1,24 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { createHmac } from "node:crypto";
 
 const identifier = "pengguna.uji@example.test";
 const password = "local-test-password-only";
+const testSessionSecret = "development-test-secret-with-at-least-32-characters";
+
+function adminSessionToken() {
+  const issuedAt = Math.floor(Date.now() / 1000);
+  const payload = Buffer.from(JSON.stringify({
+    subject: "test-admin",
+    displayName: "Admin SSO",
+    email: "admin@example.test",
+    roles: ["admin"],
+    issuedAt,
+    expiresAt: issuedAt + 7200,
+  }), "utf8").toString("base64url");
+  const signature = createHmac("sha256", testSessionSecret).update(payload, "utf8").digest("base64url");
+  return `${payload}.${signature}`;
+}
 
 async function login(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -85,8 +101,8 @@ test("seluruh halaman publik utama dapat dirender tanpa error browser", async ({
   });
 
   const routes = [
-    ["/login", "Selamat Datang di SSO"],
-    ["/daftar", "Buat Akun SSO Baru"],
+    ["/login", "Selamat Datang"],
+    ["/daftar", "Buat Akun SSO"],
     ["/lupa-kata-sandi", "Lupa kata sandi"],
     ["/bantuan", "Informasi bantuan sedang disiapkan"],
     ["/daftar/berhasil", "Periksa email Anda"],
@@ -259,7 +275,7 @@ test("tautan daftar membuka form pendaftaran publik", async ({ page }) => {
   await page.goto("/login");
   await page.getByRole("link", { name: "Daftar Akun Baru", exact: true }).click();
   await expect(page).toHaveURL(/\/daftar$/);
-  await expect(page.getByRole("heading", { name: "Buat Akun SSO Baru", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Buat Akun SSO", level: 2 })).toBeVisible();
   await expect(page.getByLabel("Nama Lengkap")).toBeVisible();
   await expect(page.getByLabel("Alamat Email Aktif")).toBeVisible();
   await expect(page.getByLabel("Kata Sandi", { exact: true })).toBeVisible();
@@ -359,10 +375,13 @@ test("captcha login dapat dimuat ulang dan menolak jawaban yang salah", async ({
   await expect(page).toHaveURL(/\/login$/);
 });
 
-test("login memuat identitas Kota Bandung dan tampilan autentikasi baru", async ({ page }) => {
+test("login memuat foto Balai Kota dan identitas pelayanan digital Bandung", async ({ page }) => {
   await page.goto("/login", { waitUntil: "networkidle" });
-  await expect(page.getByRole("heading", { name: "Selamat Datang di SSO" })).toBeVisible();
-  await expect(page.getByText("Akses Terpadu Layanan Publik & Internal Pemkot")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Selamat Datang" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pusat Pelayanan Digital Terpadu" })).toBeVisible();
+  const hero = page.getByAltText("Balai Kota Bandung");
+  await expect(hero).toBeVisible();
+  await expect.poll(() => hero.evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true);
   await expect(page.getByText("AUTENTIKASI AKUN")).toBeVisible();
   await expect(page.getByRole("button", { name: "Masuk dengan Google" })).toBeVisible();
 });
@@ -509,6 +528,9 @@ test("katalog layanan dapat dicari dan difilter tanpa memuat ulang halaman", asy
   await page.goto("/portal/layanan");
 
   await expect(page.getByRole("heading", { name: "Daftar Layanan Aplikasi SSO", level: 1 })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Tambah Layanan" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Edit / })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Hapus / })).toHaveCount(0);
   await page.getByLabel("Cari layanan").fill("opendata");
   await expect(page.getByRole("heading", { name: "Bandung Opendata", level: 2 })).toBeVisible();
   await expect(page.getByRole("status")).toHaveText("1 layanan ditemukan");
@@ -523,12 +545,45 @@ test("katalog layanan dapat dicari dan difilter tanpa memuat ulang halaman", asy
   expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact || ""))).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 
-  await page.getByRole("button", { name: "Semua (14)" }).click();
+  await page.getByRole("button", { name: "Semua (10)" }).click();
   await expect(page).toHaveScreenshot("services-mobile.png", { fullPage: true, caret: "initial" });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.reload();
   await expect(page).toHaveScreenshot("services-desktop.png", { fullPage: true, caret: "initial" });
+});
+
+test("pengelolaan layanan dibatasi untuk admin dan kontrol CRUD berfungsi", async ({ page }) => {
+  await login(page);
+  await page.goto("/portal/admin/layanan");
+  await expect(page).toHaveURL(/\/tidak-berwenang$/);
+
+  await page.context().clearCookies();
+  await page.context().addCookies([{ name: "sso_bandung_session", value: adminSessionToken(), url: "http://127.0.0.1:3100", httpOnly: true, sameSite: "Lax" }]);
+  await page.goto("/portal/admin/layanan");
+  await expect(page.getByRole("button", { name: "Tambah Layanan" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Kelola Layanan/ })).toHaveAttribute("aria-current", "page");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  await expect(page).toHaveScreenshot("services-admin-mobile.png", { fullPage: true, caret: "initial" });
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.reload();
+  await expect(page).toHaveScreenshot("services-admin-desktop.png", { fullPage: true, caret: "initial" });
+
+  await page.getByRole("button", { name: "Tambah Layanan" }).click();
+  const dialog = page.getByRole("dialog", { name: "Tambah Layanan SSO Baru" });
+  await dialog.getByLabel(/Nama Aplikasi/).fill("Layanan Uji Admin");
+  await dialog.getByLabel(/Deskripsi Singkat/).fill("Layanan sementara untuk menguji kontrol admin.");
+  await dialog.getByRole("button", { name: /Simpan Layanan/ }).click();
+  await expect(page.getByRole("heading", { name: "Layanan Uji Admin" })).toBeVisible();
+  await expect(page.getByText("11 Aplikasi")).toBeVisible();
+
+  page.once("dialog", (confirmation) => confirmation.accept());
+  await page.getByRole("button", { name: "Hapus Layanan Uji Admin" }).click();
+  await expect(page.getByRole("heading", { name: "Layanan Uji Admin" })).toHaveCount(0);
+  await expect(page.getByText("10 Aplikasi")).toBeVisible();
 });
 
 test("aplikasi terkoneksi dan notifikasi sesuai desain responsif", async ({ page }) => {
