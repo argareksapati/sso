@@ -34,6 +34,23 @@
 }
 
 .account { display: flex; align-items: center; gap: 12px; }
+.brandGroup { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.adminMode {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(147, 197, 253, .3);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: #bfdbfe;
+  background: rgba(30, 58, 138, .72);
+  font-size: .5625rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.adminMode > span { font-size: 12px; }
 
 .logout {
   min-height: 36px;
@@ -149,7 +166,6 @@
     box-shadow: 0 -4px 16px rgba(15, 23, 42, .08);
     backdrop-filter: blur(16px);
   }
-  .mobileNav[data-admin="true"] { grid-template-columns: repeat(4, 1fr); }
   .mobileNav a {
     display: grid;
     place-items: center;
@@ -164,6 +180,7 @@
   .main { padding: 19.5px 16px 20px; }
   .footer { height: 73px; align-items: center; flex-direction: column; gap: 8px; padding: 16px 12px; text-align: center; font-size: .625rem; }
   .footerLinks { justify-content: center; gap: 14px; }
+  .adminMode { display: none; }
 }
 
 @media (max-width: 370px) {

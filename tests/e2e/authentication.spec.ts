@@ -546,10 +546,12 @@ test("katalog layanan dapat dicari dan difilter tanpa memuat ulang halaman", asy
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 
   await page.getByRole("button", { name: "Semua (10)" }).click();
+  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await expect(page).toHaveScreenshot("services-mobile.png", { fullPage: true, caret: "initial" });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.reload();
+  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await expect(page).toHaveScreenshot("services-desktop.png", { fullPage: true, caret: "initial" });
 });
 
@@ -560,17 +562,18 @@ test("pengelolaan layanan dibatasi untuk admin dan kontrol CRUD berfungsi", asyn
 
   await page.context().clearCookies();
   await page.context().addCookies([{ name: "sso_bandung_session", value: adminSessionToken(), url: "http://127.0.0.1:3100", httpOnly: true, sameSite: "Lax" }]);
-  await page.goto("/portal/admin/layanan");
+  await page.goto("/portal/layanan");
   await expect(page.getByRole("button", { name: "Tambah Layanan" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Kelola Layanan/ })).toHaveAttribute("aria-current", "page");
-  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
-
+  await expect(page.getByText("Mode Admin")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Daftar Layanan/ })).toHaveAttribute("aria-current", "page");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
+  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await expect(page).toHaveScreenshot("services-admin-mobile.png", { fullPage: true, caret: "initial" });
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.reload();
+  await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
   await expect(page).toHaveScreenshot("services-admin-desktop.png", { fullPage: true, caret: "initial" });
 
   await page.getByRole("button", { name: "Tambah Layanan" }).click();

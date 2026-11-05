@@ -12,11 +12,9 @@ const baseItems = [
   { href: "/portal/pengaturan/profil", label: "Pengaturan", shortLabel: "Pengaturan", icon: "settings", match: "settings" },
 ] as const;
 
-const adminItem = { href: "/portal/admin/layanan", label: "Kelola Layanan", shortLabel: "Admin", icon: "admin_panel_settings", match: "prefix" } as const;
-
-export function PortalNavigation({ isAdmin = false }: { isAdmin?: boolean }) {
+export function PortalNavigation() {
   const pathname = usePathname();
-  const items = isAdmin ? [...baseItems, adminItem] : baseItems;
+  const items = baseItems;
 
   function isActive(match: "exact" | "prefix" | "settings", href: string) {
     if (match === "exact") return pathname === href;
@@ -43,7 +41,7 @@ export function PortalNavigation({ isAdmin = false }: { isAdmin?: boolean }) {
         </div>
       </nav>
 
-      <nav className={styles.mobileNav} data-admin={isAdmin} aria-label="Navigasi portal seluler">
+      <nav className={styles.mobileNav} aria-label="Navigasi portal seluler">
         {items.map(({ href, shortLabel, icon, match }) => {
           const active = isActive(match, href);
           return (

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Wordmark } from "@/components/site/wordmark";
+import { MaterialIcon } from "@/components/ui/material-icon";
 import { LogoutButton } from "./logout-button";
 import { PortalNavigation } from "./portal-navigation";
 import styles from "./portal-shell.module.css";
@@ -11,7 +12,10 @@ export function PortalShell({ children, isAdmin = false }: { displayName: string
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <Wordmark inverse href="/portal" variant="portal" />
+          <div className={styles.brandGroup}>
+            <Wordmark inverse href="/portal" variant="portal" />
+            {isAdmin && <span className={styles.adminMode}><MaterialIcon name="admin_panel_settings" size={12} /> Mode Admin</span>}
+          </div>
           <div className={styles.account}>
             <ThemeToggle compact />
             <LogoutButton />
@@ -19,7 +23,7 @@ export function PortalShell({ children, isAdmin = false }: { displayName: string
         </div>
       </header>
 
-      <PortalNavigation isAdmin={isAdmin} />
+      <PortalNavigation />
 
       <main className={styles.main}>{children}</main>
 
