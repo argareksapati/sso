@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 
 import { MaterialIcon } from "@/components/ui/material-icon";
 import type { ExistingCatalogEntry, ServiceCategory } from "@/lib/services/repository";
@@ -11,6 +11,7 @@ type CategoryFilter = "ALL" | ServiceCategory;
 type ManagedService = ExistingCatalogEntry & {
   integrationStatus?: "Terhubung SSO" | "Integrasi API" | "Maintenance";
   logoUrl?: string;
+  logoFileName?: string;
   clientId?: string;
   redirectUrl?: string;
 };
@@ -21,6 +22,7 @@ type ServiceDraft = {
   integrationStatus: NonNullable<ManagedService["integrationStatus"]>;
   description: string;
   logoUrl: string;
+  logoFileName: string;
   clientId: string;
   redirectUrl: string;
 };
@@ -31,6 +33,7 @@ const emptyDraft: ServiceDraft = {
   integrationStatus: "Terhubung SSO",
   description: "",
   logoUrl: "",
+  logoFileName: "",
   clientId: "",
   redirectUrl: "",
 };
@@ -64,6 +67,7 @@ export function ServiceCatalog({ services, initialQuery = "", admin = false }: {
   const [editingId, setEditingId] = useState<string>();
   const [draft, setDraft] = useState<ServiceDraft>(emptyDraft);
   const [modalOpen, setModalOpen] = useState(false);
+  const [logoError, setLogoError] = useState("");
 
   const visibleServices = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase("id-ID");
@@ -78,6 +82,7 @@ export function ServiceCatalog({ services, initialQuery = "", admin = false }: {
   function openAdd() {
     setEditingId(undefined);
     setDraft(emptyDraft);
+    setLogoError("");
     setModalOpen(true);
   }
 
@@ -89,16 +94,45 @@ export function ServiceCatalog({ services, initialQuery = "", admin = false }: {
       integrationStatus: service.integrationStatus ?? "Terhubung SSO",
       description: service.description,
       logoUrl: service.logoUrl ?? "",
+      logoFileName: service.logoFileName ?? "",
       clientId: service.clientId ?? "",
       redirectUrl: service.redirectUrl ?? service.sourceUrl ?? "",
     });
     setModalOpen(true);
+    setLogoError("");
   }
 
   function closeModal() {
     setModalOpen(false);
     setEditingId(undefined);
     setDraft(emptyDraft);
+    setLogoError("");
+  }
+
+  function selectLogoFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
+    if (!allowedTypes.has(file.type)) {
+      setLogoError("Gunakan gambar PNG, JPG, atau WEBP.");
+      event.currentTarget.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setLogoError("Ukuran logo maksimal 2 MB.");
+      event.currentTarget.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") return;
+      setDraft((current) => ({ ...current, logoUrl: reader.result as string, logoFileName: file.name }));
+      setLogoError("");
+    };
+    reader.onerror = () => setLogoError("Logo tidak dapat dibaca. Silakan pilih file lain.");
+    reader.readAsDataURL(file);
   }
 
   function saveService(event: FormEvent<HTMLFormElement>) {
@@ -192,7 +226,9 @@ export function ServiceCatalog({ services, initialQuery = "", admin = false }: {
               <div>
                 <div className={styles.serviceTop}>
                   <span className={styles.serviceLogo} data-service-id={service.id} aria-hidden="true">
-                    {service.logoPath
+                    {service.logoUrl
+                      ? <Image src={service.logoUrl} alt="" width={48} height={48} sizes="48px" unoptimized />
+                      : service.logoPath
                       ? <Image src={service.logoPath} alt="" width={48} height={48} sizes="48px" />
                       : <CatalogIcon id={service.id} />}
                   </span>
@@ -245,7 +281,17 @@ export function ServiceCatalog({ services, initialQuery = "", admin = false }: {
                 <label><span>Status Integrasi <b>*</b></span><select value={draft.integrationStatus} onChange={(event) => setDraft((current) => ({ ...current, integrationStatus: event.target.value as ServiceDraft["integrationStatus"] }))}><option>Terhubung SSO</option><option>Integrasi API</option><option>Maintenance</option></select></label>
               </div>
               <label><span>Deskripsi Singkat Layanan <b>*</b></span><textarea required rows={2} maxLength={260} value={draft.description} onChange={(event) => setDraft((current) => ({ ...current, description: event.target.value }))} placeholder="Jelaskan fungsi utama aplikasi ini secara singkat..." /></label>
-              <label>URL Logo / Icon Aplikasi<input type="url" value={draft.logoUrl} onChange={(event) => setDraft((current) => ({ ...current, logoUrl: event.target.value }))} placeholder="https://sso.bandung.go.id/logo.png" /></label>
+              <label className={styles.fileUpload}>
+                <span>Unggah Logo / Icon dari Folder</span>
+                <input type="file" accept="image/png,image/jpeg,image/webp" onChange={selectLogoFile} />
+                <span className={styles.uploadControl}>
+                  <MaterialIcon name="upload_file" size={22} />
+                  <span><strong>{draft.logoFileName || "Pilih file gambar"}</strong><small>PNG, JPG, atau WEBP maksimal 2 MB</small></span>
+                </span>
+              </label>
+              {logoError && <p className={styles.logoError} role="alert">{logoError}</p>}
+              {draft.logoUrl && <div className={styles.logoPreview}><Image src={draft.logoUrl} alt="Pratinjau logo layanan" width={52} height={52} unoptimized /><span>{draft.logoFileName || "Logo dari URL"}</span><button type="button" onClick={() => setDraft((current) => ({ ...current, logoUrl: "", logoFileName: "" }))}>Hapus</button></div>}
+              <label>URL Logo / Icon Aplikasi <small>(opsional)</small><input type="url" value={draft.logoFileName ? "" : draft.logoUrl} onChange={(event) => setDraft((current) => ({ ...current, logoUrl: event.target.value, logoFileName: "" }))} placeholder="https://sso.bandung.go.id/logo.png" disabled={Boolean(draft.logoFileName)} /></label>
               <div className={styles.formColumns}>
                 <label>SSO Client ID / API Key<input value={draft.clientId} onChange={(event) => setDraft((current) => ({ ...current, clientId: event.target.value }))} placeholder="sso_client_bdg_x89" /></label>
                 <label>Redirect Callback URL<input type="url" value={draft.redirectUrl} onChange={(event) => setDraft((current) => ({ ...current, redirectUrl: event.target.value }))} placeholder="https://aplikasi.bandung.go.id/callback" /></label>

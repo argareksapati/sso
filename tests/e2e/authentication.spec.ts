@@ -578,10 +578,18 @@ test("pengelolaan layanan dibatasi untuk admin dan kontrol CRUD berfungsi", asyn
 
   await page.getByRole("button", { name: "Tambah Layanan" }).click();
   const dialog = page.getByRole("dialog", { name: "Tambah Layanan SSO Baru" });
+  await expect(dialog).toHaveScreenshot("services-admin-upload-dialog.png", { caret: "initial" });
   await dialog.getByLabel(/Nama Aplikasi/).fill("Layanan Uji Admin");
   await dialog.getByLabel(/Deskripsi Singkat/).fill("Layanan sementara untuk menguji kontrol admin.");
+  await dialog.getByLabel("Unggah Logo / Icon dari Folder").setInputFiles({
+    name: "logo-uji.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+  });
+  await expect(dialog.getByAltText("Pratinjau logo layanan")).toBeVisible();
   await dialog.getByRole("button", { name: /Simpan Layanan/ }).click();
   await expect(page.getByRole("heading", { name: "Layanan Uji Admin" })).toBeVisible();
+  await expect(page.getByRole("article").filter({ hasText: "Layanan Uji Admin" }).locator("img")).toHaveAttribute("src", /^data:image\/png;base64,/);
   await expect(page.getByText("11 Aplikasi")).toBeVisible();
 
   page.once("dialog", (confirmation) => confirmation.accept());
