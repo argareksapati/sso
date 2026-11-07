@@ -14,9 +14,10 @@ describe("administrative authorization", () => {
   });
 
   it("menerima email yang sama persis dengan allowlist server", () => {
-    process.env.SSO_ADMIN_EMAILS = "m.argareksapati21@gmail.com";
+    process.env.SSO_ADMIN_EMAILS = "m.argareksapati21@gmail.com, adminssobandung@gmail.com";
 
     expect(isAdministrativeIdentity({ email: "M.Argareksapati21@gmail.com", roles: ["authenticated"] })).toBe(true);
+    expect(isAdministrativeIdentity({ email: "adminssobandung@gmail.com", roles: ["authenticated"] })).toBe(true);
     expect(isAdministrativeIdentity({ email: "lain@gmail.com", roles: ["authenticated"] })).toBe(false);
     expect(isAdministrativeIdentity({ email: "m.argareksapati21@gmail.com.attacker.test", roles: ["authenticated"] })).toBe(false);
   });
