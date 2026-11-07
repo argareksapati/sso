@@ -107,7 +107,7 @@ test("seluruh halaman publik utama dapat dirender tanpa error browser", async ({
     ["/bantuan", "Informasi bantuan sedang disiapkan"],
     ["/daftar/berhasil", "Periksa email Anda"],
     ["/pemulihan/dikirim", "Periksa petunjuk pemulihan"],
-    ["/reset-kata-sandi", "Tautan reset belum dapat digunakan"],
+    ["/reset-kata-sandi", "Tautan reset tidak valid atau kedaluwarsa"],
     ["/pemeliharaan", "Layanan sementara tidak tersedia"],
     ["/session-berakhir", "Silakan masuk kembali"],
     ["/tidak-berwenang", "Anda belum dapat membuka halaman ini"],
@@ -340,6 +340,46 @@ test("recovery tidak mengungkap keberadaan akun", async ({ page }) => {
   await page.getByRole("button", { name: "Kirim petunjuk pemulihan" }).click();
   await expect(page).toHaveURL(/\/pemulihan\/dikirim$/);
   await expect(page.getByRole("heading", { name: "Periksa petunjuk pemulihan" })).toBeVisible();
+});
+
+test("tautan recovery Supabase dapat memperbarui kata sandi", async ({ page }) => {
+  const encode = (value: object) => Buffer.from(JSON.stringify(value), "utf8").toString("base64url");
+  const accessToken = `${encode({ alg: "HS256", typ: "JWT" })}.${encode({
+    sub: "00000000-0000-0000-0000-000000000001",
+    aud: "authenticated",
+    role: "authenticated",
+    email: "admin@example.test",
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  })}.test-signature`;
+  let passwordUpdated = false;
+
+  await page.route("**/auth/v1/user", async (route) => {
+    if (route.request().method() === "PUT") {
+      const body = route.request().postDataJSON() as { password?: string };
+      passwordUpdated = body.password === "sandi-baru-kuat-2026";
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: "00000000-0000-0000-0000-000000000001",
+        aud: "authenticated",
+        role: "authenticated",
+        email: "admin@example.test",
+        app_metadata: {},
+        user_metadata: {},
+      }),
+    });
+  });
+
+  await page.goto(`/reset-kata-sandi#access_token=${accessToken}&refresh_token=test-refresh&type=recovery`);
+  await expect(page.getByRole("heading", { name: "Buat kata sandi baru" })).toBeVisible();
+  await page.getByLabel("Kata sandi baru", { exact: true }).fill("sandi-baru-kuat-2026");
+  await page.getByLabel("Konfirmasi kata sandi baru", { exact: true }).fill("sandi-baru-kuat-2026");
+  await page.getByRole("button", { name: /Simpan kata sandi baru/ }).click();
+  await expect(page.getByRole("heading", { name: "Kata sandi berhasil diperbarui" })).toBeVisible();
+  expect(passwordUpdated).toBe(true);
+  await expect(page).toHaveURL(/\/reset-kata-sandi$/);
 });
 
 test("login Google memberi status yang jelas saat provider belum tersedia", async ({ page }) => {

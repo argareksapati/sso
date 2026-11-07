@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
 import { AuthFrame } from "@/components/auth/auth-frame";
-import { StatusContent } from "@/components/auth/status-content";
+import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
 export const metadata: Metadata = { title: "Reset kata sandi" };
 
 export default function ResetPasswordPage() {
   return (
     <AuthFrame compact>
-      <StatusContent
-        icon="key"
-        eyebrow="Reset kata sandi"
-        title="Tautan reset belum dapat digunakan"
-        description="Alur reset akan diaktifkan setelah penyedia identitas dan channel pemulihan disetujui. Tidak ada kata sandi produksi yang diproses pada lingkungan ini."
-      />
+      <ResetPasswordForm />
     </AuthFrame>
   );
 }
